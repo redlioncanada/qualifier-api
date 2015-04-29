@@ -1,5 +1,4 @@
 /vendor/
 /composer.phar
 /nbproject/private/
-/data/json/*.json
-/data/xml/*.xml
+/data/

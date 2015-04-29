@@ -7,15 +7,8 @@ class Wpq_ProductListController extends Zend_Controller_Action {
   }
 
   public function getAction() {
-    $catSlug = $this->getParam('category');
-    $cats = $this->getInvokeArg('bootstrap')->getOption('wpq')['categories'];
-    if (!preg_match('/^[a-z0-9_-]+$/i', $catSlug)
-            || !in_array($catSlug, $cats)) {
-      throw new Zend_Controller_Action_Exception("Invalid category", 400);
-    }
-
-    $catModel = new Wpq_Model_Category($catSlug);
-    $filename = $catModel->getJsonFilename();
+    $feedModel = new Wpq_Model_Feed();
+    $filename = $feedModel->getJsonFilename();
 
     if (!is_file($filename)) {
       throw new Zend_Controller_Action_Exception("JSON file not found", 404);
