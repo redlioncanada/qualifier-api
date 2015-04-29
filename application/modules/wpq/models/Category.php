@@ -19,7 +19,10 @@ class Wpq_Model_Category {
 
   function __construct($catSlug) {
     $this->catSlug = $catSlug;
-    $this->jsonPath = realpath(APPLICATION_PATH . '/../data/product-lists');
+    $this->jsonPath = realpath(APPLICATION_PATH . '/../data/json');
+
+    // Will change, need to be extracted, etc.
+    $this->xmlPath = realpath(APPLICATION_PATH . '/../data/xml');
   }
 
   /**
@@ -36,20 +39,20 @@ class Wpq_Model_Category {
     $json = $this->buildJson();
     file_put_contents($this->getJsonFilename(), $json, LOCK_EX);
   }
-  
+
   /**
    * @return string JSON
    */
   private function buildJson() {
     $xmlDoc = $this->getXmlDoc();
-    $json = json_encode((array)$xmlDoc);
+    $json = json_encode((array) $xmlDoc);
     return $json;
   }
-  
+
   private function getXmlDoc() {
     return simplexml_load_file($this->getXmlFilename());
   }
-  
+
   private function getXmlFilename() {
     // TODO will actually be synthesized from many files
     return $this->xmlPath . '/' . $this->catSlug . '.xml';
