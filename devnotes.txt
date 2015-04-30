@@ -6,4 +6,6 @@ etc..?
 
 create a class to rep all objects from xml
 it won't be SOLID OOP, all data will just be accessible via properties
-but it will also have getParent()/getChildren() for stuff that's hierarchical like cats and products, to give easy reference while building json but avoid redundant data
+but it will also have getParent()/getChildren() for stuff that's hierarchical
+like cats and products, to give easy reference while building json but avoid
+redundant data
