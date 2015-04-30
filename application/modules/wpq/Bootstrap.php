@@ -1,7 +1,8 @@
 <?php
 
 use Lrr\ServiceLocator,
-    Rlc\Wpq;
+    Rlc\Wpq,
+    Rlc\Wpq\FeedEntity;
 
 /**
  * This class's mere existence is necessary for the module autoloader
@@ -18,8 +19,11 @@ class Wpq_Bootstrap extends Zend_Application_Module_Bootstrap {
     $jsonBuilder = new Wpq\JsonBuilder($xmlReader);
     $serviceLocator
             ->loadJsonFileManager(new Wpq\JsonFileManager($dataPath, $jsonBuilder))
-            ->feedEntityFactory(function(\SimpleXMLElement $el) {
-              return new Wpq\FeedEntity($el);
+            ->catalogEntryFactory(function(\SimpleXMLElement $el) {
+              return new FeedEntity\CatalogEntry($el);
+            })
+            ->catalogGroupFactory(function () {
+              return new FeedEntity\CatalogGroup('en_CA');
             })
     ;
   }

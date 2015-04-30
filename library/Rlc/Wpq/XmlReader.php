@@ -14,7 +14,7 @@ class XmlReader {
    * @param string $file
    * @return SimpleXMLElement
    */
-  public function getXmlFromFile($file) {
+  public function readFile($file) {
     return simplexml_load_file($this->dataPath . '/MTG_CA_' . $file . '.xml');
   }
 

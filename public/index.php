@@ -1,5 +1,10 @@
 <?php
 
+// TODO remove after testing
+header('Content-type: text/html; charset=utf8');
+
+
+
 // Define path to application directory
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));

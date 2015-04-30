@@ -1,11 +1,16 @@
-top cat: applicance
-sub cat: type
-sub-sub cat: subtype
-etc..?
+final JSON should be list of all entries with catgroups used to create these
+fields:
+  top cat: applicance
+  sub cat: type
+  sub-sub cat: subtype
+  etc..?
 
 
-create a class to rep all objects from xml
-it won't be SOLID OOP, all data will just be accessible via properties
-but it will also have getParent()/getChildren() for stuff that's hierarchical
-like cats and products, to give easy reference while building json but avoid
-redundant data
+on my way with this:
+  create a class to rep all objects from xml
+  it won't be SOLID OOP, all data will just be accessible via properties
+  but it will also have getParent()/getChildren() for stuff that's hierarchical
+  like cats and products, to give easy reference while building json but avoid
+  redundant data
+
+TODO figure out how to automatically trim all xml values! at least by default

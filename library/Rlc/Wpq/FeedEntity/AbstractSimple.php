@@ -1,0 +1,34 @@
+<?php
+
+namespace Rlc\Wpq\FeedEntity;
+
+/**
+ * Pseudo-subclass wrapper for \SimpleXMLElement. Can't extend because no way to
+ * control what class is returned from simplexml_read_file(), but objects of
+ * this class can wrap \SimpleXMLElement objects and provide transparent access
+ * to their methods and pseudo-properties.
+ * 
+ * JsonBuilder is still aware of the entire XML schema. These objects don't
+ * encapsulate the schema, just provide convenient access to the data and
+ * entity relations.
+ */
+abstract class AbstractSimple {
+
+  /**
+   * @var \SimpleXMLElement
+   */
+  private $simpleXmlElement;
+
+  public function __construct(\SimpleXMLElement $simpleXmlElement) {
+    $this->simpleXmlElement = $simpleXmlElement;
+  }
+
+  public function __call($name, $arguments) {
+    return call_user_func_array([$this->simpleXmlElement, $name], $arguments);
+  }
+
+  public function __get($name) {
+    return $this->simpleXmlElement->$name;
+  }
+
+}
