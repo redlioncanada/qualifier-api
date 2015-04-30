@@ -1,5 +1,7 @@
 <?php
 
+use Lrr\ServiceLocator;
+
 class Wpq_FeedProcessorController extends Zend_Controller_Action {
 
   public function init() {
@@ -8,8 +10,8 @@ class Wpq_FeedProcessorController extends Zend_Controller_Action {
 
   public function indexAction() {
     set_time_limit(0);
-    $feed = new Wpq_Model_Feed();
-    $feed->rebuildJson();
+    $jsonFileManager = ServiceLocator::jsonFileManager();
+    $jsonFileManager->rebuildJson();
   }
 
 }

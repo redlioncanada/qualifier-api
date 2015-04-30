@@ -7,7 +7,7 @@ class Wpq_ProductListController extends Zend_Controller_Action {
   }
 
   public function getAction() {
-    $feedModel = new Wpq_Model_Feed();
+    $feedModel = new Wpq_Model_JsonFileManager();
     $filename = $feedModel->getJsonFilename();
 
     if (!is_file($filename)) {
