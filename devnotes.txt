@@ -13,4 +13,8 @@ on my way with this:
   like cats and products, to give easy reference while building json but avoid
   redundant data
 
-TODO figure out how to automatically trim all xml values! at least by default
+figure out how to automatically trim all xml values! at least by default
+
+how to handle hierarchy of catalogentries (products with 'parentpartnumber')?
+  only show top level? or only bottom level?
+  why are there levels? are they like additional categories?
