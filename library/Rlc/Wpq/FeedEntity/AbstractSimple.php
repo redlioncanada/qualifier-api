@@ -17,18 +17,18 @@ abstract class AbstractSimple {
   /**
    * @var \SimpleXMLElement
    */
-  private $simpleXmlElement;
+  private $record;
 
-  public function __construct(\SimpleXMLElement $simpleXmlElement) {
-    $this->simpleXmlElement = $simpleXmlElement;
+  public function __construct(\SimpleXMLElement $record) {
+    $this->record = $record;
   }
 
   public function __call($name, $arguments) {
-    return call_user_func_array([$this->simpleXmlElement, $name], $arguments);
+    return call_user_func_array([$this->record, $name], $arguments);
   }
 
   public function __get($name) {
-    return $this->simpleXmlElement->$name;
+    return $this->record->$name;
   }
 
 }
