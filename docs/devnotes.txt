@@ -1,0 +1,134 @@
+
+DescriptiveAttributes of entry:
+
+unique ID for a <record>: "partnumber-CompareFeature-fr_CA-1-7"
+
+  {
+    "CompareFeature": {
+      "fr_CA": {
+        "1": {
+          "description": "Configuration et apercu",
+          "values": {
+            "7": {
+              "valueidentifier": "Capacite du four",
+              "value": "2.8"
+            }
+          }
+        }
+      },
+      "en_US": {
+        "1": {
+          "description": "Configuration and Overview",
+          "values": {
+            "7": {
+              "valueidentifier": "Oven Capacity",
+              "value": "2.8"
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+======
+
+it's not true after all that child entries are the colour variants. in at least some cases, each colour variant has its own entry/child entry pair. e.g. these top-level part numbers (with "-NAR" endings) are all variants of UXT2030, and each has a corresponding child part number which is just the same without "-NAR".
+
+  UXT2030AAB-NAR
+    UXT2030AAB
+  UXT2030AAW-NAR
+    UXT2030AAW
+  UXT2030ADW-NAR
+    UXT2030ADW
+    UXT2030ADB     <-- extra
+  UXT2030AYB-NAR
+    UXT2030AYB
+  UXT2030AYW-NAR
+    UXT2030AYW
+
+However, this isn't totally consistent. "UXT2030ADB" is an extra child part number under the "UXT2030ADW-NAR" parent.
+
+OK good actually, looks like the "extra" is actually the only one that's a real variant. both white "ADW" and black "ADB" go under the parent part number "ADW-NAR", which links them in a machine-understandable way, and all the rest are price=0 and maytag.ca indicates they have been "transitioned" to one of the price>0 ones.
+
+---
+
+  ask them about these:
+
+      less concerning, but still confusing, why doesn't "YMMV4205DE" show up on maytag.ca? it has price>0 and published=1, parent has salesstatus=30 so that just goes for all 5. but only 3 of 5 child part numbers show up though it looks like they all should
+
+      "DE" and "DB" are both black, but only "DB" shows on the site. similarly, "DW" and "DH" are both white, but only "DH" shows on the site. I can't find a way to automatically tell from the feed which should show up.
+
+      double check with newer version of feed.
+
+      ---
+
+      questions/complaints about new feed
+
+      the "_Full" suffixes are gone from XML files, what do I make of that? I need to count on the filenames not changing so the process can run automatically.
+
+      ---
+
+      waahh! where are the URLs to link to for each product?
+
+
+
+
+==========
+
+
+
+
+
+
+
+final JSON should be list of all entries with catgroups used to create these
+fields:
+  top cat: applicance
+  sub cat: type
+  sub-sub cat: subtype
+  etc..?
+
+
+on my way with this:
+  create a class to rep all objects from xml
+  it won't be SOLID OOP, all data will just be accessible via properties
+  but it will also have getParent()/getChildren() for stuff that's hierarchical
+  like cats and products, to give easy reference while building json but avoid
+  redundant data
+
+figure out how to automatically trim all xml values! at least by default
+
+how to handle hierarchy of catalogentries (products with 'parentpartnumber')?
+  only show top level? or only bottom level?
+  why are there levels? are they like additional categories?
+
+  DESCRIPTIVE ATTRS APPLY TO TOP-LEVEL ENTRIES ONLY
+  correspondingly, defining attrs apply to child entries only
+    defining attrs are just colours - does this mean child entries are just
+    colour vars? yes apparently from below
+
+  are there >2 levels of cat entries?
+    I doubt it, it seems the sub-entries are JUST colour variations!
+    this is true across the board, all brands, all cat groups.
+    maybe we can just ignore all child entries for the purpose of WPQ?
+    check if there are >2 lvls. NO! only 2. phew.
+    so basically, based on actual usage of this very abstract schema, 2nd-level
+      products and their corresponding "defining attrs" are only for color
+      variations. --> so check w Bianca if we care about colours at all. if not,
+      can just use top level products and ignore defining attrs.
+
+      if so, it's a bit complicated. i'll process all catalog entries, then
+      attach the child entries to the parents, and then synthesize all that
+      into colour variants in the API output.
+
+
+
+why do defining attribute values have parent part number?
+  i think just not normalized, probably can ignore
+
+should defining attr values be attached to defining attrs or cat entries?
+  maybe should just attach values directly to entries, not sure attr provides
+  anything i need
+
+also, defining attrs for mtg at least are just colour. what about other brands? yep, all just color

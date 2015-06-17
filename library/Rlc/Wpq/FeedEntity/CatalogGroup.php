@@ -2,7 +2,7 @@
 
 namespace Rlc\Wpq\FeedEntity;
 
-class CatalogGroup extends AbstractCompound {
+class CatalogGroup extends AbstractCompoundRecord {
 
   /**
    * @var CatalogGroup

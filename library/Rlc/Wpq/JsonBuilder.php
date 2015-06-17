@@ -20,53 +20,95 @@ class JsonBuilder {
 
     // Just testing code here, will actually return all entries in all groups.
     // For now I filter for an arbitrary group.
-    $targetGroupName = 'MC_Laundry_Laundry_Appliances_Laundry_Pairs_HighEfficiency_Front_Load';
-    
+    $targetGroupId = 'SC_Kitchen_Cooking_Hoods_Under_Cabinet';
+
+    $getGroupId = function ($group) {
+      return (string) $group->identifier;
+    };
+
+    // Filter for target group - dev only to speed up testing
     foreach ($catalogEntries as $key => $entry) {
-      $anscestorCatalogGroups = $entry->getAllCatalogGroups();
-      $anscestorCatalogGroupIds = array_map([$this, 'getGroupId'], $anscestorCatalogGroups);
-      if (!in_array($targetGroupName, $anscestorCatalogGroupIds)) {
+      $allCatalogGroups = $entry->getAllCatalogGroups();
+      $allCatalogGroupIds = array_map($getGroupId, $allCatalogGroups);
+      if (!in_array($targetGroupId, $allCatalogGroupIds)) {
         unset($catalogEntries[$key]);
       }
     }
 
+    // Build output data - beginning of real production code
+    $outputData = [];
+    foreach ($catalogEntries as $entry) {
+      $allCatalogGroups = $entry->getAllCatalogGroups();
+      $allCatalogGroupIds = array_map($getGroupId, $allCatalogGroups);
+      $newOutputData = [
+        'sku' => (string) $entry->partnumber,
+        'groups' => $allCatalogGroupIds,
+        'colours' => [],
+      ];
+      
+      $childEntries = $entry->getChildEntries();
+      foreach ($childEntries as $childEntry) {
+        $variantPartNumber = (string) $childEntry->partnumber;
+        $colourDa = $childEntry->getDefiningAttributeValue('Color');
+        $newOutputData['colours'][] = [
+          'sku' => $variantPartNumber,
+          'colourCode' => (string) $colourDa->valueidentifier,
+          'colourName' => (string) $colourDa->value,
+        ];
+      }
+      
+      $outputData[] = $newOutputData;
+    }
+//    
     // Just testing output
-    ini_set('xdebug.var_display_max_depth', 5);
-    var_dump($catalogEntries);
-    die;
+//    ini_set('xdebug.var_display_max_depth', 5);
+//    var_dump($catalogEntries['MEW6527DDQ']->getParentEntry());
+//    die;
 
-//    $json = json_encode($catalogEntries, JSON_PRETTY_PRINT);
-//    return $json;
-  }
-
-  // Probably just for testing too
-  private function getGroupId(FeedEntity\CatalogGroup $group) {
-    return (string) $group->identifier;
+    $json = json_encode($outputData, JSON_PRETTY_PRINT);
+//    die($json);
+    return $json;
   }
 
   /**
    * Get all catalog entries with all associated objects filled in
    * 
+   * @todo extract steps to methods of their own
+   * 
    * @return FeedEntity\CatalogEntry[]
    */
   private function getCatalogEntries() {
     // Fetch & assemble data for associations
-    $entryData = $this->xmlReader->readFile('CatalogEntry_Full');
-    $entryGroupRelnData = $this->xmlReader->readFile('CatalogGroupCatalogEntryRelationship_Full');
+    $entryData = $this->xmlReader->readFile('CatalogEntry');
+    $entryGroupRelnData = $this->xmlReader->readFile('B2C_CatalogGroupCatalogEntryRelationship');
     $groups = $this->getCatalogGroups();
+    $entryDescriptionData = $this->xmlReader->readFile('CatalogEntryDescription');
+    $descriptiveAttributeData = $this->xmlReader->readFile('DescriptiveAttribute');
+    $definingAttributeValueData = $this->xmlReader->readFile('DefiningAttributeValue');
 
     /*
-     * Build final entries array
+     * Build array in steps. We're working toward an array of top-level products
+     * (catalog entries) only, with child products (colour variants), categories,
+     * and all other associations assigned and retrievable using the classes'
+     * accessor methods.
      */
 
-    // Start with just entries
-    $entries = [];
+    // Start by creating two arrays, one just stores all catalog entries by
+    // partnumber, and the other stores only top-level entries by partnumber.
+    // It's this 2nd array we'll ultimately return.
+    $entries = $topLevelEntries = [];
     foreach ($entryData->record as $entryRecord) {
-      $entries[(string) $entryRecord->partnumber] = ServiceLocator::catalogEntry($entryRecord);
+      $newEntry = ServiceLocator::catalogEntry($entryRecord);
+      $sPartNumber = (string) $entryRecord->partnumber;
+      $entries[$sPartNumber] = $newEntry;
+      $sParentPartNumber = (string) $entryRecord->parentpartnumber;
+      if ('' === $sParentPartNumber) {
+        $topLevelEntries[$sPartNumber] = $newEntry;
+      }
     }
 
-    // Scan through group assocs and assign them
-    foreach ($entryGroupRelnData as $entryGroupRelnRecord) {
+    // Scan through group assocs and assign them to entries
+    foreach ($entryGroupRelnData->record as $entryGroupRelnRecord) {
       $relnPartNumber = (string) $entryGroupRelnRecord->partnumber;
       $relnGroupId = (string) $entryGroupRelnRecord->catgroup_identifier;
       if (isset($entries[$relnPartNumber], $groups[$relnGroupId])) {
@@ -74,9 +116,71 @@ class JsonBuilder {
       }
     }
 
-    // TODO other assocs...
+    // Assign entry descriptions
+    // Note: entry descriptions exist for both top-level and child part numbers,
+    // but may be redundant.
+    foreach ($entryDescriptionData->record as $entryDescriptionRecord) {
+      $descriptionPartNumber = (string) $entryDescriptionRecord->partnumber;
+      if (isset($entries[$descriptionPartNumber])) {
+        $entryDescription = ServiceLocator::catalogEntryDescription($entryDescriptionRecord);
+        $entries[$descriptionPartNumber]->addCatalogEntryDescription($entryDescription);
+      }
+    }
 
-    return $entries;
+    // Assign defining attribute values (no use attaching defining attributes,
+    // the data in the definingattributevalue file are enough).
+    // Note, these only exist for child entries (colour variants).
+    foreach ($definingAttributeValueData->record as $definingAttributeValueRecord) {
+      $davPartNumber = (string) $definingAttributeValueRecord->partnumber;
+      if (isset($entries[$davPartNumber])) {
+        // Check if already created and added, and do so if not
+        $definingAttributeName = (string) $definingAttributeValueRecord->attributename;
+        $definingAttributeValue = $entries[$davPartNumber]
+            ->getDefiningAttributeValue($definingAttributeName);
+        if (is_null($definingAttributeValue)) {
+          $definingAttributeValue = ServiceLocator::definingAttributeValue();
+          $entries[$davPartNumber]->addDefiningAttributeValue($definingAttributeValue, $definingAttributeName);
+        }
+        // Now we have a reference to the DAV for the given attribute name for
+        // the given catalog entry, whether it already existed or was just
+        // created. It's a compound record obj. Add the record for the locale
+        // value we have in the current loop iteration.
+        $definingAttributeValue->initRecord($definingAttributeValueRecord, (string) $definingAttributeValueRecord->locale);
+      }
+    }
+
+    // Assign descriptive attributes.
+    // Note, these only exist for top-level entries.
+    foreach ($descriptiveAttributeData->record as $descriptiveAttributeRecord) {
+      $daPartNumber = (string) $descriptiveAttributeRecord->partnumber;
+      if (isset($entries[$daPartNumber])) {
+        // Check if already created and added, and do so if not
+        $descriptiveAttributeGroupName = (string) $descriptiveAttributeRecord->groupname;
+        $descriptiveAttributeGroup = $entries[$daPartNumber]
+            ->getDescriptiveAttributeGroup($descriptiveAttributeGroupName);
+        if (is_null($descriptiveAttributeGroup)) {
+          $descriptiveAttributeGroup = ServiceLocator::descriptiveAttributeGroup();
+          $entries[$daPartNumber]->addDescriptiveAttributeGroup($descriptiveAttributeGroup, $descriptiveAttributeGroupName);
+        }
+        // Now we have a reference to the DAG for the given groupname for
+        // the given catalog entry, whether it already existed or was just
+        // created.
+        $descriptiveAttributeGroup->loadRecord($descriptiveAttributeRecord);
+      }
+    }
+
+    // Assign parent entry to all child entries via parentpartnumber field
+    foreach ($entryData->record as $entryRecord) {
+      $sParentPartNumber = (string) $entryRecord->parentpartnumber;
+      if ('' !== $sParentPartNumber) {
+        $sPartNumber = (string) $entryRecord->partnumber;
+        // Use $topLevelEntries to look up parents as an optimisation -- it's shorter.
+        $entries[$sPartNumber]->setParentEntry($topLevelEntries[$sParentPartNumber]);
+        $topLevelEntries[$sParentPartNumber]->addChildEntry($entries[$sPartNumber]);
+      }
+    }
+
+    return $topLevelEntries;
   }
 
   /**
@@ -85,8 +189,8 @@ class JsonBuilder {
    * @return FeedEntity\CatalogGroup[]
    */
   private function getCatalogGroups() {
-    $groupData = $this->xmlReader->readFile('CatalogGroup_Full');
-    $groupRelnData = $this->xmlReader->readFile('CatalogGroupRelationship_Full');
+    $groupData = $this->xmlReader->readFile('B2C_CatalogGroup');
+    $groupRelnData = $this->xmlReader->readFile('B2C_CatalogGroupRelationship');
 
     /*
      * Init group objects

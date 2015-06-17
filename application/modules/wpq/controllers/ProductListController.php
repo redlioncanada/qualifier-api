@@ -1,14 +1,16 @@
 <?php
 
+use Lrr\ServiceLocator;
+
 class Wpq_ProductListController extends Zend_Controller_Action {
 
   public function init() {
     $this->getHelper('ViewRenderer')->setNoRender();
   }
 
-  public function getAction() {
-    $feedModel = new Wpq_Model_JsonFileManager();
-    $filename = $feedModel->getJsonFilename();
+  public function indexAction() {
+    $jsonFileManager = ServiceLocator::jsonFileManager();
+    $filename = $jsonFileManager->getJsonFilename();
 
     if (!is_file($filename)) {
       throw new Zend_Controller_Action_Exception("JSON file not found", 404);

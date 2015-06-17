@@ -1,7 +1,7 @@
 <?php
 
 // TODO remove after testing
-header('Content-type: text/plain; charset=utf8');
+header('Content-type: text/html; charset=utf8');
 
 
 

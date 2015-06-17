@@ -12,7 +12,7 @@ namespace Rlc\Wpq\FeedEntity;
  * encapsulate the schema, just provide convenient access to the data and
  * entity relations.
  */
-abstract class AbstractSimple {
+abstract class AbstractSimpleRecord {
 
   /**
    * @var \SimpleXMLElement

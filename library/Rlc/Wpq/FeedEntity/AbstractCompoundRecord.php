@@ -6,7 +6,7 @@ namespace Rlc\Wpq\FeedEntity;
  * Like {@see Simple}, but for an entity described by >1 <record>, e.g. that
  * has 1 record for each locale.
  */
-abstract class AbstractCompound {
+abstract class AbstractCompoundRecord {
 
   /**
    * Should have some meaningful string key, i.e. locale
@@ -29,15 +29,15 @@ abstract class AbstractCompound {
   }
 
   public function __get($name) {
+    return $this->getRecord($this->defaultKey)->$name;
+  }
+
+  public function getRecord($key) {
     if (!array_key_exists($this->defaultKey, $this->records)) {
       // Should this raise an exception or be more accomodating? Data might be
       // unreliable.
       throw new \Exception("No record for default key '$this->defaultKey'");
     }
-    return $this->records[$this->defaultKey]->$name;
-  }
-
-  public function getRecord($key) {
     return $this->records[$key];
   }
 
