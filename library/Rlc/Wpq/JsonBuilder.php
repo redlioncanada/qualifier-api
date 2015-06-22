@@ -73,8 +73,6 @@ class JsonBuilder {
   /**
    * Get all catalog entries with all associated objects filled in
    * 
-   * @todo extract steps to methods of their own
-   * 
    * @return FeedEntity\CatalogEntry[]
    */
   private function getCatalogEntries() {
@@ -83,8 +81,6 @@ class JsonBuilder {
     $entryGroupRelnData = $this->xmlReader->readFile('B2C_CatalogGroupCatalogEntryRelationship');
     $groups = $this->getCatalogGroups();
     $entryDescriptionData = $this->xmlReader->readFile('CatalogEntryDescription');
-    $descriptiveAttributeData = $this->xmlReader->readFile('DescriptiveAttribute');
-    $definingAttributeValueData = $this->xmlReader->readFile('DefiningAttributeValue');
 
     /*
      * Build array in steps. We're working toward an array of top-level products
@@ -107,6 +103,19 @@ class JsonBuilder {
       }
     }
 
+    // Assign parent entry to all child entries via parentpartnumber field.
+    // (This has to be a separate loop from above, because all entries need to
+    // be indexed first.)
+    foreach ($entryData->record as $entryRecord) {
+      $sParentPartNumber = (string) $entryRecord->parentpartnumber;
+      if ('' !== $sParentPartNumber) {
+        $sPartNumber = (string) $entryRecord->partnumber;
+        // Use $topLevelEntries to look up parents as an optimisation -- it's shorter.
+        $entries[$sPartNumber]->setParentEntry($topLevelEntries[$sParentPartNumber]);
+        $topLevelEntries[$sParentPartNumber]->addChildEntry($entries[$sPartNumber]);
+      }
+    }
+
     // Scan through group assocs and assign them to entries
     foreach ($entryGroupRelnData->record as $entryGroupRelnRecord) {
       $relnPartNumber = (string) $entryGroupRelnRecord->partnumber;
@@ -126,10 +135,22 @@ class JsonBuilder {
         $entries[$descriptionPartNumber]->addCatalogEntryDescription($entryDescription);
       }
     }
+    
+    $this->assignDefiningAttributeValues($entries);
+    $this->assignDescriptiveAttributes($entries);
 
+    return $topLevelEntries;
+  }
+  
+  /**
+   * @param FeedEntity\CatalogEntry[] $entries
+   * @return void
+   */
+  private function assignDefiningAttributeValues(array &$entries) {
     // Assign defining attribute values (no use attaching defining attributes,
     // the data in the definingattributevalue file are enough).
     // Note, these only exist for child entries (colour variants).
+    $definingAttributeValueData = $this->xmlReader->readFile('DefiningAttributeValue');
     foreach ($definingAttributeValueData->record as $definingAttributeValueRecord) {
       $davPartNumber = (string) $definingAttributeValueRecord->partnumber;
       if (isset($entries[$davPartNumber])) {
@@ -148,9 +169,18 @@ class JsonBuilder {
         $definingAttributeValue->initRecord($definingAttributeValueRecord, (string) $definingAttributeValueRecord->locale);
       }
     }
+  }
 
+  /**
+   * @param FeedEntity\CatalogEntry[] $entries
+   * @return void
+   */
+  private function assignDescriptiveAttributes(array &$entries) {
     // Assign descriptive attributes.
-    // Note, these only exist for top-level entries.
+    // Note, these only exist for top-level entries, so we optimize by using
+    // $topLevelEntries for lookup, since it contains references to the same
+    // objects, but is shorter.
+    $descriptiveAttributeData = $this->xmlReader->readFile('DescriptiveAttribute');
     foreach ($descriptiveAttributeData->record as $descriptiveAttributeRecord) {
       $daPartNumber = (string) $descriptiveAttributeRecord->partnumber;
       if (isset($entries[$daPartNumber])) {
@@ -168,21 +198,8 @@ class JsonBuilder {
         $descriptiveAttributeGroup->loadRecord($descriptiveAttributeRecord);
       }
     }
-
-    // Assign parent entry to all child entries via parentpartnumber field
-    foreach ($entryData->record as $entryRecord) {
-      $sParentPartNumber = (string) $entryRecord->parentpartnumber;
-      if ('' !== $sParentPartNumber) {
-        $sPartNumber = (string) $entryRecord->partnumber;
-        // Use $topLevelEntries to look up parents as an optimisation -- it's shorter.
-        $entries[$sPartNumber]->setParentEntry($topLevelEntries[$sParentPartNumber]);
-        $topLevelEntries[$sParentPartNumber]->addChildEntry($entries[$sPartNumber]);
-      }
-    }
-
-    return $topLevelEntries;
   }
-
+  
   /**
    * Get all catalog groups w parent/child assocs
    * 
