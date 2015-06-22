@@ -1,86 +1,9 @@
+Next step: start building actual API responses:
+- simple product info
+- categories
+- true/false/etc fields, based on rules in spreadsheet
 
-DescriptiveAttributes of entry:
-
-unique ID for a <record>: "partnumber-CompareFeature-fr_CA-1-7"
-
-  {
-    "CompareFeature": {
-      "fr_CA": {
-        "1": {
-          "description": "Configuration et apercu",
-          "values": {
-            "7": {
-              "valueidentifier": "Capacite du four",
-              "value": "2.8"
-            }
-          }
-        }
-      },
-      "en_US": {
-        "1": {
-          "description": "Configuration and Overview",
-          "values": {
-            "7": {
-              "valueidentifier": "Oven Capacity",
-              "value": "2.8"
-            }
-          }
-        }
-      }
-    }
-  }
-
-
-======
-
-it's not true after all that child entries are the colour variants. in at least some cases, each colour variant has its own entry/child entry pair. e.g. these top-level part numbers (with "-NAR" endings) are all variants of UXT2030, and each has a corresponding child part number which is just the same without "-NAR".
-
-  UXT2030AAB-NAR
-    UXT2030AAB
-  UXT2030AAW-NAR
-    UXT2030AAW
-  UXT2030ADW-NAR
-    UXT2030ADW
-    UXT2030ADB     <-- extra
-  UXT2030AYB-NAR
-    UXT2030AYB
-  UXT2030AYW-NAR
-    UXT2030AYW
-
-However, this isn't totally consistent. "UXT2030ADB" is an extra child part number under the "UXT2030ADW-NAR" parent.
-
-OK good actually, looks like the "extra" is actually the only one that's a real variant. both white "ADW" and black "ADB" go under the parent part number "ADW-NAR", which links them in a machine-understandable way, and all the rest are price=0 and maytag.ca indicates they have been "transitioned" to one of the price>0 ones.
-
----
-
-  ask them about these:
-
-      less concerning, but still confusing, why doesn't "YMMV4205DE" show up on maytag.ca? it has price>0 and published=1, parent has salesstatus=30 so that just goes for all 5. but only 3 of 5 child part numbers show up though it looks like they all should
-
-      "DE" and "DB" are both black, but only "DB" shows on the site. similarly, "DW" and "DH" are both white, but only "DH" shows on the site. I can't find a way to automatically tell from the feed which should show up.
-
-      double check with newer version of feed.
-
-      ---
-
-      questions/complaints about new feed
-
-      the "_Full" suffixes are gone from XML files, what do I make of that? I need to count on the filenames not changing so the process can run automatically.
-
-      ---
-
-      waahh! where are the URLs to link to for each product?
-
-
-
-
-==========
-
-
-
-
-
-
+=====
 
 final JSON should be list of all entries with catgroups used to create these
 fields:
