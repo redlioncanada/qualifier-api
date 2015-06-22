@@ -2,7 +2,7 @@
 
 namespace Rlc\Wpq;
 
-class XmlReader {
+class XmlReaderStandard implements XmlReaderInterface {
 
   private $dataPath;
 

@@ -15,7 +15,7 @@ class Wpq_Bootstrap extends Zend_Application_Module_Bootstrap {
     ServiceLocator::load($serviceLocator);
 
     $dataPath = realpath(APPLICATION_PATH . '/../data'); // no trailing slash
-    $xmlReader = new Wpq\XmlReader($dataPath);
+    $xmlReader = new Wpq\XmlReaderStandard($dataPath);
     $jsonBuilder = new Wpq\JsonBuilder($xmlReader);
     $serviceLocator
         ->loadJsonFileManager(new Wpq\JsonFileManager($dataPath, $jsonBuilder))

@@ -7,11 +7,11 @@ use Lrr\ServiceLocator;
 class JsonBuilder {
 
   /**
-   * @var XmlReader
+   * @var XmlReaderInterface
    */
   private $xmlReader;
 
-  function __construct(XmlReader $xmlReader) {
+  function __construct(XmlReaderInterface $xmlReader) {
     $this->xmlReader = $xmlReader;
   }
 
