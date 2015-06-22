@@ -9,12 +9,14 @@ class Wpq_ProductListController extends Zend_Controller_Action {
   }
 
   public function indexAction() {
-    $jsonFileManager = ServiceLocator::jsonFileManager();
-    $filename = $jsonFileManager->getJsonFilename();
-
-    if (!is_file($filename)) {
-      throw new Zend_Controller_Action_Exception("JSON file not found", 404);
+    $brands = ServiceLocator::config()->brands->toArray();
+    $brand = $this->getParam('brand');
+    if (!in_array($brand, $brands)) {
+      throw new Zend_Controller_Action_Exception("Invalid brand", 404);
     }
+    
+    $jsonFileManager = ServiceLocator::jsonFileManager();
+    $filename = $jsonFileManager->getJsonFilename($brand);
 
     // In case a new version is being written, make sure to wait until
     // it's complete.

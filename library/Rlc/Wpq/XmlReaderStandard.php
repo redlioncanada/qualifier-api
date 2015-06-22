@@ -4,20 +4,34 @@ namespace Rlc\Wpq;
 
 class XmlReaderStandard implements XmlReaderInterface {
 
+  /**
+   * @var string
+   */
   private $dataPath;
+
+  /**
+   * @var array
+   */
+  private $filePrefixesByBrand = [
+    'maytag' => 'MTG_CA_',
+  ];
 
   function __construct($dataPath) {
     $this->dataPath = $dataPath;
   }
 
   /**
+   * @param string $brand
    * @param string $file
    * @return SimpleXMLElement
    */
-  public function readFile($file) {
-    // TODO brand selection logic - I think should come from controller,
-    // unless I want to try reading from request params in bootstrap
-    return simplexml_load_file($this->dataPath . '/MTG_CA_' . $file . '.xml');
+  public function readFile($brand, $file) {
+    if (!array_key_exists($brand, $this->filePrefixesByBrand)) {
+      throw new \InvalidArgumentException("Invalid brand: $brand");
+    }
+    return simplexml_load_file($this->dataPath . '/'
+        . $this->filePrefixesByBrand[$brand]
+        . $file . '.xml');
   }
 
 }

@@ -15,8 +15,13 @@ class JsonBuilder {
     $this->xmlReader = $xmlReader;
   }
 
-  public function build() {
-    $catalogEntries = $this->getCatalogEntries();
+  /**
+   * 
+   * @param string $brand
+   * @return string JSON
+   */
+  public function build($brand) {
+    $topLevelEntries = $this->assembleFeedObjects($brand);
 
     // Just testing code here, will actually return all entries in all groups.
     // For now I filter for an arbitrary group.
@@ -27,17 +32,17 @@ class JsonBuilder {
     };
 
     // Filter for target group - dev only to speed up testing
-    foreach ($catalogEntries as $key => $entry) {
+    foreach ($topLevelEntries as $key => $entry) {
       $allCatalogGroups = $entry->getAllCatalogGroups();
       $allCatalogGroupIds = array_map($getGroupId, $allCatalogGroups);
       if (!in_array($targetGroupId, $allCatalogGroupIds)) {
-        unset($catalogEntries[$key]);
+        unset($topLevelEntries[$key]);
       }
     }
 
     // Build output data - beginning of real production code
     $outputData = [];
-    foreach ($catalogEntries as $entry) {
+    foreach ($topLevelEntries as $entry) {
       $allCatalogGroups = $entry->getAllCatalogGroups();
       $allCatalogGroupIds = array_map($getGroupId, $allCatalogGroups);
       $newOutputData = [
@@ -50,11 +55,16 @@ class JsonBuilder {
       foreach ($childEntries as $childEntry) {
         $variantPartNumber = (string) $childEntry->partnumber;
         $colourDa = $childEntry->getDefiningAttributeValue('Color');
-        $newOutputData['colours'][] = [
+        $newColoursElem = [
           'sku' => $variantPartNumber,
           'colourCode' => (string) $colourDa->valueidentifier,
-          'colourName' => (string) $colourDa->value,
+          'colourName' => [],
         ];
+        $colourLocales = $colourDa->getRecordKeys();
+        foreach ($colourLocales as $colourLocale) {
+          $newColoursElem['colourName'][$colourLocale] = (string) $colourDa->getRecord($colourLocale)->value;
+        }
+        $newOutputData['colours'][] = $newColoursElem;
       }
       
       $outputData[] = $newOutputData;
@@ -71,16 +81,17 @@ class JsonBuilder {
   }
 
   /**
-   * Get all catalog entries with all associated objects filled in
+   * Get top-level catalog entries with all associated objects filled in
    * 
+   * @param string $brand
    * @return FeedEntity\CatalogEntry[]
    */
-  private function getCatalogEntries() {
+  private function assembleFeedObjects($brand) {
     // Fetch & assemble data for associations
-    $entryData = $this->xmlReader->readFile('CatalogEntry');
-    $entryGroupRelnData = $this->xmlReader->readFile('B2C_CatalogGroupCatalogEntryRelationship');
-    $groups = $this->getCatalogGroups();
-    $entryDescriptionData = $this->xmlReader->readFile('CatalogEntryDescription');
+    $entryData = $this->xmlReader->readFile($brand, 'CatalogEntry');
+    $entryGroupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupCatalogEntryRelationship');
+    $groups = $this->getCatalogGroups($brand);
+    $entryDescriptionData = $this->xmlReader->readFile($brand, 'CatalogEntryDescription');
 
     /*
      * Build array in steps. We're working toward an array of top-level products
@@ -136,21 +147,22 @@ class JsonBuilder {
       }
     }
     
-    $this->assignDefiningAttributeValues($entries);
-    $this->assignDescriptiveAttributes($entries);
+    $this->assignDefiningAttributeValues($entries, $brand);
+    $this->assignDescriptiveAttributes($entries, $brand);
 
     return $topLevelEntries;
   }
   
   /**
    * @param FeedEntity\CatalogEntry[] $entries
+   * @param string $brand
    * @return void
    */
-  private function assignDefiningAttributeValues(array &$entries) {
+  private function assignDefiningAttributeValues(array &$entries, $brand) {
     // Assign defining attribute values (no use attaching defining attributes,
     // the data in the definingattributevalue file are enough).
     // Note, these only exist for child entries (colour variants).
-    $definingAttributeValueData = $this->xmlReader->readFile('DefiningAttributeValue');
+    $definingAttributeValueData = $this->xmlReader->readFile($brand, 'DefiningAttributeValue');
     foreach ($definingAttributeValueData->record as $definingAttributeValueRecord) {
       $davPartNumber = (string) $definingAttributeValueRecord->partnumber;
       if (isset($entries[$davPartNumber])) {
@@ -173,14 +185,15 @@ class JsonBuilder {
 
   /**
    * @param FeedEntity\CatalogEntry[] $entries
+   * @param string $brand
    * @return void
    */
-  private function assignDescriptiveAttributes(array &$entries) {
+  private function assignDescriptiveAttributes(array &$entries, $brand) {
     // Assign descriptive attributes.
     // Note, these only exist for top-level entries, so we optimize by using
     // $topLevelEntries for lookup, since it contains references to the same
     // objects, but is shorter.
-    $descriptiveAttributeData = $this->xmlReader->readFile('DescriptiveAttribute');
+    $descriptiveAttributeData = $this->xmlReader->readFile($brand, 'DescriptiveAttribute');
     foreach ($descriptiveAttributeData->record as $descriptiveAttributeRecord) {
       $daPartNumber = (string) $descriptiveAttributeRecord->partnumber;
       if (isset($entries[$daPartNumber])) {
@@ -205,9 +218,9 @@ class JsonBuilder {
    * 
    * @return FeedEntity\CatalogGroup[]
    */
-  private function getCatalogGroups() {
-    $groupData = $this->xmlReader->readFile('B2C_CatalogGroup');
-    $groupRelnData = $this->xmlReader->readFile('B2C_CatalogGroupRelationship');
+  private function getCatalogGroups($brand) {
+    $groupData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroup');
+    $groupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupRelationship');
 
     /*
      * Init group objects

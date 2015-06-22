@@ -29,16 +29,32 @@ abstract class AbstractCompoundRecord {
   }
 
   public function __get($name) {
-    return $this->getRecord($this->defaultKey)->$name;
+    return $this->getRecord()->$name;
   }
 
-  public function getRecord($key) {
-    if (!array_key_exists($this->defaultKey, $this->records)) {
+  /**
+   * @param string $key OPTIONAL
+   * @return mixed
+   */
+  public function getRecord($key = null) {
+    if (!isset($key)) {
+      $key = $this->defaultKey;
+    }
+    if (!array_key_exists($key, $this->records)) {
       // Should this raise an exception or be more accomodating? Data might be
       // unreliable.
-      throw new \Exception("No record for default key '$this->defaultKey'");
+      throw new \Exception("No record for key '$key'");
     }
     return $this->records[$key];
+  }
+  
+  /**
+   * Array of valid arguments to getRecord()
+   * 
+   * @return string[]
+   */
+  public function getRecordKeys() {
+    return array_keys($this->records);
   }
 
 }
