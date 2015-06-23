@@ -2,6 +2,23 @@
 
 namespace Lrr;
 
+/**
+ * Encapsulate the "call setter methods corresponding to array keys" pattern.
+ * 
+ * Example:
+ * <code>
+ * // Setup:
+ * $filter = new Zend_Filter_Word_UnderscoreToCamelCase();
+ * $serviceLocator->loadOptionSetter(new \Lrr\OptionSetter($filter));
+ * 
+ * // Usage:
+ * $obj = new SomeClass();
+ * $options = somehow get array...
+ * ServiceLocator::optionSetter()->setOptions($options, $obj);
+ * </code>
+ * 
+ * @author Linus Rachlis <linus@rachlis.net>
+ */
 class OptionSetter {
 
   /**
@@ -9,7 +26,10 @@ class OptionSetter {
    */
   private $methodNameInflector;
 
-  public function __construct(\Zend_Filter_Interface $methodNameInflector) {
+  /**
+   * @param \Zend_Filter_Interface $methodNameInflector OPTIONAL (if not given, no inflection)
+   */
+  public function __construct(\Zend_Filter_Interface $methodNameInflector = null) {
     $this->methodNameInflector = $methodNameInflector;
   }
 
@@ -20,7 +40,8 @@ class OptionSetter {
    */
   public function setOptions(array $options, $object) {
     foreach ($options as $key => $value) {
-      $setterMethodName = 'set' . $this->methodNameInflector->filter($key);
+      $inflected = isset($this->methodNameInflector) ? $this->methodNameInflector->filter($key) : $key;
+      $setterMethodName = 'set' . $inflected;
       if (method_exists($object, $setterMethodName)) {
         $object->$setterMethodName($value);
       }

@@ -16,6 +16,8 @@ namespace Lrr;
  * name, then look for a matching factory, and use it to build a new object and
  * return it. For factories, any arguments passed to ::serviceName(...) will be
  * passed as arguments to the factory.
+ * 
+ * @author Linus Rachlis <linus@rachlis.net>
  */
 class ServiceLocator {
 
