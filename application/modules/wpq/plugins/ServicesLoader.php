@@ -37,8 +37,8 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
         ->catalogGroupFactory(function () {
           return new FeedEntity\CatalogGroup('en_CA');
         })
-        ->catalogEntryDescriptionFactory(function (\SimpleXMLElement $record) {
-          return new FeedEntity\CatalogEntryDescription($record);
+        ->catalogEntryDescriptionFactory(function () {
+          return new FeedEntity\CatalogEntryDescription('en_CA');
         })
         ->priceFactory(function (\SimpleXMLElement $record) {
           return new FeedEntity\Price($record);

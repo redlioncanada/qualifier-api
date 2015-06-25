@@ -2,7 +2,7 @@
 
 namespace Rlc\Wpq;
 
-use Lrr\ServiceLocator;
+use Rlc\Wpq\FeedEntity;
 
 class JsonBuilder {
 
@@ -51,11 +51,12 @@ class JsonBuilder {
         'sku' => (string) $entry->partnumber,
       ];
 
-      $this->addGroups($newOutputData, $entry);
+      $this->attachGroupData($newOutputData, $entry);
+      $this->attachCatalogEntryDescriptionData($newOutputData, $entry);
 
       $childEntries = $entry->getChildEntries();
       foreach ($childEntries as $childEntry) {
-        $this->addChildEntryData($newOutputData, $childEntry);
+        $this->attachChildEntryData($newOutputData, $childEntry);
       }
 
       $outputData[] = $newOutputData;
@@ -71,7 +72,7 @@ class JsonBuilder {
     return $json;
   }
 
-  public function addGroups(array &$data, FeedEntity\CatalogEntry $entry) {
+  private function attachGroupData(array &$data, FeedEntity\CatalogEntry $entry) {
     $allCatalogGroups = $entry->getAllCatalogGroups();
     foreach ($allCatalogGroups as $catalogGroup) {
       $newGroupData = [
@@ -86,7 +87,7 @@ class JsonBuilder {
     }
   }
 
-  public function addChildEntryData(array &$data,
+  private function attachChildEntryData(array &$data,
       FeedEntity\CatalogEntry $childEntry) {
     $variantPartNumber = (string) $childEntry->partnumber;
 
@@ -94,14 +95,20 @@ class JsonBuilder {
     $newColoursElem = [
       'sku' => $variantPartNumber,
       'colourCode' => (string) $colourDa->valueidentifier,
-      'colourName' => [],
-      'prices' => [],
     ];
     $colourLocales = $colourDa->getRecordKeys();
     foreach ($colourLocales as $colourLocale) {
       $newColoursElem['colourName'][$colourLocale] = (string) $colourDa->getRecord($colourLocale)->value;
     }
-    
+
+    /*
+     * Attach name/description
+     */
+    $this->attachCatalogEntryDescriptionData($newColoursElem, $childEntry);
+
+    /*
+     * Attach price info
+     */
     $prices = $childEntry->getPrices();
     $curDate = new \DateTime();
     foreach ($prices as $price) {
@@ -133,6 +140,14 @@ class JsonBuilder {
     $data['colours'][] = $newColoursElem;
   }
 
-  
-  
+  private function attachCatalogEntryDescriptionData(array &$data,
+      FeedEntity\CatalogEntry $entry) {
+    $description = $entry->getDescription();
+    foreach ($description->getRecordKeys() as $locale) {
+      $localeRecord = $description->getRecord($locale);
+      $data['name'][$locale] = (string) $localeRecord->name;
+      $data['description'][$locale] = (string) $localeRecord->longdescription;
+    }
+  }
+
 }

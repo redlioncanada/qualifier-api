@@ -30,7 +30,6 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
     $entryData = $this->xmlReader->readFile($brand, 'CatalogEntry');
     $entryGroupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupCatalogEntryRelationship');
     $groups = $this->getCatalogGroups($brand);
-    $entryDescriptionData = $this->xmlReader->readFile($brand, 'CatalogEntryDescription');
     $priceData = $this->xmlReader->readFile($brand, 'B2C_Price');
 
     /*
@@ -76,17 +75,6 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       }
     }
 
-    // Assign entry descriptions
-    // Note: entry descriptions exist for both top-level and child part numbers,
-    // but may be redundant.
-    foreach ($entryDescriptionData->record as $entryDescriptionRecord) {
-      $descriptionPartNumber = (string) $entryDescriptionRecord->partnumber;
-      if (isset($entries[$descriptionPartNumber])) {
-        $entryDescription = ServiceLocator::catalogEntryDescription($entryDescriptionRecord);
-        $entries[$descriptionPartNumber]->addCatalogEntryDescription($entryDescription);
-      }
-    }
-
     // Assign prices
     foreach ($priceData->record as $priceRecord) {
       $pricePartNumber = (string) $priceRecord->partnumber;
@@ -96,10 +84,39 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       }
     }
 
+    $this->assignEntryDescriptions($entries, $brand);
     $this->assignDefiningAttributeValues($entries, $brand);
     $this->assignDescriptiveAttributes($entries, $brand);
 
     return $topLevelEntries;
+  }
+
+  /**
+   * @param FeedEntity\CatalogEntry[] $entries
+   * @param string $brand
+   * @return void
+   */
+  private function assignEntryDescriptions(array &$entries, $brand) {
+    // Assign entry descriptions
+    // Note: entry descriptions exist for both top-level and child part numbers,
+    // but may be redundant.
+    $entryDescriptionData = $this->xmlReader->readFile($brand, 'CatalogEntryDescription');
+    foreach ($entryDescriptionData->record as $entryDescriptionRecord) {
+      $descriptionPartNumber = (string) $entryDescriptionRecord->partnumber;
+      if (isset($entries[$descriptionPartNumber])) {
+        // Check if already created and added, and do so if not
+        $description = $entries[$descriptionPartNumber]->getDescription();
+        if (is_null($description)) {
+          $description = ServiceLocator::catalogEntryDescription();
+          $entries[$descriptionPartNumber]->setDescription($description);
+        }
+        // Now we have a reference to the description for the given catalog
+        // entry, whether it already existed or was just
+        // created. It's a compound record obj. Add the record for the locale
+        // value we have in the current loop iteration.
+        $description->initRecord($entryDescriptionRecord, (string) $entryDescriptionRecord->locale);
+      }
+    }
   }
 
   /**

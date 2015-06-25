@@ -8,11 +8,9 @@ namespace Rlc\Wpq\FeedEntity;
 class CatalogEntry extends AbstractSimpleRecord {
 
   /**
-   * Keyed by locale
-   * 
-   * @var CatalogEntryDescription[]
+   * @var CatalogEntryDescription
    */
-  private $catalogEntryDescriptions = [];
+  private $catalogEntryDescription;
 
   /**
    * @var CatalogGroup
@@ -75,11 +73,10 @@ class CatalogEntry extends AbstractSimpleRecord {
   }
 
   /**
-   * @param string $locale
-   * @return CatalogEntryDescription
+   * @return CatalogEntryDescription or NULL if none set
    */
-  public function getCatalogEntryDescription($locale) {
-    return $this->catalogEntryDescriptions[$locale];
+  public function getDescription() {
+    return $this->catalogEntryDescription;
   }
 
   /**
@@ -110,8 +107,8 @@ class CatalogEntry extends AbstractSimpleRecord {
     return $this;
   }
 
-  public function addCatalogEntryDescription(CatalogEntryDescription $catalogEntryDescription) {
-    $this->catalogEntryDescriptions[(string) $catalogEntryDescription->locale] = $catalogEntryDescription;
+  public function setDescription(CatalogEntryDescription $catalogEntryDescription) {
+    $this->catalogEntryDescription = $catalogEntryDescription;
     return $this;
   }
 
