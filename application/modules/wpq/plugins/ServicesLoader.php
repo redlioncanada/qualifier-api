@@ -40,6 +40,9 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
         ->catalogEntryDescriptionFactory(function (\SimpleXMLElement $record) {
           return new FeedEntity\CatalogEntryDescription($record);
         })
+        ->priceFactory(function (\SimpleXMLElement $record) {
+          return new FeedEntity\Price($record);
+        })
         ->definingAttributeValueFactory(function () {
           return new FeedEntity\DefiningAttributeValue('en_CA');
         })

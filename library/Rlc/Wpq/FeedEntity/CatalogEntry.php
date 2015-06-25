@@ -47,6 +47,17 @@ class CatalogEntry extends AbstractSimpleRecord {
   private $childEntries = [];
 
   /**
+   * Optional array of associated records in the B2C_Price file. N.B. they may
+   * have various currencies, start/enddates, and published 1/0 flags. See
+   * comment in Wpq\FeedEntity\Price.
+   * 
+   * N.B. only child products (colour variants) have associated price data.
+   * 
+   * @var Price[]
+   */
+  private $prices = [];
+
+  /**
    * Gets all catalog groups including their parent groups, recursively,
    * in one flat array.
    */
@@ -151,6 +162,24 @@ class CatalogEntry extends AbstractSimpleRecord {
   public function addChildEntry(CatalogEntry $childEntry) {
     $this->childEntries[] = $childEntry;
     return $this;
+  }
+
+  /**
+   * @param \Rlc\Wpq\FeedEntity\Price $price
+   * @return \Rlc\Wpq\FeedEntity\CatalogEntry
+   */
+  public function addPrice(Price $price) {
+    $this->prices[] = $price;
+    return $this;
+  }
+
+  /**
+   * N.B. only child products (colour variants) have associated price data.
+   * 
+   * @return Price[]
+   */
+  public function getPrices() {
+    return $this->prices;
   }
 
 }

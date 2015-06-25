@@ -1,3 +1,14 @@
+More questions for RLC/WP, 25 Jun:
+
+Prices:
+
+- listprice or saleprice?
+- published=0 or price=0 mean exclude product. what if we're not in date range for price? exclude product or just don't include that price (prob meaning price would be null for that variant)
+
+
+
+===========
+
 Next step: start building actual API responses:
 - simple product info
 - categories

@@ -26,11 +26,12 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
    * @return FeedEntity\CatalogEntry[]
    */
   public function buildFeedModel($brand) {
-    // Fetch & assemble data for associations
+    // Fetch data for associations
     $entryData = $this->xmlReader->readFile($brand, 'CatalogEntry');
     $entryGroupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupCatalogEntryRelationship');
     $groups = $this->getCatalogGroups($brand);
     $entryDescriptionData = $this->xmlReader->readFile($brand, 'CatalogEntryDescription');
+    $priceData = $this->xmlReader->readFile($brand, 'B2C_Price');
 
     /*
      * Build array in steps. We're working toward an array of top-level products
@@ -83,6 +84,15 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       if (isset($entries[$descriptionPartNumber])) {
         $entryDescription = ServiceLocator::catalogEntryDescription($entryDescriptionRecord);
         $entries[$descriptionPartNumber]->addCatalogEntryDescription($entryDescription);
+      }
+    }
+
+    // Assign prices
+    foreach ($priceData->record as $priceRecord) {
+      $pricePartNumber = (string) $priceRecord->partnumber;
+      if (isset($entries[$pricePartNumber])) {
+        $price = ServiceLocator::price($priceRecord);
+        $entries[$pricePartNumber]->addPrice($price);
       }
     }
 
