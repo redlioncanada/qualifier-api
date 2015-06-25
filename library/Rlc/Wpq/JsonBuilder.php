@@ -40,74 +40,22 @@ class JsonBuilder {
       }
     }
 
-    // Build output data - beginning of real production code
+    /*
+     * From here on is code that could actually be used for production,
+     * not just for testing...
+     */
+
     $outputData = [];
     foreach ($topLevelEntries as $entry) {
-      $allCatalogGroups = $entry->getAllCatalogGroups();
       $newOutputData = [
         'sku' => (string) $entry->partnumber,
-        'groups' => [],
-        'colours' => [],
       ];
 
-      foreach ($allCatalogGroups as $catalogGroup) {
-        $newGroupData = [
-          'id' => $getGroupId($catalogGroup),
-          'name' => [],
-        ];
-        $nameLocales = $catalogGroup->getRecordKeys();
-        foreach ($nameLocales as $nameLocale) {
-          $newGroupData['name'][$nameLocale] = (string) $catalogGroup->getRecord($nameLocale)->name;
-        }
-        $newOutputData['groups'][] = $newGroupData;
-      }
+      $this->addGroups($newOutputData, $entry);
 
       $childEntries = $entry->getChildEntries();
       foreach ($childEntries as $childEntry) {
-        $variantPartNumber = (string) $childEntry->partnumber;
-        
-        $colourDa = $childEntry->getDefiningAttributeValue('Color');
-        $newColoursElem = [
-          'sku' => $variantPartNumber,
-          'colourCode' => (string) $colourDa->valueidentifier,
-          'colourName' => [],
-          'prices' => [],
-        ];
-        $colourLocales = $colourDa->getRecordKeys();
-        foreach ($colourLocales as $colourLocale) {
-          $newColoursElem['colourName'][$colourLocale] = (string) $colourDa->getRecord($colourLocale)->value;
-        }
-        
-        $prices = $childEntry->getPrices();
-        $curDate = new \DateTime();
-        foreach ($prices as $price) {
-          // TODO published=0 or price=0 should exclude the whole product,
-          // not only the price data. not sure about being out of date range,
-          // need to find that out.
-          
-          if ( // conditions to exclude:
-              ('1' != $price->published) // ... not published
-              // ... price is zero
-              || (0 == (float) $price->listprice
-                  && 0 == (float) $price->saleprice)
-          ) {
-            continue;
-          }
-          // we're not in the date range
-          $startDate = new \DateTime((string) $price->startdate);
-          $endDate = new \DateTime((string) $price->enddate);
-          if (($startDate > $curDate) || ($endDate < $curDate)) {
-            continue;
-          }
-          
-          $newColoursElem['prices'][] = [
-            'currency' => (string) $price->currency,
-            'list' => (string) $price->listprice,
-            'sale' => (string) $price->saleprice,
-          ];
-        }
-        
-        $newOutputData['colours'][] = $newColoursElem;
+        $this->addChildEntryData($newOutputData, $childEntry);
       }
 
       $outputData[] = $newOutputData;
@@ -123,4 +71,68 @@ class JsonBuilder {
     return $json;
   }
 
+  public function addGroups(array &$data, FeedEntity\CatalogEntry $entry) {
+    $allCatalogGroups = $entry->getAllCatalogGroups();
+    foreach ($allCatalogGroups as $catalogGroup) {
+      $newGroupData = [
+        'id' => (string) $catalogGroup->identifier,
+        'name' => [],
+      ];
+      $nameLocales = $catalogGroup->getRecordKeys();
+      foreach ($nameLocales as $nameLocale) {
+        $newGroupData['name'][$nameLocale] = (string) $catalogGroup->getRecord($nameLocale)->name;
+      }
+      $data['groups'][] = $newGroupData;
+    }
+  }
+
+  public function addChildEntryData(array &$data,
+      FeedEntity\CatalogEntry $childEntry) {
+    $variantPartNumber = (string) $childEntry->partnumber;
+
+    $colourDa = $childEntry->getDefiningAttributeValue('Color');
+    $newColoursElem = [
+      'sku' => $variantPartNumber,
+      'colourCode' => (string) $colourDa->valueidentifier,
+      'colourName' => [],
+      'prices' => [],
+    ];
+    $colourLocales = $colourDa->getRecordKeys();
+    foreach ($colourLocales as $colourLocale) {
+      $newColoursElem['colourName'][$colourLocale] = (string) $colourDa->getRecord($colourLocale)->value;
+    }
+    
+    $prices = $childEntry->getPrices();
+    $curDate = new \DateTime();
+    foreach ($prices as $price) {
+      // TODO published=0 or price=0 should exclude the whole product,
+      // not only the price data. not sure about being out of date range,
+      // need to find that out.
+
+      if (// conditions to exclude:
+          ('1' != $price->published) // ... not published
+          // ... price is zero
+          || (0 == (float) $price->listprice && 0 == (float) $price->saleprice)
+      ) {
+        continue;
+      }
+      // we're not in the date range
+      $startDate = new \DateTime((string) $price->startdate);
+      $endDate = new \DateTime((string) $price->enddate);
+      if (($startDate > $curDate) || ($endDate < $curDate)) {
+        continue;
+      }
+
+      $newColoursElem['prices'][] = [
+        'currency' => (string) $price->currency,
+        'list' => (string) $price->listprice,
+        'sale' => (string) $price->saleprice,
+      ];
+    }
+
+    $data['colours'][] = $newColoursElem;
+  }
+
+  
+  
 }
