@@ -75,15 +75,11 @@ class JsonBuilder {
   private function attachGroupData(array &$data, FeedEntity\CatalogEntry $entry) {
     $allCatalogGroups = $entry->getAllCatalogGroups();
     foreach ($allCatalogGroups as $catalogGroup) {
-      $newGroupData = [
-        'id' => (string) $catalogGroup->identifier,
-        'name' => [],
-      ];
       $nameLocales = $catalogGroup->getRecordKeys();
       foreach ($nameLocales as $nameLocale) {
-        $newGroupData['name'][$nameLocale] = (string) $catalogGroup->getRecord($nameLocale)->name;
+        $newGroupData[$nameLocale] = (string) $catalogGroup->getRecord($nameLocale)->name;
       }
-      $data['groups'][] = $newGroupData;
+      $data['groups'][(string) $catalogGroup->identifier] = $newGroupData;
     }
   }
 
@@ -146,7 +142,7 @@ class JsonBuilder {
     foreach ($description->getRecordKeys() as $locale) {
       $localeRecord = $description->getRecord($locale);
       $data['name'][$locale] = (string) $localeRecord->name;
-      $data['description'][$locale] = (string) $localeRecord->longdescription;
+      $data['description'][$locale] = (string) $localeRecord->londescription;
     }
   }
 
