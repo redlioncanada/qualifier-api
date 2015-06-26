@@ -1,7 +1,11 @@
+next:
+exclude whole product based on given rules - right now price is just getting excluded if 0 or pub=0
+
+
 outcomes from convo w Bianca:
 
 - reorganize cat output
-- split locales at top of tree
+- split locales at top of tree - actually, just make it a request param
 
 top cats in FE:
 
