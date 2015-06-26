@@ -7,6 +7,8 @@ use Lrr\ServiceLocator;
 /**
  * Extracts all info from XML files and constructs a web of associated value
  * objects to make life easy for JsonBuilder.
+ * 
+ * @todo cache results in member var
  */
 class FeedModelBuilder implements FeedModelBuilderInterface {
 

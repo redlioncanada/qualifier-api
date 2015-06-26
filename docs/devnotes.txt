@@ -1,3 +1,24 @@
+outcomes from convo w Bianca:
+
+- reorganize cat output
+- split locales at top of tree
+
+top cats in FE:
+
+laundry
+cooking
+  free standing range
+  wall ovens
+  (
+    vent hoods - unconfirmed so ignore for now
+    we're not doing cooktops
+  )
+fridge
+DW
+
+
+
+
 More questions for RLC/WP, 25 Jun:
 
 Prices:

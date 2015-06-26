@@ -7,11 +7,15 @@ class Wpq_FeedProcessorController extends Zend_Controller_Action {
   public function indexAction() {
     set_time_limit(0);
     
-    $brands = ServiceLocator::config()->brands->toArray();
+    $config = ServiceLocator::config();
+    $brands = $config->brands->toArray();
+    $locales = $config->locales->toArray();
     $jsonFileManager = ServiceLocator::jsonFileManager();
     
     foreach ($brands as $brand) {
-      $jsonFileManager->rebuildJson($brand);
+      foreach ($locales as $locale) {
+        $jsonFileManager->rebuildJson($brand, $locale);
+      }
     }
   }
 
