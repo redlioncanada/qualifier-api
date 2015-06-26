@@ -23,10 +23,7 @@ class JsonFileManager {
    * @return string Full path
    */
   public function getJsonFilename($brand) {
-    $path = realpath($this->dataPath . '/' . $brand . '.json');
-    if (is_null($path)) {
-      throw new \InvalidArgumentException("No JSON file exists for brand: $brand");
-    }
+    $path = $this->dataPath . '/' . $brand . '.json';
     return $path;
   }
 

@@ -17,6 +17,9 @@ class Wpq_ProductListController extends Zend_Controller_Action {
     
     $jsonFileManager = ServiceLocator::jsonFileManager();
     $filename = $jsonFileManager->getJsonFilename($brand);
+    if (!is_file($filename)) {
+      throw new \Zend_Controller_Action_Exception("No JSON file exists for brand: $brand", 404);
+    }
 
     // In case a new version is being written, make sure to wait until
     // it's complete.
