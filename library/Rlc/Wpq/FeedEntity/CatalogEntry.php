@@ -86,6 +86,10 @@ class CatalogEntry extends AbstractSimpleRecord {
   public function getDescriptiveAttributeGroup($name) {
     return isset($this->descriptiveAttributeGroups[$name]) ? $this->descriptiveAttributeGroups[$name] : null;
   }
+  
+  public function getDescriptiveAttributeGroups() {
+    return $this->descriptiveAttributeGroups;
+  }
 
   /**
    * @return DefiningAttributeValue[]

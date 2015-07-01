@@ -28,24 +28,37 @@ class DescriptiveAttributeGroup {
     if (!isset($this->recordsByLocale[$locale])) {
       $this->recordsByLocale[$locale] = [];
     }
-    $this->recordsByLocale[$locale][(string) $record->description] = ServiceLocator::descriptiveAttribute($record);
+    $this->recordsByLocale[$locale][] = ServiceLocator::descriptiveAttribute($record);
   }
 
-  /**
-   * @param string  $attributeDescription
-   * @param string  $locale               OPTIONAL
-   * @return string or null if attribute or locale does not exist
-   */
-  public function getDescriptiveAttributeValueAsString($attributeDescription,
-      $locale = null) {
+  public function getDescriptiveAttributes($locale = null) {
     if (is_null($locale)) {
       $locale = $this->defaultLocale;
     }
-    if (isset($this->recordsByLocale[$locale][$attributeDescription])) {
-      return (string) $this->recordsByLocale[$locale][$attributeDescription]->value;
+    if (isset($this->recordsByLocale[$locale])) {
+      return $this->recordsByLocale[$locale];
     } else {
-      return null;
+      return [];
     }
+  }
+
+  public function getDescriptiveAttributeWhere(array $criteria, $locale = null) {
+    if (is_null($locale)) {
+      $locale = $this->defaultLocale;
+    }
+    
+    foreach ($this->recordsByLocale[$locale] as $record) {
+      foreach ($criteria as $field => $value) {
+        if ($value != $record->$field) {
+          continue 2;
+        }
+      }
+      // All values match in record
+      return $record;
+    }
+
+    // No matching records found
+    return null;
   }
 
 }

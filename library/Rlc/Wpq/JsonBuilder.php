@@ -56,6 +56,13 @@ class JsonBuilder {
       'fr_CA' => 'Ovens',
     ],
   ];
+  private $includeOnlyGroups = [
+    'SC_Kitchen_Cooking_Ranges',
+    'SC_Kitchen_Cooking_Wall_Ovens',
+    'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
+    'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
+    'SC_Kitchen_Refrigeration_Refrigerators',
+  ];
 
   public function __construct(FeedModelBuilderInterface $feedModelBuilder) {
     $this->feedModelBuilder = $feedModelBuilder;
@@ -68,7 +75,7 @@ class JsonBuilder {
    */
   public function build($brand, $locale) {
     if (!isset($this->feedModelCache[$brand])) {
-      $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, array_keys($this->applianceGroups));
+      $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $this->includeOnlyGroups);
     }
     $topLevelEntries = $this->feedModelCache[$brand];
 
@@ -90,6 +97,8 @@ class JsonBuilder {
       foreach ($childEntries as $childEntry) {
         $this->attachChildEntryData($newOutputData, $childEntry, $locale);
       }
+
+      $this->attachFeatureData($newOutputData, $entry, $locale);
 
       $outputData[] = $newOutputData;
     }
@@ -149,6 +158,51 @@ class JsonBuilder {
     $localeRecord = $description->getRecord($locale);
     $data['name'] = (string) $localeRecord->name;
     $data['description'] = (string) $localeRecord->londescription;
+  }
+
+  /**
+   * @todo use strategy pattern or something instead of switch
+   * 
+   * @param array &$data
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param string $locale
+   */
+  private function attachFeatureData(array &$data,
+      FeedEntity\CatalogEntry $entry, $locale) {
+    switch ($data['appliance']) {
+      case $this->applianceGroups['SC_Kitchen_Cooking'][$locale]:
+        switch ($data['type']) {
+          case $this->typeGroups['SC_Kitchen_Cooking_Ranges'][$locale]:
+          case $this->typeGroups['SC_Kitchen_Cooking_Wall_Ovens'][$locale]:
+            /*
+             * Wall Oven features
+             */
+            $description = $entry->getDescription(); // property retrieval will use default locale
+            $data['combination'] = stripos($description->name, 'combination');
+            // TODO should single just be the default, i.e. true iff double is false?
+            $data['single'] = stripos($description->name, 'single');
+            $data['double'] = stripos($description->name, 'double');
+            $data['trueConvection'] = (
+                stripos($description->name, 'evenair') !== false ||
+                stripos($description->londescription, 'evenair') !== false ||
+                stripos($description->name, 'true convection') !== false ||
+                stripos($description->londescription, 'true convection') !== false
+                );
+
+//            foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
+//              foreach ($group->getDescriptiveAttributes($locale) as $attr) {
+//                $data['descriptive_attrs'][$groupName][] = [
+//                  'valueidentifier' => $attr->valueidentifier,
+//                  'value' => $attr->value,
+//                  'description' => $attr->description,
+//                  'noteinfo' => $attr->noteinfo,
+//                ];
+//              }
+//            }
+            break;
+        }
+        break;
+    }
   }
 
 }

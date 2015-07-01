@@ -114,8 +114,11 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
     foreach ($topLevelEntries as $sku => $entry) {
       $endecaPropsGroup = $entry->getDescriptiveAttributeGroup('EndecaProps');
       if (!is_null($endecaPropsGroup)) {
-        $salesStatus = $endecaPropsGroup->getDescriptiveAttributeValueAsString('SalesStatus');
-        if ('30' === $salesStatus) {
+        $salesStatus30 = $endecaPropsGroup->getDescriptiveAttributeWhere([
+          'description' => 'SalesStatus',
+          'value' => '30'
+        ]);
+        if ($salesStatus30) {
           continue;
         }
       }

@@ -1,4 +1,7 @@
-- check for errors on staging server
+- for staging:
+  - don't use pretty json except for dev
+  - later maybe - put zend app dirs in proper structure so only public is exposed
+
 - corroborate, maybe with grepping, that the correct skus are being shown/excluded in json
 
 ----
