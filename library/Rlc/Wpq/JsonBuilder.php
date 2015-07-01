@@ -178,10 +178,10 @@ class JsonBuilder {
              * Wall Oven features
              */
             $description = $entry->getDescription(); // property retrieval will use default locale
-            $data['combination'] = stripos($description->name, 'combination');
+            $data['combination'] = stripos($description->name, 'combination') !== false;
             // TODO should single just be the default, i.e. true iff double is false?
-            $data['single'] = stripos($description->name, 'single');
-            $data['double'] = stripos($description->name, 'double');
+            $data['single'] = stripos($description->name, 'single') !== false;
+            $data['double'] = stripos($description->name, 'double') !== false;
             $data['trueConvection'] = (
                 stripos($description->name, 'evenair') !== false ||
                 stripos($description->londescription, 'evenair') !== false ||
