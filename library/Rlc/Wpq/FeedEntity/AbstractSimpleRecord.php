@@ -28,7 +28,7 @@ abstract class AbstractSimpleRecord {
   }
 
   public function __get($name) {
-    return $this->record->$name;
+    return (string) $this->record->$name;
   }
 
 }

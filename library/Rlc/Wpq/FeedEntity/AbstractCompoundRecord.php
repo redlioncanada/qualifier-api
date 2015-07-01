@@ -29,7 +29,7 @@ abstract class AbstractCompoundRecord {
   }
 
   public function __get($name) {
-    return $this->getRecord()->$name;
+    return (string) $this->getRecord()->$name;
   }
 
   /**

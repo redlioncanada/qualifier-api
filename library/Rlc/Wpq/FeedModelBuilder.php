@@ -25,9 +25,11 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
    * Get top-level catalog entries with all associated objects filled in
    * 
    * @param string $brand
+   * @param array  $filterForGroups OPTIONAL only return products that are in
+   *                                one of these groups.
    * @return FeedEntity\CatalogEntry[]
    */
-  public function buildFeedModel($brand) {
+  public function buildFeedModel($brand, $filterForGroups = []) {
     // Fetch data for associations
     $entryData = $this->xmlReader->readFile($brand, 'CatalogEntry');
     $entryGroupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupCatalogEntryRelationship');
@@ -55,19 +57,6 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       }
     }
 
-    // Assign parent entry to all child entries via parentpartnumber field.
-    // (This has to be a separate loop from above, because all entries need to
-    // be indexed first.)
-    foreach ($entryData->record as $entryRecord) {
-      $sParentPartNumber = (string) $entryRecord->parentpartnumber;
-      if ('' !== $sParentPartNumber) {
-        $sPartNumber = (string) $entryRecord->partnumber;
-        // Use $topLevelEntries to look up parents as an optimisation -- it's shorter.
-        $entries[$sPartNumber]->setParentEntry($topLevelEntries[$sParentPartNumber]);
-        $topLevelEntries[$sParentPartNumber]->addChildEntry($entries[$sPartNumber]);
-      }
-    }
-
     // Scan through group assocs and assign them to entries
     foreach ($entryGroupRelnData->record as $entryGroupRelnRecord) {
       $relnPartNumber = (string) $entryGroupRelnRecord->partnumber;
@@ -77,18 +66,91 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       }
     }
 
+    if (count($filterForGroups)) {
+      // Do group filtering here as an optimisation
+      $getGroupId = function ($group) {
+        return (string) $group->identifier;
+      };
+      foreach ($topLevelEntries as $sku => $entry) {
+        $allCatalogGroups = $entry->getAllCatalogGroups();
+        $allCatalogGroupIds = array_map($getGroupId, $allCatalogGroups);
+        // If none of the groups is one of the target groups
+        if (!count(array_intersect($filterForGroups, $allCatalogGroupIds))) {
+          // Get rid of that product - in both arrays
+          unset($entries[$sku], $topLevelEntries[$sku]);
+        }
+      }
+    }
+
     // Assign prices
     foreach ($priceData->record as $priceRecord) {
       $pricePartNumber = (string) $priceRecord->partnumber;
-      if (isset($entries[$pricePartNumber])) {
+      if (!isset($entries[$pricePartNumber])) {
+        continue;
+      }
+
+      $delete = false;
+
+      // First, if price=0 or published=0 on price record, delete the entry
+      if (
+          ('1' != (string) $priceRecord->published) ||
+          (0.0 == (float) $priceRecord->listprice && 0.0 == (float) $priceRecord->saleprice)
+      ) {
+        $delete = true;
+      }
+
+      if ($delete) {
+        // Will always be a child entry
+        unset($entries[$pricePartNumber]);
+      } else {
         $price = ServiceLocator::price($priceRecord);
         $entries[$pricePartNumber]->addPrice($price);
       }
     }
 
+    $this->assignDescriptiveAttributes($entries, $brand);
+
+    // Do SalesStatus=30 filter here, as an optimisation
+    foreach ($topLevelEntries as $sku => $entry) {
+      $endecaPropsGroup = $entry->getDescriptiveAttributeGroup('EndecaProps');
+      if (!is_null($endecaPropsGroup)) {
+        $salesStatus = $endecaPropsGroup->getDescriptiveAttributeValueAsString('SalesStatus');
+        if ('30' === $salesStatus) {
+          continue;
+        }
+      }
+
+      // If no EndecaProps group or no SalesStatus attr, or SalesStatus != 30,
+      // exclude product.
+      unset($topLevelEntries[$sku], $entries[$sku]);
+    }
+
+    // Assign parent entry to all child entries via parentpartnumber field.
+    // (This has to be a separate loop from above, because all entries need to
+    // be indexed first.)
+    foreach ($entries as $entry) {
+      if ('' !== $entry->parentpartnumber) {
+        // Use $topLevelEntries to look up parents as an optimisation -- it's shorter.
+        if (isset($topLevelEntries[$entry->parentpartnumber], $entries[$entry->partnumber])) {
+          $entries[$entry->partnumber]->setParentEntry($topLevelEntries[$entry->parentpartnumber]);
+          $topLevelEntries[$entry->parentpartnumber]->addChildEntry($entries[$entry->partnumber]);
+        }
+      }
+    }
+
+    // Another loop through parent entries to delete those without any children
+    // assigned - this will be those where price=0 or published=0 for all
+    // variants.
+    // TODO possible to optimize by reducing number of times looping through entries?
+    foreach ($topLevelEntries as $sku => $entry) {
+      $numChildEntries = count($entry->getChildEntries());
+      if (0 == $numChildEntries) {
+        unset($topLevelEntries[$sku], $entries[$sku]);
+      }
+    }
+
     $this->assignEntryDescriptions($entries, $brand);
     $this->assignDefiningAttributeValues($entries, $brand);
-    $this->assignDescriptiveAttributes($entries, $brand);
 
     return $topLevelEntries;
   }

@@ -1,11 +1,7 @@
-next:
-exclude whole product based on given rules - right now price is just getting excluded if 0 or pub=0
+- check for errors on staging server
+- corroborate, maybe with grepping, that the correct skus are being shown/excluded in json
 
-
-outcomes from convo w Bianca:
-
-- reorganize cat output
-- split locales at top of tree - actually, just make it a request param
+----
 
 top cats in FE:
 
@@ -23,44 +19,17 @@ DW
 
 
 
-More questions for RLC/WP, 25 Jun:
+More questions for RLC/WP, since 25 Jun:
 
 Prices:
 
 - listprice or saleprice?
 - published=0 or price=0 mean exclude product. what if we're not in date range for price? exclude product or just don't include that price (prob meaning price would be null for that variant)
+- londescription typo in new verison?
 
 
 
 ===========
-
-Next step: start building actual API responses:
-- simple product info
-- categories
-- true/false/etc fields, based on rules in spreadsheet
-
-=====
-
-final JSON should be list of all entries with catgroups used to create these
-fields:
-  top cat: applicance
-  sub cat: type
-  sub-sub cat: subtype
-  etc..?
-
-
-on my way with this:
-  create a class to rep all objects from xml
-  it won't be SOLID OOP, all data will just be accessible via properties
-  but it will also have getParent()/getChildren() for stuff that's hierarchical
-  like cats and products, to give easy reference while building json but avoid
-  redundant data
-
-figure out how to automatically trim all xml values! at least by default
-
-how to handle hierarchy of catalogentries (products with 'parentpartnumber')?
-  only show top level? or only bottom level?
-  why are there levels? are they like additional categories?
 
   DESCRIPTIVE ATTRS APPLY TO TOP-LEVEL ENTRIES ONLY
   correspondingly, defining attrs apply to child entries only
