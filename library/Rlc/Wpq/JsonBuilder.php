@@ -173,6 +173,35 @@ class JsonBuilder {
       case $this->applianceGroups['SC_Kitchen_Cooking'][$locale]:
         switch ($data['type']) {
           case $this->typeGroups['SC_Kitchen_Cooking_Ranges'][$locale]:
+            /*
+             * Range features
+             */
+            // Default all to false
+            $data['gas'] = false;
+            $data['maxCapacity'] = false;
+            $data['warmingDrawer'] = false;
+            
+            $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
+            if ($compareFeatureGroup) {
+              $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
+              if ($fuelTypeAttr && 'Gas' == $fuelTypeAttr->value) {
+                $data['gas'] = true;
+              }
+              
+              $ovenRackTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Oven Rack Type"]);
+              if ($ovenRackTypeAttr && stripos($ovenRackTypeAttr->value, 'max capacity') !== false) {
+                $data['maxCapacity'] = true;
+              }
+              
+              $drawerTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Drawer Type"]);
+              if ($drawerTypeAttr && 'Warming Drawer' == $drawerTypeAttr->value) {
+                $data['warmingDrawer'] = true;
+              }
+            }
+            
+            
+          // break intentionally omitted: all wall oven features also
+          // apply to ranges.
           case $this->typeGroups['SC_Kitchen_Cooking_Wall_Ovens'][$locale]:
             /*
              * Wall Oven features
