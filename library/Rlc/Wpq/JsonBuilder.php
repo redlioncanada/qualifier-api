@@ -176,30 +176,56 @@ class JsonBuilder {
             /*
              * Range features
              */
-            // Default all to false
+            $description = $entry->getDescription(); // property retrieval will use default locale
+            $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
+            $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
+
+            // Default all booleans to false
             $data['gas'] = false;
             $data['maxCapacity'] = false;
             $data['warmingDrawer'] = false;
-            
-            $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
+            $data['powerBurner'] = false;
+            $data['powerPreheat'] = false;
+
             if ($compareFeatureGroup) {
               $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
               if ($fuelTypeAttr && 'Gas' == $fuelTypeAttr->value) {
                 $data['gas'] = true;
               }
-              
+
               $ovenRackTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Oven Rack Type"]);
               if ($ovenRackTypeAttr && stripos($ovenRackTypeAttr->value, 'max capacity') !== false) {
                 $data['maxCapacity'] = true;
               }
-              
+
               $drawerTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Drawer Type"]);
               if ($drawerTypeAttr && 'Warming Drawer' == $drawerTypeAttr->value) {
                 $data['warmingDrawer'] = true;
               }
+
+              $powerBurnerSearchString = json_decode('"Power\u2122 burner"');
+              if (stripos($description->londescription, $powerBurnerSearchString) !== false) {
+                $data['powerBurner'] = true;
+              } else {
+                $allAttrs = $salesFeatureGroup->getDescriptiveAttributes();
+                foreach ($allAttrs as $attr) {
+                  // Look for an attribute where valueidentifier _contains_
+                  // search string, ignoring case
+                  if (stripos($attr->valueidentifier, $powerBurnerSearchString) !== false) {
+                    $data['powerBurner'] = true;
+                    break;
+                  }
+                }
+              }
+
+              if (stripos($description->londescription, "power preheat") !== false) {
+                $data['powerPreheat'] = true;
+              } else {
+                $powerPreheatAttr = $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Power Preheat"]);
+                $data['powerBurner'] = (bool) $powerPreheatAttr;
+              }
             }
-            
-            
+
           // break intentionally omitted: all wall oven features also
           // apply to ranges.
           case $this->typeGroups['SC_Kitchen_Cooking_Wall_Ovens'][$locale]:
