@@ -182,15 +182,48 @@ class JsonBuilder {
 
             // Default all booleans to false
             $data['gas'] = false;
+            $data['electric'] = false;
             $data['maxCapacity'] = false;
             $data['warmingDrawer'] = false;
             $data['powerBurner'] = false;
             $data['powerPreheat'] = false;
 
             if ($compareFeatureGroup) {
+              /*
+               * Dimensions
+               */
+              $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+                'description' => "Dimensions",
+                'valueidentifier' => "Width",
+              ]);
+              if ($widthAttr) {
+                $data['width'] = $widthAttr->value;
+              }
+              $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+                'description' => "Dimensions",
+                'valueidentifier' => "Height",
+              ]);
+              if ($heightAttr) {
+                $data['height'] = $heightAttr->value;
+              }
+              $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+                'description' => "Dimensions",
+                'valueidentifier' => "Depth",
+              ]);
+              if ($depthAttr) {
+                $data['depth'] = $depthAttr->value;
+              }
+              
               $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
-              if ($fuelTypeAttr && 'Gas' == $fuelTypeAttr->value) {
-                $data['gas'] = true;
+              if ($fuelTypeAttr) {
+                switch ($fuelTypeAttr->value) {
+                  case 'Gas':
+                    $data['gas'] = true;
+                    break;
+                  case 'Electric':
+                    $data['electric'] = true;
+                    break;
+                }
               }
 
               $ovenRackTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Oven Rack Type"]);
