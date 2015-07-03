@@ -289,8 +289,7 @@ class JsonBuilder {
         /*
          * Laundry features
          */
-        $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4,
-          4.7, 5, 5.3, 5.6,
+        $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3, 5.6,
           5.9, 6.1];
         $audioLevelValues = [37, 47, 57];
 
