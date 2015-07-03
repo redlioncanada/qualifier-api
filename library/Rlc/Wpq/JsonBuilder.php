@@ -169,6 +169,8 @@ class JsonBuilder {
    */
   private function attachFeatureData(array &$data,
       FeedEntity\CatalogEntry $entry, $locale) {
+    $boolValues = [true, false];
+
     switch ($data['appliance']) {
       case $this->applianceGroups['SC_Kitchen_Cooking'][$locale]:
         switch ($data['type']) {
@@ -213,7 +215,7 @@ class JsonBuilder {
               if ($depthAttr) {
                 $data['depth'] = $depthAttr->value;
               }
-              
+
               $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
               if ($fuelTypeAttr) {
                 switch ($fuelTypeAttr->value) {
@@ -276,21 +278,48 @@ class JsonBuilder {
                 stripos($description->name, 'true convection') !== false ||
                 stripos($description->londescription, 'true convection') !== false
                 );
-
-//            foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
-//              foreach ($group->getDescriptiveAttributes($locale) as $attr) {
-//                $data['descriptive_attrs'][$groupName][] = [
-//                  'valueidentifier' => $attr->valueidentifier,
-//                  'value' => $attr->value,
-//                  'description' => $attr->description,
-//                  'noteinfo' => $attr->noteinfo,
-//                ];
-//              }
-//            }
             break;
         }
         break;
+      case $this->applianceGroups['SC_Laundry_Laundry_Appliances_Laundry_Pairs'][$locale]:
+        $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3, 5.6,
+          5.9, 6.1];
+        $audioLevelValues = [37, 47, 57];
+
+        $data['capacity'] = $this->getRandomElement($capacityValues);
+        $data['soundGuard'] = $this->getRandomElement($boolValues);
+        $data['vibrationControl'] = $this->getRandomElement($boolValues);
+        $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
+        $data['frontLoad'] = $this->getRandomElement($boolValues);
+        $data['topLoad'] = !$data['frontLoad'];
+        $data['stacked'] = $this->getRandomElement($boolValues);
+        $data['rapidWash'] = $this->getRandomElement($boolValues);
+        $data['rapidDry'] = $this->getRandomElement($boolValues);
+        $data['cycleOptions'] = rand(8, 12);
+        $data['sensorDry'] = $this->getRandomElement($boolValues);
+        $data['wrinkleControl'] = $this->getRandomElement($boolValues);
+        $data['steamEnhanced'] = $this->getRandomElement($boolValues);
+
+//        foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
+//          foreach ($group->getDescriptiveAttributes($locale) as $attr) {
+//            $data['descriptive_attrs'][$groupName][] = [
+//              'valueidentifier' => $attr->valueidentifier,
+//              'value' => $attr->value,
+//              'description' => $attr->description,
+//              'noteinfo' => $attr->noteinfo,
+//            ];
+//          }
+//        }
+//        break;
     }
+  }
+
+  /**
+   * @param array $source Must be a sequential array
+   * @return mixed
+   */
+  private function getRandomElement(array $source) {
+    return $source[rand(0, count($source) - 1)];
   }
 
 }
