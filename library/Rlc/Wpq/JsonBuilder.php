@@ -363,7 +363,7 @@ class JsonBuilder {
           // TODO should I give fridge capacity instead of total (which includes freezer?)
           $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Total Capacity"]);
           if ($capacityAttr) {
-            $data['capacity'] = $capacityAttr->value;
+            $data['capacity'] = (float) preg_replace('/^(\d+(?:\.\d+)?).*$/', '$1', $capacityAttr->value);
           }
         }
 
