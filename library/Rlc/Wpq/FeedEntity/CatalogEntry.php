@@ -58,6 +58,8 @@ class CatalogEntry extends AbstractSimpleRecord {
   /**
    * Gets all catalog groups including their parent groups, recursively,
    * in one flat array.
+   * 
+   * @return CatalogGroup[]
    */
   public function getAllCatalogGroups() {
     $directGroups = $this->getCatalogGroups();
