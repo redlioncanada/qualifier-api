@@ -169,7 +169,11 @@ class JsonBuilder {
    */
   private function attachFeatureData(array &$data,
       FeedEntity\CatalogEntry $entry, $locale) {
+    // Get some stuff that's used for all/most categories
     $boolValues = [true, false];
+    $description = $entry->getDescription(); // property retrieval will use default locale
+    $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
+    $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
 
     switch ($data['appliance']) {
       case $this->applianceGroups['SC_Kitchen_Cooking'][$locale]:
@@ -178,10 +182,6 @@ class JsonBuilder {
             /*
              * Range features
              */
-            $description = $entry->getDescription(); // property retrieval will use default locale
-            $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
-            $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
-
             // Default all booleans to false
             $data['gas'] = false;
             $data['electric'] = false;
@@ -267,7 +267,6 @@ class JsonBuilder {
             /*
              * Wall Oven features
              */
-            $description = $entry->getDescription(); // property retrieval will use default locale
             $data['combination'] = stripos($description->name, 'combination') !== false;
             // TODO should single just be the default, i.e. true iff double is false?
             $data['single'] = stripos($description->name, 'single') !== false;
@@ -281,7 +280,11 @@ class JsonBuilder {
             break;
         }
         break;
+
       case $this->applianceGroups['SC_Laundry_Laundry_Appliances_Laundry_Pairs'][$locale]:
+        /*
+         * Laundry features
+         */
         $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3, 5.6,
           5.9, 6.1];
         $audioLevelValues = [37, 47, 57];
@@ -299,6 +302,35 @@ class JsonBuilder {
         $data['sensorDry'] = $this->getRandomElement($boolValues);
         $data['wrinkleControl'] = $this->getRandomElement($boolValues);
         $data['steamEnhanced'] = $this->getRandomElement($boolValues);
+        break;
+
+      case $this->applianceGroups['SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers'][$locale]:
+        /*
+         * Dishwasher features
+         */
+        $data['placeSettings'] = rand(12, 16);
+
+        if ($compareFeatureGroup) {
+          // Decibels
+          $decibelLevelAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Decibel Level"]);
+          if ($decibelLevelAttr) {
+            $data['decibels'] = $decibelLevelAttr->value;
+          }
+        }
+
+        if ($salesFeatureGroup) {
+          // Premium adjusters
+          $premiumRackAdjustersAttr = $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Premium Rack Adjusters"]);
+          $data['premiumAdjusters'] = (bool) $premiumRackAdjustersAttr; // it just has to exist
+        }
+
+        // FID and frontConsole
+        $allCatalogGroups = $entry->getAllCatalogGroups();
+        $allCatalogGroupIds = array_map(function ($grp) {
+          return (string) $grp->identifier;
+        }, $allCatalogGroups);
+        $data['FID'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Fully_integrated_Console', $allCatalogGroupIds);
+        $data['frontConsole'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', $allCatalogGroupIds);
 
 //        foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
 //          foreach ($group->getDescriptiveAttributes($locale) as $attr) {
@@ -310,7 +342,8 @@ class JsonBuilder {
 //            ];
 //          }
 //        }
-//        break;
+
+        break;
     }
   }
 
