@@ -263,6 +263,7 @@ class JsonBuilder {
 
           // break intentionally omitted: all wall oven features also
           // apply to ranges.
+
           case $this->typeGroups['SC_Kitchen_Cooking_Wall_Ovens'][$locale]:
             /*
              * Wall Oven features
@@ -285,7 +286,8 @@ class JsonBuilder {
         /*
          * Laundry features
          */
-        $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3, 5.6,
+        $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4,
+          4.7, 5, 5.3, 5.6,
           5.9, 6.1];
         $audioLevelValues = [37, 47, 57];
 
@@ -331,6 +333,36 @@ class JsonBuilder {
         }, $allCatalogGroups);
         $data['FID'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Fully_integrated_Console', $allCatalogGroupIds);
         $data['frontConsole'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', $allCatalogGroupIds);
+
+        break;
+
+      case $this->applianceGroups['SC_Kitchen_Refrigeration_Refrigerators'][$locale]:
+        /*
+         * Fridge features
+         */
+        $heightValues = [65.9, 67, 68, 69, 70, 71];
+        $widthValues = [30, 31, 32, 33, 34, 35, 36];
+        $data['height'] = $this->getRandomElement($heightValues);
+        $data['width'] = $this->getRandomElement($widthValues);
+
+        $data['powerCold'] = $this->getRandomElement($boolValues);
+        $data['topMount'] = $this->getRandomElement($boolValues);
+        $data['bottomMount'] = $this->getRandomElement($boolValues);
+        $data['frenchDoor'] = $this->getRandomElement($boolValues);
+        $data['indoorDispenser'] = $this->getRandomElement($boolValues);
+        $data['counterDepth'] = $this->getRandomElement($boolValues);
+        $data['freshFlowProducePreserver'] = $this->getRandomElement($boolValues);
+        $data['tempControlPantry'] = $this->getRandomElement($boolValues);
+        $data['dualCool'] = $this->getRandomElement($boolValues);
+
+        if ($compareFeatureGroup) {
+          // Capacity
+          // TODO should I give fridge capacity instead of total (which includes freezer?)
+          $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Total Capacity"]);
+          if ($capacityAttr) {
+            $data['capacity'] = $capacityAttr->value;
+          }
+        }
 
 //        foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
 //          foreach ($group->getDescriptiveAttributes($locale) as $attr) {
