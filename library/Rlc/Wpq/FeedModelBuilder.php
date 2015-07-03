@@ -94,7 +94,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       // First, if price=0 or published=0 on price record, delete the entry
       if (
           ('1' != (string) $priceRecord->published) ||
-          (0.0 == (float) $priceRecord->listprice && 0.0 == (float) $priceRecord->saleprice)
+          (0.0 == (float) $priceRecord->listprice)
       ) {
         $delete = true;
       }
