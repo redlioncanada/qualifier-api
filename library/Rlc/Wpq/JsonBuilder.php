@@ -261,6 +261,9 @@ class JsonBuilder {
               }
             }
 
+            $capacityValues = [5, 6.2, 7];
+            $data['capacity'] = $this->getRandomElement($capacityValues);
+
           // break intentionally omitted: all wall oven features also
           // apply to ranges.
 
