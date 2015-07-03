@@ -134,10 +134,7 @@ class JsonBuilder {
      */
     $prices = $childEntry->getPrices();
     foreach ($prices as $price) {
-      $newColoursElem['prices'][$price->currency] = [
-        'list' => $price->listprice,
-        'sale' => $price->saleprice,
-      ];
+      $newColoursElem['prices'][$price->currency] = $price->listprice;
     }
 
     $data['colours'][] = $newColoursElem;
