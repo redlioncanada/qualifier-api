@@ -2,7 +2,8 @@
 
 namespace Rlc\Wpq;
 
-use Rlc\Wpq\FeedEntity;
+use Rlc\Wpq\FeedEntity,
+    Lrr\ServiceLocator;
 
 class JsonBuilder {
 
@@ -69,6 +70,7 @@ class JsonBuilder {
   }
 
   /**
+   * Generate the JSON to store and serve for a a given brand and locale.
    * 
    * @param string $brand
    * @return string JSON
@@ -78,11 +80,6 @@ class JsonBuilder {
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $this->includeOnlyGroups);
     }
     $topLevelEntries = $this->feedModelCache[$brand];
-
-    /*
-     * From here on is code that could actually be used for production,
-     * not just for testing...
-     */
 
     $outputData = [];
     foreach ($topLevelEntries as $entry) {
@@ -102,14 +99,8 @@ class JsonBuilder {
 
       $outputData[] = $newOutputData;
     }
-//    
-    // Just testing output
-//    ini_set('xdebug.var_display_max_depth', 5);
-//    var_dump($catalogEntries['MEW6527DDQ']->getParentEntry());
-//    die;
 
-    $json = json_encode($outputData, JSON_PRETTY_PRINT);
-//    die($json);
+    $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJson ? JSON_PRETTY_PRINT : 0));
     return $json;
   }
 
