@@ -1,5 +1,7 @@
 Order Deny,Allow
 
+SetEnv APPLICATION_ENV staging
+
 RewriteEngine On
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
