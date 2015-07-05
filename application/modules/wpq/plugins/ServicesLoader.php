@@ -36,20 +36,20 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
         ->catalogEntryFactory(function(\SimpleXMLElement $record) {
           return new FeedEntity\CatalogEntry($record);
         })
-        ->catalogGroupFactory(function () {
-          return new FeedEntity\CatalogGroup(ServiceLocator::config()->defaultLocale);
+        ->catalogGroupFactory(function () use ($config) {
+          return new FeedEntity\CatalogGroup($config->defaultLocale);
         })
-        ->catalogEntryDescriptionFactory(function () {
-          return new FeedEntity\CatalogEntryDescription(ServiceLocator::config()->defaultLocale);
+        ->catalogEntryDescriptionFactory(function () use ($config) {
+          return new FeedEntity\CatalogEntryDescription($config->defaultLocale);
         })
         ->priceFactory(function (\SimpleXMLElement $record) {
           return new FeedEntity\Price($record);
         })
-        ->definingAttributeValueFactory(function () {
-          return new FeedEntity\DefiningAttributeValue(ServiceLocator::config()->defaultLocale);
+        ->definingAttributeValueFactory(function () use ($config) {
+          return new FeedEntity\DefiningAttributeValue($config->defaultLocale);
         })
-        ->descriptiveAttributeGroupFactory(function () {
-          return new FeedEntity\DescriptiveAttributeGroup(ServiceLocator::config()->defaultLocale);
+        ->descriptiveAttributeGroupFactory(function () use ($config) {
+          return new FeedEntity\DescriptiveAttributeGroup($config->defaultLocale);
         })
         ->descriptiveAttributeFactory(function (\SimpleXMLElement $record) {
           return new FeedEntity\DescriptiveAttribute($record);
