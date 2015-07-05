@@ -100,7 +100,7 @@ class JsonBuilder {
       $outputData[] = $newOutputData;
     }
 
-    $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJson ? JSON_PRETTY_PRINT : 0));
+    $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJsonFiles ? JSON_PRETTY_PRINT : 0));
     return $json;
   }
 
