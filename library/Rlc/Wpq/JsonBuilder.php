@@ -145,7 +145,7 @@ class JsonBuilder {
     $description = $entry->getDescription();
     $localeRecord = $description->getRecord($locale);
     $data['name'] = (string) $localeRecord->name;
-    $data['description'] = (string) $localeRecord->londescription;
+    $data['description'] = (string) $localeRecord->longdescription;
   }
 
   /**
@@ -227,7 +227,7 @@ class JsonBuilder {
               }
 
               $powerBurnerSearchString = json_decode('"Power\u2122 burner"');
-              if (stripos($description->londescription, $powerBurnerSearchString) !== false) {
+              if (stripos($description->longdescription, $powerBurnerSearchString) !== false) {
                 $data['powerBurner'] = true;
               } else {
                 $allAttrs = $salesFeatureGroup->getDescriptiveAttributes();
@@ -241,7 +241,7 @@ class JsonBuilder {
                 }
               }
 
-              if (stripos($description->londescription, "power preheat") !== false) {
+              if (stripos($description->longdescription, "power preheat") !== false) {
                 $data['powerPreheat'] = true;
               } else {
                 $powerPreheatAttr = $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Power Preheat"]);
@@ -265,9 +265,9 @@ class JsonBuilder {
             $data['double'] = stripos($description->name, 'double') !== false;
             $data['trueConvection'] = (
                 stripos($description->name, 'evenair') !== false ||
-                stripos($description->londescription, 'evenair') !== false ||
+                stripos($description->longdescription, 'evenair') !== false ||
                 stripos($description->name, 'true convection') !== false ||
-                stripos($description->londescription, 'true convection') !== false
+                stripos($description->longdescription, 'true convection') !== false
                 );
             break;
         }
