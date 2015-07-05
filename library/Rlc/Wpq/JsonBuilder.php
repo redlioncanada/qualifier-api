@@ -294,6 +294,20 @@ class JsonBuilder {
         $data['sensorDry'] = $this->getRandomElement($boolValues);
         $data['wrinkleControl'] = $this->getRandomElement($boolValues);
         $data['steamEnhanced'] = $this->getRandomElement($boolValues);
+        $data['gas'] = $this->getRandomElement($boolValues);
+        $data['electric'] = !$data['gas'];
+
+//        foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
+//          foreach ($group->getDescriptiveAttributes($locale) as $attr) {
+//            $data['descriptive_attrs'][$groupName][] = [
+//              'valueidentifier' => $attr->valueidentifier,
+//              'value' => $attr->value,
+//              'description' => $attr->description,
+//              'noteinfo' => $attr->noteinfo,
+//            ];
+//          }
+//        }
+        
         break;
 
       case $this->applianceGroups['SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers'][$locale]:
@@ -325,7 +339,6 @@ class JsonBuilder {
         $data['frontConsole'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', $allCatalogGroupIds);
 
         break;
-
       case $this->applianceGroups['SC_Kitchen_Refrigeration_Refrigerators'][$locale]:
         /*
          * Fridge features
@@ -354,16 +367,6 @@ class JsonBuilder {
           }
         }
 
-//        foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
-//          foreach ($group->getDescriptiveAttributes($locale) as $attr) {
-//            $data['descriptive_attrs'][$groupName][] = [
-//              'valueidentifier' => $attr->valueidentifier,
-//              'value' => $attr->value,
-//              'description' => $attr->description,
-//              'noteinfo' => $attr->noteinfo,
-//            ];
-//          }
-//        }
 
         break;
     }
