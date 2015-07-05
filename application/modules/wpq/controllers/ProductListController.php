@@ -38,6 +38,10 @@ class Wpq_ProductListController extends Zend_Controller_Action {
     flock($stream, LOCK_UN);
     fclose($stream);
 
+    if ($this->getParam('pretty')) {
+      $fileContents = Zend_Json::prettyPrint($fileContents, ['indent' => '    ']);
+    }
+    
     // TODO is there a way to set a stream to the body instead of a string?
     // would that be better?
     $this->getResponse()->setHeader('Content-type', 'application/json')
