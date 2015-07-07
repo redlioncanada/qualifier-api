@@ -22,7 +22,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
   }
 
   /**
-   * Get top-level catalog entries with all associated objects filled in
+   * Get catalog entries with all associated objects filled in
    * 
    * @param string $brand
    * @param array  $filterForGroups OPTIONAL only return products that are in
@@ -155,7 +155,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
     $this->assignEntryDescriptions($entries, $brand);
     $this->assignDefiningAttributeValues($entries, $brand);
 
-    return $topLevelEntries;
+    return $entries;
   }
 
   /**

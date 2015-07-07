@@ -60,9 +60,9 @@ class JsonBuilder {
   private $includeOnlyGroups = [
     'SC_Kitchen_Cooking_Ranges',
     'SC_Kitchen_Cooking_Wall_Ovens',
-    'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
     'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
     'SC_Kitchen_Refrigeration_Refrigerators',
+    'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
   ];
 
   public function __construct(FeedModelBuilderInterface $feedModelBuilder) {
@@ -79,29 +79,194 @@ class JsonBuilder {
     if (!isset($this->feedModelCache[$brand])) {
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $this->includeOnlyGroups);
     }
-    $topLevelEntries = $this->feedModelCache[$brand];
+    $entries = $this->feedModelCache[$brand];
 
     $outputData = [];
-    foreach ($topLevelEntries as $entry) {
-      $newOutputData = [
-        'sku' => (string) $entry->partnumber,
-      ];
-
-      $this->attachGroupData($newOutputData, $entry, $locale);
-      $this->attachCatalogEntryDescriptionData($newOutputData, $entry, $locale);
-
-      $childEntries = $entry->getChildEntries();
-      foreach ($childEntries as $childEntry) {
-        $this->attachChildEntryData($newOutputData, $childEntry, $locale);
+    $laundryPairs = [];
+    foreach ($entries as $entry) {
+      if (!$entry->isTopLevel()) {
+        continue;
       }
 
-      $this->attachFeatureData($newOutputData, $entry, $locale);
+      $newOutputData = [];
 
-      $outputData[] = $newOutputData;
+      $this->attachGroupData($newOutputData, $entry, $locale);
+
+      if ($newOutputData['appliance'] == $this->applianceGroups['SC_Laundry_Laundry_Appliances_Laundry_Pairs'][$locale]) {
+        /*
+         * Special logic for building together laundry pairs
+         */
+        $assocParentSkus = $this->getAssocParentSkus($entry, $entries);
+        foreach ($assocParentSkus as $assocParentSku) {
+          // Create a key for the pair to make the combination unique, even
+          // with the association in reverse (via sort())
+          $vPairKey = [$entry->partnumber, $assocParentSku];
+          sort($vPairKey);
+          $pairKey = implode('|', $vPairKey);
+          if (!isset($laundryPairs[$pairKey])) {
+            if ($entry->isInGroupId('MC_Laundry_Laundry_Appliances_Washers')) {
+              // Current product is washer
+              $washerSku = $entry->partnumber;
+              $dryerSku = $assocParentSku;
+            } else {
+              // Current product is dryer
+              $washerSku = $assocParentSku;
+              $dryerSku = $entry->partnumber;
+            }
+            $laundryPairs[$pairKey] = [
+              'data' => $newOutputData,
+              'washerSku' => $washerSku,
+              'dryerSku' => $dryerSku,
+            ];
+          }
+        }
+      } else {
+        /*
+         * Standard logic for other, non-paired categories
+         */
+        $newOutputData['sku'] = $entry->partnumber;
+
+        $this->attachCatalogEntryDescriptionData($newOutputData, $entry, $locale);
+
+        $childEntries = $entry->getChildEntries();
+        foreach ($childEntries as $childEntry) {
+          $childEntryData = $this->buildChildEntryData($childEntry, $locale);
+          $newOutputData['colours'][] = $childEntryData;
+        }
+
+        $this->attachFeatureData($newOutputData, $entry, $locale);
+
+        $outputData[] = $newOutputData;
+      }
+    }
+
+    /*
+     * Now that all laundry pairs are collected, add them to the output data
+     */
+    foreach ($laundryPairs as $laundryPair) {
+      $outputData[] = $this->buildLaundryPairData($laundryPair, $entries, $locale);
     }
 
     $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJsonFiles ? JSON_PRETTY_PRINT : 0));
     return $json;
+  }
+
+  private function getAssocParentSkus(FeedEntity\CatalogEntry $entry,
+      array $allEntries) {
+    $assocParentSkus = [];
+    $assocChildSkus = [];
+    $childSkusOfThisEntry = [];
+
+    foreach ($entry->getChildEntries() as $childEntry) {
+      $childSkusOfThisEntry[] = $childEntry->partnumber;
+      $endecaPropsGroup = $childEntry->getDescriptiveAttributeGroup('EndecaProps');
+      if ($endecaPropsGroup) {
+        $pairIdAttrs = $endecaPropsGroup->getDescriptiveAttributes(['description' => 'PairId']);
+        foreach ($pairIdAttrs as $pairIdAttr) {
+          $assocChildSkus = array_merge($assocChildSkus, explode('|', $pairIdAttr->value));
+        }
+      }
+    }
+
+    $assocChildSkus = array_unique(array_diff($assocChildSkus, $childSkusOfThisEntry));
+    foreach ($assocChildSkus as $assocChildSku) {
+      if (isset($allEntries[$assocChildSku])) {
+        $parentPartNumber = $allEntries[$assocChildSku]->parentpartnumber;
+        if (isset($allEntries[$parentPartNumber])) {
+          $assocParentSkus[] = $parentPartNumber;
+        }
+      }
+    }
+
+    // Make unique and get rid of empties
+    $assocParentSkus = array_unique(array_filter($assocParentSkus));
+
+    return $assocParentSkus;
+  }
+
+  private function buildLaundryPairData(array $laundryPair, array $entries,
+      $locale) {
+    $data = $laundryPair['data'];
+    $washer = $entries[$laundryPair['washerSku']];
+    $dryer = $entries[$laundryPair['dryerSku']];
+
+    // Sku/Name/description
+    $data['washerSku'] = $laundryPair['washerSku'];
+    $data['dryerSku'] = $laundryPair['dryerSku'];
+    $washerDescription = $washer->getDescription()->getRecord($locale);
+    $data['name'] = $washerDescription->name . ' ' . ServiceLocator::translator()->translate('and_dryer', $locale);
+    $data['washerDescription'] = (string) $washerDescription->longdescription;
+    $dryerDescription = $dryer->getDescription()->getRecord($locale);
+    $data['dryerDescription'] = (string) $dryerDescription->longdescription;
+
+    // Washer colours
+    $washerChildEntries = $washer->getChildEntries();
+    foreach ($washerChildEntries as $childEntry) {
+      $childEntryData = $this->buildChildEntryData($childEntry, $locale);
+      $data['washerColours'][] = $childEntryData;
+    }
+
+    // Dryer colours
+    $dryerChildEntries = $dryer->getChildEntries();
+    foreach ($dryerChildEntries as $childEntry) {
+      $childEntryData = $this->buildChildEntryData($childEntry, $locale);
+      $data['dryerColours'][] = $childEntryData;
+    }
+
+    /*
+     * Laundry features
+     */
+    $washerCapacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3,
+      5.6, 5.9, 6.1];
+    $dryerCapacityValues = [6.1, 6.5, 6.7, 7.0, 7.3];
+    $audioLevelValues = [37, 47, 57];
+    $boolValues = [true, false];
+
+    $data['washerCapacity'] = $this->getRandomElement($washerCapacityValues);
+    $data['dryerCapacity'] = $this->getRandomElement($dryerCapacityValues);
+    $data['soundGuard'] = $this->getRandomElement($boolValues);
+    $data['vibrationControl'] = $this->getRandomElement($boolValues);
+    $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
+    $data['frontLoad'] = $this->getRandomElement($boolValues);
+    $data['topLoad'] = !$data['frontLoad'];
+    $data['stacked'] = $this->getRandomElement($boolValues);
+    $data['rapidWash'] = $this->getRandomElement($boolValues);
+    $data['rapidDry'] = $this->getRandomElement($boolValues);
+    $data['cycleOptions'] = rand(8, 12);
+    $data['sensorDry'] = $this->getRandomElement($boolValues);
+    $data['wrinkleControl'] = $this->getRandomElement($boolValues);
+    $data['steamEnhanced'] = $this->getRandomElement($boolValues);
+    $data['gas'] = $this->getRandomElement($boolValues);
+    $data['electric'] = !$data['gas'];
+
+    /*
+     * Pair image
+     */
+    // Goes before image URLs in feed to make them relative to http://maytag.com
+    $imageUrlPrefix = '/digitalassets';
+    $galleryGroup = $washer->getDescriptiveAttributeGroup('Gallery');
+    if ($galleryGroup) {
+      foreach ($galleryGroup->getDescriptiveAttributes(null, $locale) as $attr) {
+        // Check if we've found the right attr
+        if (false === strpos($attr->image1, 'Pair_244X312_')) {
+          continue;
+        }
+        // Split up urls and find the one of the right dimensions
+        $imageUrls = explode('|', $attr->image1);
+        foreach ($imageUrls as $imageUrl) {
+          if (false !== strpos($imageUrl, 'Pair_244X312_')) {
+            $data['image'] = $imageUrlPrefix . $imageUrl;
+            break 2;
+          }
+        }
+      }
+    }
+    // If still not set, use no image image
+    if (!isset($data['image'])) {
+      $data['image'] = $imageUrlPrefix . '/No Image Available/Standalone_244X312.png';
+    }
+
+    return $data;
   }
 
   private function attachGroupData(array &$data, FeedEntity\CatalogEntry $entry,
@@ -118,13 +283,13 @@ class JsonBuilder {
     }
   }
 
-  private function attachChildEntryData(array &$data,
-      FeedEntity\CatalogEntry $childEntry, $locale) {
-    $variantPartNumber = (string) $childEntry->partnumber;
+  private function buildChildEntryData(FeedEntity\CatalogEntry $childEntry,
+      $locale) {
+    $variantSku = (string) $childEntry->partnumber;
 
     $colourDa = $childEntry->getDefiningAttributeValue('Color');
     $newColoursElem = [
-      'sku' => $variantPartNumber,
+      'sku' => $variantSku,
       'colourCode' => (string) $colourDa->valueidentifier,
     ];
     $newColoursElem['colourName'] = (string) $colourDa->getRecord($locale)->value;
@@ -137,7 +302,7 @@ class JsonBuilder {
       $newColoursElem['prices'][$price->currency] = $price->listprice;
     }
 
-    $data['colours'][] = $newColoursElem;
+    return $newColoursElem;
   }
 
   private function attachCatalogEntryDescriptionData(array &$data,
@@ -162,6 +327,9 @@ class JsonBuilder {
     $description = $entry->getDescription(); // property retrieval will use default locale
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
+
+    // Goes before image URLs in feed to make them relative to http://maytag.com
+    $imageUrlPrefix = '/digitalassets';
 
     switch ($data['appliance']) {
       case $this->applianceGroups['SC_Kitchen_Cooking'][$locale]:
@@ -230,7 +398,7 @@ class JsonBuilder {
               if (stripos($description->longdescription, $powerBurnerSearchString) !== false) {
                 $data['powerBurner'] = true;
               } else {
-                $allAttrs = $salesFeatureGroup->getDescriptiveAttributes();
+                $allAttrs = $salesFeatureGroup->getDescriptiveAttributes(null, $locale);
                 foreach ($allAttrs as $attr) {
                   // Look for an attribute where valueidentifier _contains_
                   // search string, ignoring case
@@ -271,43 +439,10 @@ class JsonBuilder {
                 );
             break;
         }
-        break;
 
-      case $this->applianceGroups['SC_Laundry_Laundry_Appliances_Laundry_Pairs'][$locale]:
-        /*
-         * Laundry features
-         */
-        $capacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3, 5.6,
-          5.9, 6.1];
-        $audioLevelValues = [37, 47, 57];
+        // Add image for cooking
+        $data['image'] = $imageUrlPrefix . $entry->fullimage;
 
-        $data['capacity'] = $this->getRandomElement($capacityValues);
-        $data['soundGuard'] = $this->getRandomElement($boolValues);
-        $data['vibrationControl'] = $this->getRandomElement($boolValues);
-        $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
-        $data['frontLoad'] = $this->getRandomElement($boolValues);
-        $data['topLoad'] = !$data['frontLoad'];
-        $data['stacked'] = $this->getRandomElement($boolValues);
-        $data['rapidWash'] = $this->getRandomElement($boolValues);
-        $data['rapidDry'] = $this->getRandomElement($boolValues);
-        $data['cycleOptions'] = rand(8, 12);
-        $data['sensorDry'] = $this->getRandomElement($boolValues);
-        $data['wrinkleControl'] = $this->getRandomElement($boolValues);
-        $data['steamEnhanced'] = $this->getRandomElement($boolValues);
-        $data['gas'] = $this->getRandomElement($boolValues);
-        $data['electric'] = !$data['gas'];
-
-//        foreach ($entry->getDescriptiveAttributeGroups() as $groupName => $group) {
-//          foreach ($group->getDescriptiveAttributes($locale) as $attr) {
-//            $data['descriptive_attrs'][$groupName][] = [
-//              'valueidentifier' => $attr->valueidentifier,
-//              'value' => $attr->value,
-//              'description' => $attr->description,
-//              'noteinfo' => $attr->noteinfo,
-//            ];
-//          }
-//        }
-        
         break;
 
       case $this->applianceGroups['SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers'][$locale]:
@@ -338,6 +473,9 @@ class JsonBuilder {
         $data['FID'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Fully_integrated_Console', $allCatalogGroupIds);
         $data['frontConsole'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', $allCatalogGroupIds);
 
+        // Add image for dishwashers
+        $data['image'] = $imageUrlPrefix . $entry->fullimage;
+
         break;
       case $this->applianceGroups['SC_Kitchen_Refrigeration_Refrigerators'][$locale]:
         /*
@@ -367,6 +505,8 @@ class JsonBuilder {
           }
         }
 
+        // Add image for fridges
+        $data['image'] = $imageUrlPrefix . $entry->fullimage;
 
         break;
     }
