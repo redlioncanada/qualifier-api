@@ -157,7 +157,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
 
     return $entries;
   }
-
+  
   /**
    * @param FeedEntity\CatalogEntry[] $entries
    * @param string $brand

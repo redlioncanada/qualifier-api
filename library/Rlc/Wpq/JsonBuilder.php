@@ -80,6 +80,8 @@ class JsonBuilder {
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $this->includeOnlyGroups);
     }
     $entries = $this->feedModelCache[$brand];
+    
+    $productUrls = $this->getProductUrls($brand);
 
     $outputData = [];
     $laundryPairs = [];
@@ -135,6 +137,8 @@ class JsonBuilder {
         }
 
         $this->attachFeatureData($newOutputData, $entry, $locale);
+        
+        $newOutputData['url'] = $productUrls[$entry->partnumber];
 
         $outputData[] = $newOutputData;
       }
@@ -144,11 +148,43 @@ class JsonBuilder {
      * Now that all laundry pairs are collected, add them to the output data
      */
     foreach ($laundryPairs as $laundryPair) {
-      $outputData[] = $this->buildLaundryPairData($laundryPair, $entries, $locale);
+      $newOutputData = $this->buildLaundryPairData($laundryPair, $entries, $locale);
+      // Link to washer page
+      $newOutputData['url'] = $productUrls[$newOutputData['washerSku']];
+      $outputData[] = $newOutputData;
     }
 
     $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJsonFiles ? JSON_PRETTY_PRINT : 0));
     return $json;
+  }
+  
+  
+
+  /**
+   * Gets associative array of parentpartnumber => URL
+   * 
+   * @param string $brand
+   * @return void
+   */
+  private function getProductUrls($brand) {
+    $skusToUrls = [];
+    // I only have data for maytag for now
+    if ('maytag' == $brand) {
+      $filePath = realpath(APPLICATION_PATH . '/../data/source-xml/Maytag_product_feed_en_CA.txt');
+      if (!$filePath) {
+        return;
+      }
+      $fileHandle = fopen($filePath, 'r');
+      fgetcsv($fileHandle, 0, "\t"); // Skip headers
+      while ($row = fgetcsv($fileHandle, 0, "\t")) {
+        // NB the file actually has >1 URL per parent sku, cause they're actually
+        // for child skus, but also include parent sku. But because of the way this
+        // assignment works, we'll still end up with just one URL (doesn't matter
+        // which) per parent sku, which is what we want.
+        $skusToUrls[$row[11]] = $row[2];
+      }
+    }
+    return $skusToUrls;
   }
 
   private function getAssocParentSkus(FeedEntity\CatalogEntry $entry,
