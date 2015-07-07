@@ -73,6 +73,16 @@ class CatalogEntry extends AbstractSimpleRecord {
   public function getCatalogGroups() {
     return $this->catalogGroups;
   }
+  
+  public function isInGroupId($groupId) {
+    $allGroups = $this->getAllCatalogGroups();
+    foreach ($allGroups as $group) {
+      if ($group->identifier == $groupId) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   /**
    * @return CatalogEntryDescription or NULL if none set
@@ -185,4 +195,8 @@ class CatalogEntry extends AbstractSimpleRecord {
     return $this->prices;
   }
 
+  public function isTopLevel() {
+    return !$this->parentpartnumber;
+  }
+  
 }

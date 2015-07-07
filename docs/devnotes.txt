@@ -1,3 +1,31 @@
+laundry pairs logic:
+
+What I want is to associate top-level parts whenever >=1 of their children are associated.
+  --> what level is the pic on?
+    pics are descriptive attributes in the gallery group. each attr pertains to one
+    image of the gallery, and contains the urls to usually 3 different sizes, with '|' separator
+
+    there's no meta info, just a list of URLs. so have to rely on 'pair_' being part
+    of the url to find pair images. i guess use the 1st matching url, of the medium size
+
+Actually, more accurately I want to go through all top level parts in laundry pairs, and
+on finding a child associated to another child,
+  get the parent of the assoced child
+  create a key (alpha order of cur sku to assoc parent sku)
+  create a new 'pair' record with that key - b/c of alpha ordering, reverse assoc
+    won't be counted as a separate record.
+  the pair record will have flat combined list of all washer and dryer features
+
+------
+
+other pics:
+
+  and for images for non-laundry, just use the <fullimage> elmt of main entry record - they all have one
+
+they're all relative to maytag.com/digitalassets
+
+==========
+
 - for staging:
   - later maybe - put zend app dirs in proper structure so only public is exposed
 
