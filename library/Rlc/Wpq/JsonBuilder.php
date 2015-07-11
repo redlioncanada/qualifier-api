@@ -80,7 +80,7 @@ class JsonBuilder {
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $this->includeOnlyGroups);
     }
     $entries = $this->feedModelCache[$brand];
-    
+
     $productUrls = $this->getProductUrls($brand);
 
     $outputData = [];
@@ -137,7 +137,7 @@ class JsonBuilder {
         }
 
         $this->attachFeatureData($newOutputData, $entry, $locale);
-        
+
         $newOutputData['url'] = $productUrls[$entry->partnumber];
 
         $outputData[] = $newOutputData;
@@ -157,8 +157,6 @@ class JsonBuilder {
     $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJsonFiles ? JSON_PRETTY_PRINT : 0));
     return $json;
   }
-  
-  
 
   /**
    * Gets associative array of parentpartnumber => URL
@@ -168,7 +166,8 @@ class JsonBuilder {
    */
   private function getProductUrls($brand) {
     $skusToUrls = [];
-    // I only have data for maytag for now
+    // I only have data for maytag, en_CA for now
+    // TODO integrate other data
     if ('maytag' == $brand) {
       $filePath = realpath(APPLICATION_PATH . '/../data/source-xml/Maytag_product_feed_en_CA.txt');
       if (!$filePath) {
@@ -383,31 +382,6 @@ class JsonBuilder {
             $data['powerPreheat'] = false;
 
             if ($compareFeatureGroup) {
-              /*
-               * Dimensions
-               */
-              $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Width",
-              ]);
-              if ($widthAttr) {
-                $data['width'] = $widthAttr->value;
-              }
-              $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Height",
-              ]);
-              if ($heightAttr) {
-                $data['height'] = $heightAttr->value;
-              }
-              $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Depth",
-              ]);
-              if ($depthAttr) {
-                $data['depth'] = $depthAttr->value;
-              }
-
               $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
               if ($fuelTypeAttr) {
                 switch ($fuelTypeAttr->value) {
@@ -517,11 +491,6 @@ class JsonBuilder {
         /*
          * Fridge features
          */
-        $heightValues = [65.9, 67, 68, 69, 70, 71];
-        $widthValues = [30, 31, 32, 33, 34, 35, 36];
-        $data['height'] = $this->getRandomElement($heightValues);
-        $data['width'] = $this->getRandomElement($widthValues);
-
         $data['powerCold'] = $this->getRandomElement($boolValues);
         $data['topMount'] = $this->getRandomElement($boolValues);
         $data['bottomMount'] = $this->getRandomElement($boolValues);
@@ -545,6 +514,43 @@ class JsonBuilder {
         $data['image'] = $imageUrlPrefix . $entry->fullimage;
 
         break;
+    }
+
+    /*
+     * Use the same method of extracting physical dimensions for all these
+     * categories
+     */
+    if (in_array($data['appliance'], [
+          $this->applianceGroups['SC_Kitchen_Cooking'][$locale],
+          $this->applianceGroups['SC_Kitchen_Refrigeration_Refrigerators'][$locale]
+        ]) &&
+        $compareFeatureGroup) {
+      // Width
+      $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Width",
+      ]);
+      if ($widthAttr) {
+        $data['width'] = $widthAttr->value;
+      }
+
+      // Height
+      $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Height",
+      ]);
+      if ($heightAttr) {
+        $data['height'] = $heightAttr->value;
+      }
+
+      // Depth
+      $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Depth",
+      ]);
+      if ($depthAttr) {
+        $data['depth'] = $depthAttr->value;
+      }
     }
   }
 
