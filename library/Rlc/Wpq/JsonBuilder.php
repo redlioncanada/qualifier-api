@@ -80,7 +80,7 @@ class JsonBuilder {
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $this->includeOnlyGroups);
     }
     $entries = $this->feedModelCache[$brand];
-    
+
     $productUrls = $this->getProductUrls($brand);
 
     $outputData = [];
@@ -137,7 +137,7 @@ class JsonBuilder {
         }
 
         $this->attachFeatureData($newOutputData, $entry, $locale);
-        
+
         $newOutputData['url'] = $productUrls[$entry->partnumber];
 
         $outputData[] = $newOutputData;
@@ -157,8 +157,6 @@ class JsonBuilder {
     $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJsonFiles ? JSON_PRETTY_PRINT : 0));
     return $json;
   }
-  
-  
 
   /**
    * Gets associative array of parentpartnumber => URL
@@ -384,31 +382,6 @@ class JsonBuilder {
             $data['powerPreheat'] = false;
 
             if ($compareFeatureGroup) {
-              /*
-               * Dimensions
-               */
-              $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Width",
-              ]);
-              if ($widthAttr) {
-                $data['width'] = $widthAttr->value;
-              }
-              $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Height",
-              ]);
-              if ($heightAttr) {
-                $data['height'] = $heightAttr->value;
-              }
-              $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Depth",
-              ]);
-              if ($depthAttr) {
-                $data['depth'] = $depthAttr->value;
-              }
-
               $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
               if ($fuelTypeAttr) {
                 switch ($fuelTypeAttr->value) {
@@ -464,6 +437,36 @@ class JsonBuilder {
             /*
              * Wall Oven features
              */
+
+            if ($compareFeatureGroup) {
+              // Width
+              $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+                'description' => "Dimensions",
+                'valueidentifier' => "Width",
+              ]);
+              if ($widthAttr) {
+                $data['width'] = $widthAttr->value;
+              }
+
+              // Height
+              $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+                'description' => "Dimensions",
+                'valueidentifier' => "Height",
+              ]);
+              if ($heightAttr) {
+                $data['height'] = $heightAttr->value;
+              }
+
+              // Depth
+              $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+                'description' => "Dimensions",
+                'valueidentifier' => "Depth",
+              ]);
+              if ($depthAttr) {
+                $data['depth'] = $depthAttr->value;
+              }
+            }
+
             $data['combination'] = stripos($description->name, 'combination') !== false;
             // TODO should single just be the default, i.e. true iff double is false?
             $data['single'] = stripos($description->name, 'single') !== false;
