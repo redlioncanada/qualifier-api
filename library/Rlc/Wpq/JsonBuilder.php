@@ -437,36 +437,6 @@ class JsonBuilder {
             /*
              * Wall Oven features
              */
-
-            if ($compareFeatureGroup) {
-              // Width
-              $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Width",
-              ]);
-              if ($widthAttr) {
-                $data['width'] = $widthAttr->value;
-              }
-
-              // Height
-              $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Height",
-              ]);
-              if ($heightAttr) {
-                $data['height'] = $heightAttr->value;
-              }
-
-              // Depth
-              $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
-                'description' => "Dimensions",
-                'valueidentifier' => "Depth",
-              ]);
-              if ($depthAttr) {
-                $data['depth'] = $depthAttr->value;
-              }
-            }
-
             $data['combination'] = stripos($description->name, 'combination') !== false;
             // TODO should single just be the default, i.e. true iff double is false?
             $data['single'] = stripos($description->name, 'single') !== false;
@@ -521,11 +491,6 @@ class JsonBuilder {
         /*
          * Fridge features
          */
-        $heightValues = [65.9, 67, 68, 69, 70, 71];
-        $widthValues = [30, 31, 32, 33, 34, 35, 36];
-        $data['height'] = $this->getRandomElement($heightValues);
-        $data['width'] = $this->getRandomElement($widthValues);
-
         $data['powerCold'] = $this->getRandomElement($boolValues);
         $data['topMount'] = $this->getRandomElement($boolValues);
         $data['bottomMount'] = $this->getRandomElement($boolValues);
@@ -549,6 +514,43 @@ class JsonBuilder {
         $data['image'] = $imageUrlPrefix . $entry->fullimage;
 
         break;
+    }
+
+    /*
+     * Use the same method of extracting physical dimensions for all these
+     * categories
+     */
+    if (in_array($data['appliance'], [
+          $this->applianceGroups['SC_Kitchen_Cooking'][$locale],
+          $this->applianceGroups['SC_Kitchen_Refrigeration_Refrigerators'][$locale]
+        ]) &&
+        $compareFeatureGroup) {
+      // Width
+      $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Width",
+      ]);
+      if ($widthAttr) {
+        $data['width'] = $widthAttr->value;
+      }
+
+      // Height
+      $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Height",
+      ]);
+      if ($heightAttr) {
+        $data['height'] = $heightAttr->value;
+      }
+
+      // Depth
+      $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Depth",
+      ]);
+      if ($depthAttr) {
+        $data['depth'] = $depthAttr->value;
+      }
     }
   }
 
