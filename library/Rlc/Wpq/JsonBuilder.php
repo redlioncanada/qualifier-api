@@ -168,7 +168,8 @@ class JsonBuilder {
    */
   private function getProductUrls($brand) {
     $skusToUrls = [];
-    // I only have data for maytag for now
+    // I only have data for maytag, en_CA for now
+    // TODO integrate other data
     if ('maytag' == $brand) {
       $filePath = realpath(APPLICATION_PATH . '/../data/source-xml/Maytag_product_feed_en_CA.txt');
       if (!$filePath) {
