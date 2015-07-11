@@ -531,7 +531,7 @@ class JsonBuilder {
         'valueidentifier' => "Width",
       ]);
       if ($widthAttr) {
-        $data['width'] = $widthAttr->value;
+        $data['width'] = $this->formatPhysicalDimension($widthAttr->value);
       }
 
       // Height
@@ -540,7 +540,7 @@ class JsonBuilder {
         'valueidentifier' => "Height",
       ]);
       if ($heightAttr) {
-        $data['height'] = $heightAttr->value;
+        $data['height'] = $this->formatPhysicalDimension($heightAttr->value);
       }
 
       // Depth
@@ -549,9 +549,30 @@ class JsonBuilder {
         'valueidentifier' => "Depth",
       ]);
       if ($depthAttr) {
-        $data['depth'] = $depthAttr->value;
+        $data['depth'] = $this->formatPhysicalDimension($depthAttr->value);
       }
     }
+  }
+
+  /**
+   * If dimension is expressed as fraction, convert to decimal
+   * 
+   * @param string $dim
+   * @return double
+   */
+  private function formatPhysicalDimension($dim) {
+    $matches = [];
+    if (preg_match('@(\d+)\s+(\d+)/(\d+)@', $dim, $matches)) {
+      $wholeNumber = $matches[1];
+      $numerator = $matches[2];
+      $denominator = $matches[3];
+      $decimal = $numerator / $denominator;
+      $result = $wholeNumber + $decimal;
+    } else {
+      // Not in fraction format
+      $result = $dim;
+    }
+    return $result;
   }
 
   /**
