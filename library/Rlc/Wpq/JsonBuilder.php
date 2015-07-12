@@ -256,6 +256,9 @@ class JsonBuilder {
      * Washer features
      */
     $washerCompareFeatureGroup = $washer->getDescriptiveAttributeGroup('CompareFeature');
+    $dryerCompareFeatureGroup = $dryer->getDescriptiveAttributeGroup('CompareFeature');
+    $washerSalesFeatureGroup = $washer->getDescriptiveAttributeGroup('SalesFeature');
+    $dryerSalesFeatureGroup = $dryer->getDescriptiveAttributeGroup('SalesFeature');
 
     // Init to false
     $data['vibrationControl'] = false;
@@ -269,7 +272,13 @@ class JsonBuilder {
         (false !== stripos($washerDescription->longdescription, 'front load'))
         );
     $data['topLoad'] = !$data['frontLoad'];
-    
+
+    $data['rapidWash'] = false;
+    if ($washerSalesFeatureGroup) {
+      // Just has to exist
+      $data['rapidWash'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Wash Cycle"]);
+    }
+
     /*
      * Dryer features
      */
@@ -278,13 +287,26 @@ class JsonBuilder {
         (false !== stripos($dryerDescription->longdescription, 'soundguard'))
         );
 
+    // Stacked is actually a feature of both, but the value we look for is under
+    // the dryer attrs.
+    $data['stacked'] = false;
+    if ($dryerCompareFeatureGroup) {
+      $stackableAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Stackable"]);
+      if ($stackableAttr) {
+        $data['stacked'] = ("Yes" == $stackableAttr->value);
+      }
+    }
+
+    $data['rapidDry'] = false;
+    if ($dryerSalesFeatureGroup) {
+      // Just has to exist
+      $data['rapidDry'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Dry Cycle"]);
+    }
+
     /*
      * Mock features
      */
     $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
-    $data['stacked'] = $this->getRandomElement($boolValues);
-    $data['rapidWash'] = $this->getRandomElement($boolValues);
-    $data['rapidDry'] = $this->getRandomElement($boolValues);
     $data['cycleOptions'] = rand(8, 12);
     $data['sensorDry'] = $this->getRandomElement($boolValues);
     $data['wrinkleControl'] = $this->getRandomElement($boolValues);
