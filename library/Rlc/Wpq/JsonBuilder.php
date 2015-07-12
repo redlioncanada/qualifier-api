@@ -252,11 +252,36 @@ class JsonBuilder {
     $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescription->name);
     $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescription->name);
 
-    $data['soundGuard'] = $this->getRandomElement($boolValues);
-    $data['vibrationControl'] = $this->getRandomElement($boolValues);
-    $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
-    $data['frontLoad'] = $this->getRandomElement($boolValues);
+    /*
+     * Washer features
+     */
+    $washerCompareFeatureGroup = $washer->getDescriptiveAttributeGroup('CompareFeature');
+
+    // Init to false
+    $data['vibrationControl'] = false;
+    if ($washerCompareFeatureGroup) {
+      $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
+      $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
+    }
+
+    $data['frontLoad'] = (
+        (false !== stripos($washerDescription->name, 'front load')) ||
+        (false !== stripos($washerDescription->longdescription, 'front load'))
+        );
     $data['topLoad'] = !$data['frontLoad'];
+    
+    /*
+     * Dryer features
+     */
+    $data['soundGuard'] = (
+        (false !== stripos($dryerDescription->name, 'soundguard')) ||
+        (false !== stripos($dryerDescription->longdescription, 'soundguard'))
+        );
+
+    /*
+     * Mock features
+     */
+    $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
     $data['stacked'] = $this->getRandomElement($boolValues);
     $data['rapidWash'] = $this->getRandomElement($boolValues);
     $data['rapidDry'] = $this->getRandomElement($boolValues);
