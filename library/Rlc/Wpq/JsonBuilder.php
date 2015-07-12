@@ -225,40 +225,33 @@ class JsonBuilder {
     $washer = $entries[$laundryPair['washerSku']];
     $dryer = $entries[$laundryPair['dryerSku']];
 
+    $washerDescription = $washer->getDescription()->getRecord($locale);
+    $dryerDescription = $dryer->getDescription()->getRecord($locale);
+
     // Sku/Name/description
     $data['washerSku'] = $laundryPair['washerSku'];
     $data['dryerSku'] = $laundryPair['dryerSku'];
-    $washerDescription = $washer->getDescription()->getRecord($locale);
     $data['name'] = $washerDescription->name . ' ' . ServiceLocator::translator()->translate('and_dryer', $locale);
     $data['washerDescription'] = (string) $washerDescription->longdescription;
-    $dryerDescription = $dryer->getDescription()->getRecord($locale);
     $data['dryerDescription'] = (string) $dryerDescription->longdescription;
 
-    // Washer colours
+    // Washer colours - don't need dryer colours
     $washerChildEntries = $washer->getChildEntries();
     foreach ($washerChildEntries as $childEntry) {
       $childEntryData = $this->buildChildEntryData($childEntry, $locale);
-      $data['washerColours'][] = $childEntryData;
-    }
-
-    // Dryer colours
-    $dryerChildEntries = $dryer->getChildEntries();
-    foreach ($dryerChildEntries as $childEntry) {
-      $childEntryData = $this->buildChildEntryData($childEntry, $locale);
-      $data['dryerColours'][] = $childEntryData;
+      $data['colours'][] = $childEntryData;
     }
 
     /*
      * Laundry features
      */
-    $washerCapacityValues = [2.3, 2.6, 2.9, 3.2, 3.5, 3.8, 4.1, 4.4, 4.7, 5, 5.3,
-      5.6, 5.9, 6.1];
-    $dryerCapacityValues = [6.1, 6.5, 6.7, 7.0, 7.3];
+
     $audioLevelValues = [37, 47, 57];
     $boolValues = [true, false];
 
-    $data['washerCapacity'] = $this->getRandomElement($washerCapacityValues);
-    $data['dryerCapacity'] = $this->getRandomElement($dryerCapacityValues);
+    $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescription->name);
+    $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescription->name);
+
     $data['soundGuard'] = $this->getRandomElement($boolValues);
     $data['vibrationControl'] = $this->getRandomElement($boolValues);
     $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
