@@ -282,25 +282,36 @@ class JsonBuilder {
     /*
      * Dryer features
      */
+    // Init these to false to ensure they exist
+    $data['stacked'] = false;
+    $data['sensorDry'] = false;
+    $data['rapidDry'] = false;
+
     $data['soundGuard'] = (
         (false !== stripos($dryerDescription->name, 'soundguard')) ||
         (false !== stripos($dryerDescription->longdescription, 'soundguard'))
         );
 
-    // Stacked is actually a feature of both, but the value we look for is under
-    // the dryer attrs.
-    $data['stacked'] = false;
     if ($dryerCompareFeatureGroup) {
+      // Stacked is actually a feature of both, but the value we look for is under
+      // the dryer attrs.
       $stackableAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Stackable"]);
       if ($stackableAttr) {
         $data['stacked'] = ("Yes" == $stackableAttr->value);
       }
+
+      // Sensor dry
+      $moistureSensorAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Moisture Sensor"]);
+      if ($moistureSensorAttr) {
+        $data['sensorDry'] = ("Yes" == $moistureSensorAttr->value);
+      }
     }
 
-    $data['rapidDry'] = false;
     if ($dryerSalesFeatureGroup) {
       // Just has to exist
       $data['rapidDry'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Dry Cycle"]);
+      $data['wrinkleControl'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
+      $data['steamEnhanced'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
     }
 
     /*
