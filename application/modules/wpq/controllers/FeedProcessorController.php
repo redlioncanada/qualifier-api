@@ -22,7 +22,7 @@ class Wpq_FeedProcessorController extends Zend_Controller_Action {
       foreach ($locales as $locale) {
         $jsonFileManager->rebuildJson($brand, $locale);
         if ('development' == APPLICATION_ENV) {
-          echo "$brand, $locale<br>";
+          echo $jsonFileManager->getJsonFilename($brand, $locale) . "<br>";
         }
       }
     }
