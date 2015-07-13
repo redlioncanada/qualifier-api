@@ -25,18 +25,19 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
     $xmlReader = new Wpq\XmlReaderStandard($xmlPath);
     $feedModelBuilder = new Wpq\FeedModelBuilder($xmlReader);
     $jsonBuilder = new Wpq\JsonBuilder($feedModelBuilder);
-    
+
     $configPath = realpath(__DIR__ . '/../configs');
     $config = new Zend_Config_Ini($configPath . '/module.ini', APPLICATION_ENV, true);
     $locales = $config->locales->toArray();
     $config->defaultLocale = $locales[0];
-    
+
     $t11nStrings = json_decode(file_get_contents($configPath . '/strings.json'), true);
     $translator = new Lrr\Translator($t11nStrings, $config->defaultLocale);
-    
+
     $serviceLocator
         ->loadConfig($config)
         ->loadTranslator($translator)
+        ->loadUtil(new Wpq\Util())
         ->loadJsonFileManager(new Wpq\JsonFileManager($jsonPath, $jsonBuilder))
         ->catalogEntryFactory(function(\SimpleXMLElement $record) {
           return new FeedEntity\CatalogEntry($record);

@@ -7,12 +7,11 @@ use Lrr\ServiceLocator;
 class DescriptiveAttributeGroup {
 
   /**
-   * 2D array, first keyed by locale, then description
-   * E.g. to access the 'SalesStatus' record for en_CA: $this->records['en_CA']['SalesStatus']
+   * 2D array, first keyed by locale, then sequentially
    * 
    * @var DescriptiveAttribute[][]
    */
-  private $recordsByLocale = [];
+  private $attrsByLocale = [];
 
   /**
    * @var string
@@ -25,10 +24,10 @@ class DescriptiveAttributeGroup {
 
   public function loadRecord(\SimpleXMLElement $record) {
     $locale = (string) $record->locale;
-    if (!isset($this->recordsByLocale[$locale])) {
-      $this->recordsByLocale[$locale] = [];
+    if (!isset($this->attrsByLocale[$locale])) {
+      $this->attrsByLocale[$locale] = [];
     }
-    $this->recordsByLocale[$locale][] = ServiceLocator::descriptiveAttribute($record);
+    $this->attrsByLocale[$locale][] = ServiceLocator::descriptiveAttribute($record);
   }
 
   /**
@@ -44,21 +43,21 @@ class DescriptiveAttributeGroup {
     if (is_null($locale)) {
       $locale = $this->defaultLocale;
     }
-    if (isset($this->recordsByLocale[$locale])) {
+    if (isset($this->attrsByLocale[$locale])) {
       if (is_array($criteria) && count($criteria)) {
         $results = [];
-        foreach ($this->recordsByLocale[$locale] as $record) {
+        foreach ($this->attrsByLocale[$locale] as $attr) {
           foreach ($criteria as $field => $value) {
-            if ($value != $record->$field) {
+            if ($value != $attr->$field) {
               continue 2;
             }
           }
-          // If we reach here, add the record to the result set
-          $results[] = $record;
+          // If we reach here, add the attribute to the result set
+          $results[] = $attr;
         }
         return $results;
       } else {
-        return $this->recordsByLocale[$locale];
+        return $this->attrsByLocale[$locale];
       }
     } else {
       return [];
@@ -77,14 +76,14 @@ class DescriptiveAttributeGroup {
       $locale = $this->defaultLocale;
     }
 
-    foreach ($this->recordsByLocale[$locale] as $record) {
+    foreach ($this->attrsByLocale[$locale] as $attr) {
       foreach ($criteria as $field => $value) {
-        if ($value != $record->$field) {
+        if ($value != $attr->$field) {
           continue 2;
         }
       }
       // All values match in record
-      return $record;
+      return $attr;
     }
 
     // No matching records found

@@ -138,7 +138,7 @@ class JsonBuilder {
 
         $this->attachFeatureData($newOutputData, $entry, $locale);
 
-        $newOutputData['url'] = $productUrls[$entry->partnumber];
+        $newOutputData['url'] = isset($productUrls[$entry->partnumber]) ? $productUrls[$entry->partnumber] : null;
 
         $outputData[] = $newOutputData;
       }
@@ -252,6 +252,13 @@ class JsonBuilder {
     $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescription->name);
     $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescription->name);
 
+    // Init bools to false to ensure they exist
+    $data['vibrationControl'] = false;
+    $data['rapidWash'] = false;
+    $data['stacked'] = false;
+    $data['sensorDry'] = false;
+    $data['rapidDry'] = false;
+
     /*
      * Washer features
      */
@@ -260,11 +267,14 @@ class JsonBuilder {
     $washerSalesFeatureGroup = $washer->getDescriptiveAttributeGroup('SalesFeature');
     $dryerSalesFeatureGroup = $dryer->getDescriptiveAttributeGroup('SalesFeature');
 
-    // Init to false
-    $data['vibrationControl'] = false;
     if ($washerCompareFeatureGroup) {
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
       $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
+
+      $washCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
+      if ($washCyclesAttr) {
+        $data['cycleOptions'] = $washCyclesAttr->value;
+      }
     }
 
     $data['frontLoad'] = (
@@ -273,19 +283,16 @@ class JsonBuilder {
         );
     $data['topLoad'] = !$data['frontLoad'];
 
-    $data['rapidWash'] = false;
     if ($washerSalesFeatureGroup) {
       // Just has to exist
       $data['rapidWash'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Wash Cycle"]);
+      $data['washerWrinkleControl'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
+      $data['steamEnhanced'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
     }
 
     /*
      * Dryer features
      */
-    // Init these to false to ensure they exist
-    $data['stacked'] = false;
-    $data['sensorDry'] = false;
-    $data['rapidDry'] = false;
 
     $data['soundGuard'] = (
         (false !== stripos($dryerDescription->name, 'soundguard')) ||
@@ -310,20 +317,13 @@ class JsonBuilder {
     if ($dryerSalesFeatureGroup) {
       // Just has to exist
       $data['rapidDry'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Dry Cycle"]);
-      $data['wrinkleControl'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
-      $data['steamEnhanced'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
+      $data['dryerWrinkleControl'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
     }
 
     /*
      * Mock features
      */
     $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
-    $data['cycleOptions'] = rand(8, 12);
-    $data['sensorDry'] = $this->getRandomElement($boolValues);
-    $data['wrinkleControl'] = $this->getRandomElement($boolValues);
-    $data['steamEnhanced'] = $this->getRandomElement($boolValues);
-    $data['gas'] = $this->getRandomElement($boolValues);
-    $data['electric'] = !$data['gas'];
 
     /*
      * Pair image
@@ -433,6 +433,13 @@ class JsonBuilder {
             $data['powerPreheat'] = false;
 
             if ($compareFeatureGroup) {
+              $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Capacity (cu. ft.)"]);
+              if ($capacityAttr) {
+                $capacityNumbers = [];
+                preg_match_all('/\d+(?:\.\d+)/', $capacityAttr->value, $capacityNumbers);
+                $data['capacity'] = array_sum($capacityNumbers[0]); // sum of full pattern matches
+              }
+
               $fuelTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Fuel Type"]);
               if ($fuelTypeAttr) {
                 switch ($fuelTypeAttr->value) {
@@ -474,12 +481,9 @@ class JsonBuilder {
                 $data['powerPreheat'] = true;
               } else {
                 $powerPreheatAttr = $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Power Preheat"]);
-                $data['powerBurner'] = (bool) $powerPreheatAttr;
+                $data['powerPreheat'] = (bool) $powerPreheatAttr;
               }
             }
-
-            $capacityValues = [5, 6.2, 7];
-            $data['capacity'] = $this->getRandomElement($capacityValues);
 
           // break intentionally omitted: all wall oven features also
           // apply to ranges.
@@ -489,9 +493,8 @@ class JsonBuilder {
              * Wall Oven features
              */
             $data['combination'] = stripos($description->name, 'combination') !== false;
-            // TODO should single just be the default, i.e. true iff double is false?
-            $data['single'] = stripos($description->name, 'single') !== false;
             $data['double'] = stripos($description->name, 'double') !== false;
+            $data['single'] = !$data['double'];
             $data['trueConvection'] = (
                 stripos($description->name, 'evenair') !== false ||
                 stripos($description->longdescription, 'evenair') !== false ||
@@ -542,23 +545,54 @@ class JsonBuilder {
         /*
          * Fridge features
          */
-        $data['powerCold'] = $this->getRandomElement($boolValues);
-        $data['topMount'] = $this->getRandomElement($boolValues);
-        $data['bottomMount'] = $this->getRandomElement($boolValues);
-        $data['frenchDoor'] = $this->getRandomElement($boolValues);
-        $data['indoorDispenser'] = $this->getRandomElement($boolValues);
-        $data['counterDepth'] = $this->getRandomElement($boolValues);
-        $data['freshFlowProducePreserver'] = $this->getRandomElement($boolValues);
-        $data['tempControlPantry'] = $this->getRandomElement($boolValues);
-        $data['dualCool'] = $this->getRandomElement($boolValues);
+        // Init these to false
+        $data['powerCold'] = false;
+        $data['topMount'] = false;
+        $data['bottomMount'] = false;
+        $data['frenchDoor'] = false;
+        $data['indoorDispenser'] = false;
+
+        $data['counterDepth'] = (
+            stripos($description->name, 'counter depth') !== false ||
+            stripos($description->longdescription, 'counter depth') !== false
+            );
 
         if ($compareFeatureGroup) {
           // Capacity
-          // TODO should I give fridge capacity instead of total (which includes freezer?)
           $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Total Capacity"]);
           if ($capacityAttr) {
             $data['capacity'] = (float) preg_replace('/^(\d+(?:\.\d+)?).*$/', '$1', $capacityAttr->value);
           }
+
+          // top/bottom mount, french door
+          $fridgeTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Refrigerator Type"]);
+          if ($fridgeTypeAttr) {
+            if ("Top Mount" == $fridgeTypeAttr->value) {
+              $data['topMount'] = true;
+            } elseif ("French Door" == $fridgeTypeAttr->value) {
+              $data['frenchDoor'] = true;
+            }
+          }
+          $data['bottomMount'] = !($data['topMount'] || $data['frenchDoor']);
+
+          // In-door dispenser
+          $dispenserTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Dispenser Type"]);
+          if ($dispenserTypeAttr) {
+            $data['indoorDispenser'] = ('No Dispenser' != $dispenserTypeAttr->value);
+          }
+          
+          // temp-control pantry
+          $tempControlDrawersAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Temperature-Controlled Drawers"]);
+          if ($tempControlDrawersAttr) {
+            $data['tempControlPantry'] = ('No' != $tempControlDrawersAttr->value);
+          }
+        }
+
+        if ($salesFeatureGroup) {
+          // These just have to exist
+          $data['powerCold'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => json_decode('"PowerCold\u2122 Feature"')]);
+          $data['freshFlowProducePreserver'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"FreshFlow\u2122 produce preserver"')]);
+          $data['dualCool'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"Dual Cool\u00ae Evaporators"')]);
         }
 
         // Add image for fridges

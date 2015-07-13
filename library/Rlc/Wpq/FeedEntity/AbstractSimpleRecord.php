@@ -2,6 +2,8 @@
 
 namespace Rlc\Wpq\FeedEntity;
 
+use Lrr\ServiceLocator;
+
 /**
  * Pseudo-subclass wrapper for \SimpleXMLElement. Can't extend because no way to
  * control what class is returned from simplexml_read_file(), but objects of
@@ -28,7 +30,7 @@ abstract class AbstractSimpleRecord {
   }
 
   public function __get($name) {
-    return (string) $this->record->$name;
+    return ServiceLocator::util()->trim((string) $this->record->$name);
   }
 
 }
