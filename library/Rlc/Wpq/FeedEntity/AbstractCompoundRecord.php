@@ -2,6 +2,8 @@
 
 namespace Rlc\Wpq\FeedEntity;
 
+use Lrr\ServiceLocator;
+
 /**
  * Like {@see Simple}, but for an entity described by >1 <record>, e.g. that
  * has 1 record for each locale.
@@ -29,7 +31,7 @@ abstract class AbstractCompoundRecord {
   }
 
   public function __get($name) {
-    return (string) $this->getRecord()->$name;
+    return ServiceLocator::util()->trim((string) $this->getRecord()->$name);
   }
 
   /**
@@ -47,7 +49,7 @@ abstract class AbstractCompoundRecord {
     }
     return $this->records[$key];
   }
-  
+
   /**
    * Array of valid arguments to getRecord()
    * 
