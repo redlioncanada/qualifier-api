@@ -38,6 +38,14 @@ class JsonBuilder {
       'en_CA' => 'Dishwashers',
       'fr_CA' => 'Dishwashers',
     ],
+    'SC_Major_Appliances_Dishwashers_Dishwashers' => [ // KitchenAid
+      'en_CA' => 'Dishwashers',
+      'fr_CA' => 'Dishwashers',
+    ],
+    'SC_Kitchen_Dishwasher__Cleaning_Dishwashers' => [ // Whirlpool
+      'en_CA' => 'Dishwashers',
+      'fr_CA' => 'Dishwashers',
+    ],
     'SC_Kitchen_Refrigeration_Refrigerators' => [
       'en_CA' => 'Fridges',
       'fr_CA' => 'Fridges',
@@ -58,11 +66,13 @@ class JsonBuilder {
     ],
   ];
   private $includeOnlyGroups = [
-    'SC_Kitchen_Cooking_Ranges',
-    'SC_Kitchen_Cooking_Wall_Ovens',
+    // 'SC_Kitchen_Cooking_Ranges',
+    // 'SC_Kitchen_Cooking_Wall_Ovens',
     'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
-    'SC_Kitchen_Refrigeration_Refrigerators',
-    'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
+    // 'SC_Kitchen_Refrigeration_Refrigerators',
+    // 'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
+    'SC_Major_Appliances_Dishwashers_Dishwashers',
+    'SC_Kitchen_Dishwasher__Cleaning_Dishwashers',
   ];
 
   public function __construct(FeedModelBuilderInterface $feedModelBuilder) {
@@ -637,6 +647,24 @@ class JsonBuilder {
         $data['depth'] = $this->formatPhysicalDimension($depthAttr->value);
       }
     }
+
+
+
+            // TODO remove after dev - dump all non-endeca attributes for dev
+        foreach ($entry->getDescriptiveAttributeGroups() as $group) {
+          foreach ($group->getDescriptiveAttributes() as $attr) {
+            if (!in_array($attr->groupname, ["Endeca", "EndecaProps"])) {
+              $new = [];
+              foreach (['description', 'valueidentifier', 'value', 'noteinfo'] as $propName) {
+                $new[$propName] = $attr->$propName;
+              }
+              $data['descriptive-attrs'][$attr->groupname][] = $new;
+            }
+          }
+        }
+
+
+
   }
 
   /**

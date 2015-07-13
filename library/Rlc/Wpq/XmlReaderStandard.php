@@ -14,6 +14,8 @@ class XmlReaderStandard implements XmlReaderInterface {
    */
   private $filePrefixesByBrand = [
     'maytag' => 'MTG_CA_',
+    'kitchenaid' => 'KAD_CA_',
+    'whirlpool' => 'WP_CA_',
   ];
 
   function __construct($dataPath) {
