@@ -573,6 +573,7 @@ class JsonBuilder {
         $data['topMount'] = false;
         $data['bottomMount'] = false;
         $data['frenchDoor'] = false;
+        $sideBySide = false; // Not part of response, but part of logic
         $data['indoorDispenser'] = false;
 
         $data['counterDepth'] = (
@@ -594,16 +595,18 @@ class JsonBuilder {
               $data['topMount'] = true;
             } elseif ("French Door" == $fridgeTypeAttr->value) {
               $data['frenchDoor'] = true;
+            } elseif ("Side-by-Side" == $fridgeTypeAttr->value) {
+              $sideBySide = true;
             }
           }
-          $data['bottomMount'] = !($data['topMount'] || $data['frenchDoor']);
+          $data['bottomMount'] = !($data['topMount'] || $data['frenchDoor'] || $sideBySide);
 
           // In-door dispenser
           $dispenserTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Dispenser Type"]);
           if ($dispenserTypeAttr) {
             $data['indoorDispenser'] = ('No Dispenser' != $dispenserTypeAttr->value);
           }
-          
+
           // temp-control pantry
           $tempControlDrawersAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Temperature-Controlled Drawers"]);
           if ($tempControlDrawersAttr) {
