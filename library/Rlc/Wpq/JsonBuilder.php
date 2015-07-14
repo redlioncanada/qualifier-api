@@ -106,7 +106,7 @@ class JsonBuilder {
           sort($vPairKey);
           $pairKey = implode('|', $vPairKey);
           if (!isset($laundryPairs[$pairKey])) {
-            if ($entry->isInGroupId('MC_Laundry_Laundry_Appliances_Washers')) {
+            if ($entry->isInGroupId('SC_Laundry_Laundry_Appliances_Washers')) {
               // Current product is washer
               $washerSku = $entry->partnumber;
               $dryerSku = $assocParentSku;
