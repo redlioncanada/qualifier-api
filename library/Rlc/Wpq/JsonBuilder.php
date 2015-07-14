@@ -106,7 +106,7 @@ class JsonBuilder {
           sort($vPairKey);
           $pairKey = implode('|', $vPairKey);
           if (!isset($laundryPairs[$pairKey])) {
-            if ($entry->isInGroupId('MC_Laundry_Laundry_Appliances_Washers')) {
+            if ($entry->isInGroupId('SC_Laundry_Laundry_Appliances_Washers')) {
               // Current product is washer
               $washerSku = $entry->partnumber;
               $dryerSku = $assocParentSku;
@@ -226,7 +226,9 @@ class JsonBuilder {
     $dryer = $entries[$laundryPair['dryerSku']];
 
     $washerDescription = $washer->getDescription()->getRecord($locale);
+    $washerDescriptionDefaultLocale = $washer->getDescription()->getRecord();
     $dryerDescription = $dryer->getDescription()->getRecord($locale);
+    $dryerDescriptionDefaultLocale = $dryer->getDescription()->getRecord();
 
     // Sku/Name/description
     $data['washerSku'] = $laundryPair['washerSku'];
@@ -235,29 +237,49 @@ class JsonBuilder {
     $data['washerDescription'] = (string) $washerDescription->longdescription;
     $data['dryerDescription'] = (string) $dryerDescription->longdescription;
 
-    // Washer colours - don't need dryer colours
+    /*
+     * Combine washer/dryer colours for pairs - all members of pairs seem to
+     * come in the same corresponding colours.
+     */
     $washerChildEntries = $washer->getChildEntries();
+    $dryerChildEntries = $dryer->getChildEntries();
+    $washerColours = $dryerColoursByCode = [];
     foreach ($washerChildEntries as $childEntry) {
       $childEntryData = $this->buildChildEntryData($childEntry, $locale);
-      $data['colours'][] = $childEntryData;
+      $washerColours[] = $childEntryData;
+    }
+    // Index dryer colours by code so they can be plucked out in the next loop
+    foreach ($dryerChildEntries as $childEntry) {
+      $childEntryData = $this->buildChildEntryData($childEntry, $locale);
+      $dryerColoursByCode[$childEntryData['colourCode']] = $childEntryData;
+    }
+    // Combine together, assuming codes will match
+    $data['colours'] = [];
+    foreach ($washerColours as $washerColour) {
+      $dryerColour = $dryerColoursByCode[$washerColour['colourCode']];
+      $newColour = [
+        'name' => $washerColour['colourName'],
+        'sku' => $washerColour['sku'],
+        'code' => $washerColour['colourCode'],
+        'washerPrices' => $washerColour['prices'],
+        'dryerPrices' => $dryerColour['prices'],
+      ];
+      $data['colours'][] = $newColour;
     }
 
     /*
      * Laundry features
      */
+    $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescriptionDefaultLocale->name);
+    $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescriptionDefaultLocale->name);
 
-    $audioLevelValues = [37, 47, 57];
-    $boolValues = [true, false];
-
-    $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescription->name);
-    $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescription->name);
-
-    // Init bools to false to ensure they exist
+    // Init some values to ensure they exist
     $data['vibrationControl'] = false;
     $data['rapidWash'] = false;
     $data['stacked'] = false;
     $data['sensorDry'] = false;
     $data['rapidDry'] = false;
+    $data['cycleOptions'] = 0;
 
     /*
      * Washer features
@@ -269,17 +291,23 @@ class JsonBuilder {
 
     if ($washerCompareFeatureGroup) {
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
-      $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
+      if ($avcAttr) {
+        $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
+      }
 
-      $washCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
-      if ($washCyclesAttr) {
-        $data['cycleOptions'] = $washCyclesAttr->value;
+      $washerCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
+      if ($washerCyclesAttr) {
+        $data['cycleOptions'] += $washerCyclesAttr->value;
+      }
+      $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
+      if ($dryerCyclesAttr) {
+        $data['cycleOptions'] += $dryerCyclesAttr->value;
       }
     }
 
     $data['frontLoad'] = (
-        (false !== stripos($washerDescription->name, 'front load')) ||
-        (false !== stripos($washerDescription->longdescription, 'front load'))
+        (false !== stripos($washerDescriptionDefaultLocale->name, 'front load')) ||
+        (false !== stripos($washerDescriptionDefaultLocale->longdescription, 'front load'))
         );
     $data['topLoad'] = !$data['frontLoad'];
 
@@ -319,11 +347,6 @@ class JsonBuilder {
       $data['rapidDry'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Dry Cycle"]);
       $data['dryerWrinkleControl'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
     }
-
-    /*
-     * Mock features
-     */
-    $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
 
     /*
      * Pair image
@@ -550,6 +573,7 @@ class JsonBuilder {
         $data['topMount'] = false;
         $data['bottomMount'] = false;
         $data['frenchDoor'] = false;
+        $sideBySide = false; // Not part of response, but part of logic
         $data['indoorDispenser'] = false;
 
         $data['counterDepth'] = (
@@ -571,16 +595,18 @@ class JsonBuilder {
               $data['topMount'] = true;
             } elseif ("French Door" == $fridgeTypeAttr->value) {
               $data['frenchDoor'] = true;
+            } elseif ("Side-by-Side" == $fridgeTypeAttr->value) {
+              $sideBySide = true;
             }
           }
-          $data['bottomMount'] = !($data['topMount'] || $data['frenchDoor']);
+          $data['bottomMount'] = !($data['topMount'] || $data['frenchDoor'] || $sideBySide);
 
           // In-door dispenser
           $dispenserTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Dispenser Type"]);
           if ($dispenserTypeAttr) {
             $data['indoorDispenser'] = ('No Dispenser' != $dispenserTypeAttr->value);
           }
-          
+
           // temp-control pantry
           $tempControlDrawersAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Temperature-Controlled Drawers"]);
           if ($tempControlDrawersAttr) {
