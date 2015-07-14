@@ -237,11 +237,34 @@ class JsonBuilder {
     $data['washerDescription'] = (string) $washerDescription->longdescription;
     $data['dryerDescription'] = (string) $dryerDescription->longdescription;
 
-    // Washer colours - don't need dryer colours
+    /*
+     * Combine washer/dryer colours for pairs - all members of pairs seem to
+     * come in the same corresponding colours.
+     */
     $washerChildEntries = $washer->getChildEntries();
+    $dryerChildEntries = $dryer->getChildEntries();
+    $washerColours = $dryerColoursByCode = [];
     foreach ($washerChildEntries as $childEntry) {
       $childEntryData = $this->buildChildEntryData($childEntry, $locale);
-      $data['colours'][] = $childEntryData;
+      $washerColours[] = $childEntryData;
+    }
+    // Index dryer colours by code so they can be plucked out in the next loop
+    foreach ($dryerChildEntries as $childEntry) {
+      $childEntryData = $this->buildChildEntryData($childEntry, $locale);
+      $dryerColoursByCode[$childEntryData['colourCode']] = $childEntryData;
+    }
+    // Combine together, assuming codes will match
+    $data['colours'] = [];
+    foreach ($washerColours as $washerColour) {
+      $dryerColour = $dryerColoursByCode[$washerColour['colourCode']];
+      $newColour = [
+        'name' => $washerColour['colourName'],
+        'sku' => $washerColour['sku'],
+        'code' => $washerColour['colourCode'],
+        'washerPrices' => $washerColour['prices'],
+        'dryerPrices' => $dryerColour['prices'],
+      ];
+      $data['colours'][] = $newColour;
     }
 
     /*
