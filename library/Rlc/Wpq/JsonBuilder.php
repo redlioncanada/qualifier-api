@@ -259,8 +259,9 @@ class JsonBuilder {
       $dryerColour = $dryerColoursByCode[$washerColour['colourCode']];
       $newColour = [
         'name' => $washerColour['colourName'],
-        'sku' => $washerColour['sku'],
         'code' => $washerColour['colourCode'],
+        'washerSku' => $washerColour['sku'],
+        'dryerSku' => $dryerColour['sku'],
         'washerPrices' => $washerColour['prices'],
         'dryerPrices' => $dryerColour['prices'],
       ];
