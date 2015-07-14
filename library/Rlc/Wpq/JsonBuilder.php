@@ -226,7 +226,9 @@ class JsonBuilder {
     $dryer = $entries[$laundryPair['dryerSku']];
 
     $washerDescription = $washer->getDescription()->getRecord($locale);
+    $washerDescriptionDefaultLocale = $washer->getDescription()->getRecord();
     $dryerDescription = $dryer->getDescription()->getRecord($locale);
+    $dryerDescriptionDefaultLocale = $dryer->getDescription()->getRecord();
 
     // Sku/Name/description
     $data['washerSku'] = $laundryPair['washerSku'];
@@ -245,19 +247,16 @@ class JsonBuilder {
     /*
      * Laundry features
      */
+    $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescriptionDefaultLocale->name);
+    $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescriptionDefaultLocale->name);
 
-    $audioLevelValues = [37, 47, 57];
-    $boolValues = [true, false];
-
-    $data['washerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescription->name);
-    $data['dryerCapacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $dryerDescription->name);
-
-    // Init bools to false to ensure they exist
+    // Init some values to ensure they exist
     $data['vibrationControl'] = false;
     $data['rapidWash'] = false;
     $data['stacked'] = false;
     $data['sensorDry'] = false;
     $data['rapidDry'] = false;
+    $data['cycleOptions'] = 0;
 
     /*
      * Washer features
@@ -269,17 +268,23 @@ class JsonBuilder {
 
     if ($washerCompareFeatureGroup) {
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
-      $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
+      if ($avcAttr) {
+        $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
+      }
 
-      $washCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
-      if ($washCyclesAttr) {
-        $data['cycleOptions'] = $washCyclesAttr->value;
+      $washerCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
+      if ($washerCyclesAttr) {
+        $data['cycleOptions'] += $washerCyclesAttr->value;
+      }
+      $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
+      if ($dryerCyclesAttr) {
+        $data['cycleOptions'] += $dryerCyclesAttr->value;
       }
     }
 
     $data['frontLoad'] = (
-        (false !== stripos($washerDescription->name, 'front load')) ||
-        (false !== stripos($washerDescription->longdescription, 'front load'))
+        (false !== stripos($washerDescriptionDefaultLocale->name, 'front load')) ||
+        (false !== stripos($washerDescriptionDefaultLocale->longdescription, 'front load'))
         );
     $data['topLoad'] = !$data['frontLoad'];
 
@@ -319,11 +324,6 @@ class JsonBuilder {
       $data['rapidDry'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Dry Cycle"]);
       $data['dryerWrinkleControl'] = (bool) $dryerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
     }
-
-    /*
-     * Mock features
-     */
-    $data['audioLevel'] = $this->getRandomElement($audioLevelValues);
 
     /*
      * Pair image
