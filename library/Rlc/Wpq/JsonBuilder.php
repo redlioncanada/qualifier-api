@@ -66,11 +66,11 @@ class JsonBuilder {
     ],
   ];
   private $includeOnlyGroups = [
-    // 'SC_Kitchen_Cooking_Ranges',
-    // 'SC_Kitchen_Cooking_Wall_Ovens',
+    'SC_Kitchen_Cooking_Ranges',
+    'SC_Kitchen_Cooking_Wall_Ovens',
     'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
-    // 'SC_Kitchen_Refrigeration_Refrigerators',
-    // 'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
+    'SC_Kitchen_Refrigeration_Refrigerators',
+    'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
     'SC_Major_Appliances_Dishwashers_Dishwashers',
     'SC_Kitchen_Dishwasher__Cleaning_Dishwashers',
   ];
@@ -590,7 +590,7 @@ class JsonBuilder {
           if ($dispenserTypeAttr) {
             $data['indoorDispenser'] = ('No Dispenser' != $dispenserTypeAttr->value);
           }
-          
+
           // temp-control pantry
           $tempControlDrawersAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Temperature-Controlled Drawers"]);
           if ($tempControlDrawersAttr) {
@@ -647,24 +647,6 @@ class JsonBuilder {
         $data['depth'] = $this->formatPhysicalDimension($depthAttr->value);
       }
     }
-
-
-
-            // TODO remove after dev - dump all non-endeca attributes for dev
-        foreach ($entry->getDescriptiveAttributeGroups() as $group) {
-          foreach ($group->getDescriptiveAttributes() as $attr) {
-            if (!in_array($attr->groupname, ["Endeca", "EndecaProps"])) {
-              $new = [];
-              foreach (['description', 'valueidentifier', 'value', 'noteinfo'] as $propName) {
-                $new[$propName] = $attr->$propName;
-              }
-              $data['descriptive-attrs'][$attr->groupname][] = $new;
-            }
-          }
-        }
-
-
-
   }
 
   /**
