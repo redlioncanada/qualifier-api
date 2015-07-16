@@ -433,7 +433,6 @@ class JsonBuilder {
   private function attachFeatureData(array &$data,
       FeedEntity\CatalogEntry $entry, $locale) {
     // Get some stuff that's used for all/most categories
-    $boolValues = [true, false];
     $description = $entry->getDescription(); // property retrieval will use default locale
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
@@ -454,7 +453,6 @@ class JsonBuilder {
             $data['maxCapacity'] = false;
             $data['warmingDrawer'] = false;
             $data['powerBurner'] = false;
-            $data['powerPreheat'] = false;
 
             if ($compareFeatureGroup) {
               $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Capacity (cu. ft.)"]);
@@ -485,7 +483,9 @@ class JsonBuilder {
               if ($drawerTypeAttr && 'Warming Drawer' == $drawerTypeAttr->value) {
                 $data['warmingDrawer'] = true;
               }
+            }
 
+            if ($salesFeatureGroup) {
               $powerBurnerSearchString = json_decode('"Power\u2122 burner"');
               if (stripos($description->longdescription, $powerBurnerSearchString) !== false) {
                 $data['powerBurner'] = true;
@@ -500,13 +500,6 @@ class JsonBuilder {
                   }
                 }
               }
-
-              if (stripos($description->longdescription, "power preheat") !== false) {
-                $data['powerPreheat'] = true;
-              } else {
-                $powerPreheatAttr = $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Power Preheat"]);
-                $data['powerPreheat'] = (bool) $powerPreheatAttr;
-              }
             }
 
           // break intentionally omitted: all wall oven features also
@@ -516,6 +509,9 @@ class JsonBuilder {
             /*
              * Wall Oven features
              */
+            // Default bools to false
+            $data['powerPreheat'] = false;
+
             $data['combination'] = stripos($description->name, 'combination') !== false;
             $data['double'] = stripos($description->name, 'double') !== false;
             $data['single'] = !$data['double'];
@@ -525,6 +521,15 @@ class JsonBuilder {
                 stripos($description->name, 'true convection') !== false ||
                 stripos($description->longdescription, 'true convection') !== false
                 );
+
+            if ($salesFeatureGroup) {
+              if (stripos($description->longdescription, "power preheat") !== false) {
+                $data['powerPreheat'] = true;
+              } else {
+                $powerPreheatAttr = $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Power Preheat"]);
+                $data['powerPreheat'] = (bool) $powerPreheatAttr;
+              }
+            }
             break;
         }
 
@@ -576,6 +581,7 @@ class JsonBuilder {
         $data['frenchDoor'] = false;
         $sideBySide = false; // Not part of response, but part of logic
         $data['indoorDispenser'] = false;
+        $data['factoryInstalledIceMaker'] = false;
 
         $data['counterDepth'] = (
             stripos($description->name, 'counter depth') !== false ||
@@ -620,6 +626,7 @@ class JsonBuilder {
           $data['powerCold'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => json_decode('"PowerCold\u2122 Feature"')]);
           $data['freshFlowProducePreserver'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"FreshFlow\u2122 produce preserver"')]);
           $data['dualCool'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"Dual Cool\u00ae Evaporators"')]);
+          $data['factoryInstalledIceMaker'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]);
         }
 
         // Add image for fridges
