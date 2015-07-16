@@ -581,6 +581,7 @@ class JsonBuilder {
         $data['frenchDoor'] = false;
         $sideBySide = false; // Not part of response, but part of logic
         $data['indoorDispenser'] = false;
+        $data['factoryInstalledIceMaker'] = false;
 
         $data['counterDepth'] = (
             stripos($description->name, 'counter depth') !== false ||
@@ -625,6 +626,7 @@ class JsonBuilder {
           $data['powerCold'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => json_decode('"PowerCold\u2122 Feature"')]);
           $data['freshFlowProducePreserver'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"FreshFlow\u2122 produce preserver"')]);
           $data['dualCool'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"Dual Cool\u00ae Evaporators"')]);
+          $data['factoryInstalledIceMaker'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]);
         }
 
         // Add image for fridges
