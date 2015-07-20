@@ -1,0 +1,28 @@
+{
+  "maytag": {
+    "Cooking": {
+      "Power Preheat": "powerPreheat",
+      "/Power\\b.+?Burner/i": "powerBurner"
+    },
+    "Dishwashers": {
+      "Premium Rack Adjusters": "premiumAdjusters"
+    },
+    "Fridges": {
+      "Dual Cool\u00ae Evaporators": "dualCool",
+      "Factory-Installed Ice Maker": "factoryInstalledIceMaker",
+      "FreshFlow\u2122 produce preserver": "freshFlowProducePreserver",
+      "PowerCold\u2122 Feature": "powerCold"
+    },
+    "Laundry": {
+      "Dryers": {
+        "Rapid Dry Cycle": "rapidDry",
+        "Wrinkle Control Cycle": "dryerWrinkleControl"
+      },
+      "Washers": {
+        "Rapid Wash Cycle": "rapidWash",
+        "Steam-Enhanced Cycles": "steamEnhanced",
+        "Wrinkle Control Cycle": "washerWrinkleControl"
+      }
+    }
+  }
+}

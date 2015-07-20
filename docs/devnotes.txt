@@ -1,4 +1,12 @@
+next, put the logic in for laundry too, then look for the french ones
+
 look for other associations between salesfeatures and qualified features that i haven't actually used but still exist?
+
+------
+
+# XML Feed errors
+
+MGS8880DS has two power burner features, one 17K BTU and one 15K BTU
 
 =======
 
