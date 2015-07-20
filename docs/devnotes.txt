@@ -1,3 +1,7 @@
+look for other associations between salesfeatures and qualified features that i haven't actually used but still exist?
+
+=======
+
 laundry pairs logic:
 
 What I want is to associate top-level parts whenever >=1 of their children are associated.
