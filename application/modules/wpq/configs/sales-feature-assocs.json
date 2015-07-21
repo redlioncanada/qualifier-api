@@ -2,7 +2,13 @@
   "maytag": {
     "Cooking": {
       "Power Preheat": "powerPreheat",
-      "/Power\\b.+?Burner/i": "powerBurner"
+      "/Power\\b.+?Burner/i": "powerBurner",
+      "/Br\u00fbleur Power\u2122/i": "powerBurner",
+      "/capacity$/i": "capacity",
+      "/^capacit\u00e9/i": "capacity",
+      "/true\\s+convection/i": "trueConvection",
+      "/double\\s+oven/i": "double",
+      "/four\\s+double/i": "double"
     },
     "Dishwashers": {
       "Premium Rack Adjusters": "premiumAdjusters"
