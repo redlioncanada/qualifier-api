@@ -376,6 +376,36 @@ class JsonBuilder {
       $data['image'] = $imageUrlPrefix . '/No Image Available/Standalone_244X312.png';
     }
 
+    /*
+     * Attach sales feature data
+     */
+    $data['salesFeatures'] = [];
+
+    // Washers
+    foreach ($washerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+      $new = [
+        // Check if it's a qualified feature and put in the association
+        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Washers'),
+        'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
+        'headline' => $localizedSalesFeature->valueidentifier,
+        'description' => $localizedSalesFeature->noteinfo,
+      ];
+
+      $data['salesFeatures'][] = $new;
+    }
+
+    // Dryers
+    foreach ($dryerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+      $new = [
+        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Dryers'),
+        'top3' => ($localizedSalesFeature->valuesequence <= 3),
+        'headline' => $localizedSalesFeature->valueidentifier,
+        'description' => $localizedSalesFeature->noteinfo,
+      ];
+
+      $data['salesFeatures'][] = $new;
+    }
+
     return $data;
   }
 
@@ -685,7 +715,6 @@ class JsonBuilder {
         'headline' => $localizedSalesFeature->valueidentifier,
         'description' => $localizedSalesFeature->noteinfo,
       ];
-
 
       $data['salesFeatures'][] = $new;
     }
