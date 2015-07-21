@@ -58,10 +58,10 @@ class JsonBuilder {
     ],
   ];
   private $includeOnlyGroups = [
-    'SC_Kitchen_Cooking_Ranges',
-    'SC_Kitchen_Cooking_Wall_Ovens',
-    'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
-    'SC_Kitchen_Refrigeration_Refrigerators',
+//    'SC_Kitchen_Cooking_Ranges',
+//    'SC_Kitchen_Cooking_Wall_Ovens',
+//    'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
+//    'SC_Kitchen_Refrigeration_Refrigerators',
     'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
   ];
 
@@ -317,6 +317,8 @@ class JsonBuilder {
       $data['rapidWash'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Wash Cycle"]);
       $data['washerWrinkleControl'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
       $data['steamEnhanced'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
+      // TODO or this too? $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Dryer"])
+      // Depends on if this has to do with dryer -- waiting for answer from RLC
     }
 
     /*
@@ -395,15 +397,32 @@ class JsonBuilder {
     }
 
     // Dryers
-    foreach ($dryerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
-      $new = [
-        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Dryers'),
-        'top3' => ($localizedSalesFeature->valuesequence <= 3),
-        'headline' => $localizedSalesFeature->valueidentifier,
-        'description' => $localizedSalesFeature->noteinfo,
-      ];
+//    foreach ($dryerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+//      $new = [
+//        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Dryers'),
+//        'top3' => ($localizedSalesFeature->valuesequence <= 3),
+//        'headline' => $localizedSalesFeature->valueidentifier,
+//        'description' => $localizedSalesFeature->noteinfo,
+//      ];
+//
+//      $data['salesFeatures'][] = $new;
+//    }
 
-      $data['salesFeatures'][] = $new;
+    foreach ($washer->getDescriptiveAttributeGroups() as $grpName => $grp) {
+      if ("SalesFeature" !== $grpName) {
+        continue;
+      }
+      foreach ($grp->getDescriptiveAttributes() as $attr) {
+        if ($attr->valuesequence != $attr->sequence) {
+          echo "WHOA! $attr->partnumber<Br>";
+        }
+        $data['descr-attrs'][$grpName][] = [
+          'valueidentifier' => $attr->valueidentifier,
+          'noteinfo' => $attr->noteinfo,
+          'valuesequence' => $attr->valuesequence,
+          'sequence' => $attr->sequence,
+        ];
+      }
     }
 
     return $data;
@@ -613,6 +632,7 @@ class JsonBuilder {
         $sideBySide = false; // Not part of response, but part of logic
         $data['indoorDispenser'] = false;
         $data['factoryInstalledIceMaker'] = false;
+        $data['tempControlPantry'] = false;
 
         $data['counterDepth'] = (
             stripos($description->name, 'counter depth') !== false ||
@@ -657,7 +677,10 @@ class JsonBuilder {
           $data['powerCold'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => json_decode('"PowerCold\u2122 Feature"')]);
           $data['freshFlowProducePreserver'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"FreshFlow\u2122 produce preserver"')]);
           $data['dualCool'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"Dual Cool\u00ae Evaporators"')]);
-          $data['factoryInstalledIceMaker'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]);
+          $data['factoryInstalledIceMaker'] = (
+              $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]) ||
+              $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory Installed Ice Maker"])
+              );
         }
 
         // Add image for fridges

@@ -1,9 +1,10 @@
 {
   "maytag": {
     "Cooking": {
-      "Power Preheat": "powerPreheat",
+      "/Power\\s+Preheat/i": "powerPreheat",
+      "/Pr\u00e9chauffage\\s+rapide/i": "powerPreheat",
       "/Power\\b.+?Burner/i": "powerBurner",
-      "/Br\u00fbleur Power\u2122/i": "powerBurner",
+      "/Br\u00fbleur\\s+Power\u2122/i": "powerBurner",
       "/capacity$/i": "capacity",
       "/^capacit\u00e9/i": "capacity",
       "/true\\s+convection/i": "trueConvection",
@@ -11,22 +12,42 @@
       "/four\\s+double/i": "double"
     },
     "Dishwashers": {
-      "Premium Rack Adjusters": "premiumAdjusters"
+      "Premium Rack Adjusters": "premiumAdjusters",
+      "/quiet/i": "decibels",
+      "/\\bdBA\\b/": "decibels"
     },
     "Fridges": {
       "Dual Cool\u00ae Evaporators": "dualCool",
-      "Factory-Installed Ice Maker": "factoryInstalledIceMaker",
+      "\u00c9vaporateurs Dual Cool\u00ae": "dualCool",
+      "Machine \u00e0 gla\u00e7ons install\u00e9e en usine": "factoryInstalledIceMaker",
       "FreshFlow\u2122 produce preserver": "freshFlowProducePreserver",
-      "PowerCold\u2122 Feature": "powerCold"
+      "Conservateur de fruits et l\u00e9gumes FreshFlow\u2122": "freshFlowProducePreserver",
+      "PowerCold\u2122 Feature": "powerCold",
+      "Fonction PowerCold\u2122": "powerCold",
+      "/Factory[ -]Installed Ice Maker/i": "factoryInstalledIceMaker",
+      "/capacity$/i": "capacity",
+      "/^capacit\u00e9/i": "capacity"
     },
     "Laundry-Dryers": {
       "Rapid Dry Cycle": "rapidDry",
-      "Wrinkle Control Cycle": "dryerWrinkleControl"
+      "Programme de s\u00e9chage rapide": "rapidDry",
+      "Wrinkle Control Cycle": "dryerWrinkleControl",
+      "Extra-Large Capacity": "capacity",
+      "Tr\u00e8s grande capacit\u00e9": "capacity",
+      "SoundGuard\u00ae Stainless Steel Dryer Drum": "soundGuard",
+      "Tambour de s\u00e9cheuse en acier inoxydable SoundGuard\u2122": "soundGuard"
     },
     "Laundry-Washers": {
       "Rapid Wash Cycle": "rapidWash",
       "Steam-Enhanced Cycles": "steamEnhanced",
-      "Wrinkle Control Cycle": "washerWrinkleControl"
+      "Wrinkle Control Cycle": "washerWrinkleControl",
+
+      "Tr\u00e8s grande capacit\u00e9 pour nettoyer les plus grosses brass\u00e9es": "capacity",
+      "Extra-Large Capacity to Clean Your Largest Loads": "capacity",
+
+
+      "/I\\.E\\.C\\. Capacity$/i": "capacity",
+      "/^Capacit\u00e9 de/i": "capacity"
     }
   }
 }

@@ -1,6 +1,8 @@
-next, put the logic in for laundry too, then look for the french ones
+next is vibration control. currently on washers which is the last one remaining
 
-look for other associations between salesfeatures and qualified features that i haven't actually used but still exist?
+dryers-
+wrinkle control cycle vs wrinkle prevent option -- currently only considering former. should it be +1 for each? maybe they only come together anyway
+yeah, for the 7 pairs we qualify, each of these occurs 4 times
 
 ------
 
