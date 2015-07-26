@@ -7,14 +7,14 @@
       "/Br\u00fbleur\\s+Power\u2122/i": "powerBurner",
       "/capacity$/i": "capacity",
       "/^capacit\u00e9/i": "capacity",
+      "/evenair/i": "trueConvection",
       "/true\\s+convection/i": "trueConvection",
       "/double\\s+oven/i": "double",
       "/four\\s+double/i": "double"
     },
     "Dishwashers": {
       "Premium Rack Adjusters": "premiumAdjusters",
-      "/quiet/i": "decibels",
-      "/\\bdBA\\b/": "decibels"
+      "/\\d+\\s+dBA\\b/": "decibels"
     },
     "Fridges": {
       "Dual Cool\u00ae Evaporators": "dualCool",
@@ -41,13 +41,12 @@
       "Rapid Wash Cycle": "rapidWash",
       "Steam-Enhanced Cycles": "steamEnhanced",
       "Wrinkle Control Cycle": "washerWrinkleControl",
-
       "Tr\u00e8s grande capacit\u00e9 pour nettoyer les plus grosses brass\u00e9es": "capacity",
       "Extra-Large Capacity to Clean Your Largest Loads": "capacity",
-
-
       "/I\\.E\\.C\\. Capacity$/i": "capacity",
-      "/^Capacit\u00e9 de/i": "capacity"
+      "/^Capacit\u00e9 de/i": "capacity",
+      "/^Advanced Vibration Control/i": "vibrationControl",
+      "/^Contr\u00f4le perfectionn\u00e9 des vibrations/i": "vibrationControl"
     }
   }
 }

@@ -1,11 +1,3 @@
-next is vibration control. currently on washers which is the last one remaining
-
-dryers-
-wrinkle control cycle vs wrinkle prevent option -- currently only considering former. should it be +1 for each? maybe they only come together anyway
-yeah, for the 7 pairs we qualify, each of these occurs 4 times
-
-------
-
 # XML Feed errors
 
 MGS8880DS has two power burner features, one 17K BTU and one 15K BTU

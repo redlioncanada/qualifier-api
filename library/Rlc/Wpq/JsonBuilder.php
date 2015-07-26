@@ -58,10 +58,10 @@ class JsonBuilder {
     ],
   ];
   private $includeOnlyGroups = [
-//    'SC_Kitchen_Cooking_Ranges',
-//    'SC_Kitchen_Cooking_Wall_Ovens',
-//    'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
-//    'SC_Kitchen_Refrigeration_Refrigerators',
+    'SC_Kitchen_Cooking_Ranges',
+    'SC_Kitchen_Cooking_Wall_Ovens',
+    'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers',
+    'SC_Kitchen_Refrigeration_Refrigerators',
     'SC_Laundry_Laundry_Appliances_Laundry_Pairs',
   ];
 
@@ -397,33 +397,33 @@ class JsonBuilder {
     }
 
     // Dryers
-//    foreach ($dryerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
-//      $new = [
-//        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Dryers'),
-//        'top3' => ($localizedSalesFeature->valuesequence <= 3),
-//        'headline' => $localizedSalesFeature->valueidentifier,
-//        'description' => $localizedSalesFeature->noteinfo,
-//      ];
-//
-//      $data['salesFeatures'][] = $new;
-//    }
+    foreach ($dryerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+      $new = [
+        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Dryers'),
+        'top3' => ($localizedSalesFeature->valuesequence <= 3),
+        'headline' => $localizedSalesFeature->valueidentifier,
+        'description' => $localizedSalesFeature->noteinfo,
+      ];
 
-    foreach ($washer->getDescriptiveAttributeGroups() as $grpName => $grp) {
-      if ("SalesFeature" !== $grpName) {
-        continue;
-      }
-      foreach ($grp->getDescriptiveAttributes() as $attr) {
-        if ($attr->valuesequence != $attr->sequence) {
-          echo "WHOA! $attr->partnumber<Br>";
-        }
-        $data['descr-attrs'][$grpName][] = [
-          'valueidentifier' => $attr->valueidentifier,
-          'noteinfo' => $attr->noteinfo,
-          'valuesequence' => $attr->valuesequence,
-          'sequence' => $attr->sequence,
-        ];
-      }
+      $data['salesFeatures'][] = $new;
     }
+
+//    foreach ($washer->getDescriptiveAttributeGroups() as $grpName => $grp) {
+//      if ("SalesFeature" !== $grpName) {
+//        continue;
+//      }
+//      foreach ($grp->getDescriptiveAttributes() as $attr) {
+//        if ($attr->valuesequence != $attr->sequence) {
+//          echo "WHOA! $attr->partnumber<Br>";
+//        }
+//        $data['descr-attrs'][$grpName][] = [
+//          'valueidentifier' => $attr->valueidentifier,
+//          'noteinfo' => $attr->noteinfo,
+//          'valuesequence' => $attr->valuesequence,
+//          'sequence' => $attr->sequence,
+//        ];
+//      }
+//    }
 
     return $data;
   }
