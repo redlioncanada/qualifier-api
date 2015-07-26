@@ -408,23 +408,6 @@ class JsonBuilder {
       $data['salesFeatures'][] = $new;
     }
 
-//    foreach ($washer->getDescriptiveAttributeGroups() as $grpName => $grp) {
-//      if ("SalesFeature" !== $grpName) {
-//        continue;
-//      }
-//      foreach ($grp->getDescriptiveAttributes() as $attr) {
-//        if ($attr->valuesequence != $attr->sequence) {
-//          echo "WHOA! $attr->partnumber<Br>";
-//        }
-//        $data['descr-attrs'][$grpName][] = [
-//          'valueidentifier' => $attr->valueidentifier,
-//          'noteinfo' => $attr->noteinfo,
-//          'valuesequence' => $attr->valuesequence,
-//          'sequence' => $attr->sequence,
-//        ];
-//      }
-//    }
-
     return $data;
   }
 
