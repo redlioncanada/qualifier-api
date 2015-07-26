@@ -1,6 +1,6 @@
 # XML Feed errors
 
-MGS8880DS has two power burner features, one 17K BTU and one 15K BTU
+work this out next -> MGS8880DS has two power burner features, one 17K BTU and one 15K BTU
 
 =======
 
