@@ -34,9 +34,12 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
     $t11nStrings = json_decode(file_get_contents($configPath . '/strings.json'), true);
     $translator = new Lrr\Translator($t11nStrings, $config->defaultLocale);
 
+    $salesFeatureAssocs = json_decode(file_get_contents($configPath . '/sales-feature-assocs.json'), true);
+
     $serviceLocator
         ->loadConfig($config)
         ->loadTranslator($translator)
+        ->loadSalesFeatureAssocs($salesFeatureAssocs)
         ->loadUtil(new Wpq\Util())
         ->loadJsonFileManager(new Wpq\JsonFileManager($jsonPath, $jsonBuilder))
         ->catalogEntryFactory(function(\SimpleXMLElement $record) {
