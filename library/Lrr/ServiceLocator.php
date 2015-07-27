@@ -55,9 +55,6 @@ class ServiceLocator {
     if (substr($name, 0, 4) === 'load') {
       $regKey = ucfirst(substr($name, 4));
       $service = $arguments[0];
-      if (gettype($service) !== 'object') {
-        throw new \Exception("Argument to loadXxx() must be an object");
-      }
       $this->services[$regKey] = $service;
       return $this;
     } elseif (substr($name, -7) === 'Factory') {

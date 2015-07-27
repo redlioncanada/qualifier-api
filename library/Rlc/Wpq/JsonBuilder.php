@@ -149,7 +149,7 @@ class JsonBuilder {
           $newOutputData['colours'][] = $childEntryData;
         }
 
-        $this->attachFeatureData($newOutputData, $entry, $locale);
+        $this->attachFeatureData($newOutputData, $entry, $locale, $brand);
 
         $newOutputData['url'] = isset($productUrls[$entry->partnumber]) ? $productUrls[$entry->partnumber] : null;
 
@@ -161,7 +161,7 @@ class JsonBuilder {
      * Now that all laundry pairs are collected, add them to the output data
      */
     foreach ($laundryPairs as $laundryPair) {
-      $newOutputData = $this->buildLaundryPairData($laundryPair, $entries, $locale);
+      $newOutputData = $this->buildLaundryPairData($laundryPair, $entries, $locale, $brand);
       // Link to washer page
       $newOutputData['url'] = $productUrls[$newOutputData['washerSku']];
       $outputData[] = $newOutputData;
@@ -233,7 +233,7 @@ class JsonBuilder {
   }
 
   private function buildLaundryPairData(array $laundryPair, array $entries,
-      $locale) {
+      $locale, $brand) {
     $data = $laundryPair['data'];
     $washer = $entries[$laundryPair['washerSku']];
     $dryer = $entries[$laundryPair['dryerSku']];
@@ -330,6 +330,8 @@ class JsonBuilder {
       $data['rapidWash'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Wash Cycle"]);
       $data['washerWrinkleControl'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
       $data['steamEnhanced'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
+      // TODO or this too? $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Dryer"])
+      // Depends on if this has to do with dryer -- waiting for answer from RLC
     }
 
     /*
@@ -389,6 +391,36 @@ class JsonBuilder {
       $data['image'] = $imageUrlPrefix . '/No Image Available/Standalone_244X312.png';
     }
 
+    /*
+     * Attach sales feature data
+     */
+    $data['salesFeatures'] = [];
+
+    // Washers
+    foreach ($washerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+      $new = [
+        // Check if it's a qualified feature and put in the association
+        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Washers'),
+        'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
+        'headline' => $localizedSalesFeature->valueidentifier,
+        'description' => $localizedSalesFeature->noteinfo,
+      ];
+
+      $data['salesFeatures'][] = $new;
+    }
+
+    // Dryers
+    foreach ($dryerSalesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+      $new = [
+        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, 'Laundry-Dryers'),
+        'top3' => ($localizedSalesFeature->valuesequence <= 3),
+        'headline' => $localizedSalesFeature->valueidentifier,
+        'description' => $localizedSalesFeature->noteinfo,
+      ];
+
+      $data['salesFeatures'][] = $new;
+    }
+
     return $data;
   }
 
@@ -442,6 +474,7 @@ class JsonBuilder {
    * @param array &$data
    * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
    * @param string $locale
+   * @param string $brand
    */
   private function attachFeatureData(array &$data,
       FeedEntity\CatalogEntry $entry, $locale, $brand) {
@@ -595,6 +628,7 @@ class JsonBuilder {
         $sideBySide = false; // Not part of response, but part of logic
         $data['indoorDispenser'] = false;
         $data['factoryInstalledIceMaker'] = false;
+        $data['tempControlPantry'] = false;
 
         $data['counterDepth'] = (
             stripos($description->name, 'counter depth') !== false ||
@@ -639,7 +673,10 @@ class JsonBuilder {
           $data['powerCold'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => json_decode('"PowerCold\u2122 Feature"')]);
           $data['freshFlowProducePreserver'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"FreshFlow\u2122 produce preserver"')]);
           $data['dualCool'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"Dual Cool\u00ae Evaporators"')]);
-          $data['factoryInstalledIceMaker'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]);
+          $data['factoryInstalledIceMaker'] = (
+              $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]) ||
+              $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory Installed Ice Maker"])
+              );
         }
 
         // Add image for fridges
@@ -684,6 +721,43 @@ class JsonBuilder {
         $data['depth'] = $this->formatPhysicalDimension($depthAttr->value);
       }
     }
+
+    /*
+     * Attach sales feature data
+     */
+    $data['salesFeatures'] = [];
+    foreach ($salesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+      $new = [
+        // Check if it's a qualified feature and put in the association
+        'featureKey' => $this->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, $data['appliance']),
+        'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
+        'headline' => $localizedSalesFeature->valueidentifier,
+        'description' => $localizedSalesFeature->noteinfo,
+      ];
+
+      $data['salesFeatures'][] = $new;
+    }
+  }
+
+  private function getFeatureKeyForSalesFeature($localizedSalesFeature, $brand,
+      $category) {
+    $result = null;
+    $salesFeatureAssocs = ServiceLocator::salesFeatureAssocs()[$brand][$category];
+    foreach ($salesFeatureAssocs as $valueidentifier => $featureKey) {
+      if ('/' === $valueidentifier[0]) {
+        // Regex
+        if (preg_match($valueidentifier, $localizedSalesFeature->valueidentifier)) {
+          $result = $featureKey;
+          break;
+        }
+      } else {
+        if ($valueidentifier == $localizedSalesFeature->valueidentifier) {
+          $result = $featureKey;
+          break;
+        }
+      }
+    }
+    return $result;
   }
 
   /**
