@@ -37,7 +37,7 @@ foreach ($resp->products as $p) {
 
 $results = array_filter($results);
 
-fputcsv(STDOUT, ["App category", "App sub-category", "SKU", "Name", "Number of records"]);
+fputcsv(STDOUT, ["App category", "App sub-category", "SKU prefix", "Name", "Number of records"]);
 foreach ($results as $r) {
   fputcsv(STDOUT, $r);
 }
