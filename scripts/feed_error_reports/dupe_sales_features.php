@@ -1,9 +1,12 @@
 <?php
 
 /*
- * Outputs CSV of products where first 7 chars of main sku matches another
- * product - probably these are just colour variants mis-entered as separate
- * products.
+ * For each product, look at all sales features, and output any pairs of
+ * sales features for the same product where the names are too similar.
+ * 
+ * (Example of what this catches: single product with a
+ * "17,000 BTU Power Burner" sales feature and another with name
+ * "15,000 BTU Power Burner".)
  */
 
 $file = __DIR__ . '/../../data/json-responses/maytag-en_CA.json';
