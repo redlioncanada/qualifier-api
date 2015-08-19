@@ -281,6 +281,8 @@ class JsonBuilder {
     $data['sensorDry'] = false;
     $data['rapidDry'] = false;
     $data['cycleOptions'] = 0;
+    $data['washerCycleOptions'] = 0;
+    $data['dryerCycleOptions'] = 0;
 
     /*
      * Washer features
@@ -296,13 +298,11 @@ class JsonBuilder {
         $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
       }
 
+      // Store # of cycle options for washer, and increment total cycle options number
       $washerCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
       if ($washerCyclesAttr) {
         $data['cycleOptions'] += $washerCyclesAttr->value;
-      }
-      $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
-      if ($dryerCyclesAttr) {
-        $data['cycleOptions'] += $dryerCyclesAttr->value;
+        $data['washerCycleOptions'] = (int) $washerCyclesAttr->value;
       }
     }
 
@@ -342,6 +342,13 @@ class JsonBuilder {
       $moistureSensorAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Moisture Sensor"]);
       if ($moistureSensorAttr) {
         $data['sensorDry'] = ("Yes" == $moistureSensorAttr->value);
+      }
+      
+      // Store # of cycle options for dryer, and increment total cycle options number
+      $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
+      if ($dryerCyclesAttr) {
+        $data['cycleOptions'] += $dryerCyclesAttr->value;
+        $data['dryerCycleOptions'] = (int) $dryerCyclesAttr->value;
       }
     }
 
