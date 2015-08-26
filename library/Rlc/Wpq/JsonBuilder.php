@@ -234,6 +234,8 @@ class JsonBuilder {
     $data['washerSku'] = $laundryPair['washerSku'];
     $data['dryerSku'] = $laundryPair['dryerSku'];
     $data['name'] = $washerDescription->name . ' ' . ServiceLocator::translator()->translate('and_dryer', $locale);
+    $data['washerName'] = (string) $washerDescription->name;
+    $data['dryerName'] = (string) $dryerDescription->name;
     $data['washerDescription'] = (string) $washerDescription->longdescription;
     $data['dryerDescription'] = (string) $dryerDescription->longdescription;
 
@@ -343,7 +345,7 @@ class JsonBuilder {
       if ($moistureSensorAttr) {
         $data['sensorDry'] = ("Yes" == $moistureSensorAttr->value);
       }
-      
+
       // Store # of cycle options for dryer, and increment total cycle options number
       $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
       if ($dryerCyclesAttr) {
