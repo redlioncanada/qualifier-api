@@ -9,9 +9,10 @@
 
     cd data/source-xml
     wget -O xml.zip "http://access.whirlpool.com/mr/getMediaType.do?mediaType=MTGCA&sku=IBM_Extract"
-    unzip xml.zip *.xml
+    unzip xml.zip
     mv MTGCA/*.xml .
     rm -rf MTGCA/
+    rm xml.zip
 
 ## Start the server:
 
