@@ -131,10 +131,24 @@ class JsonBuilder {
         $this->attachCatalogEntryDescriptionData($newOutputData, $entry, $locale);
 
         $childEntries = $entry->getChildEntries();
+        $colourRecords = [];
         foreach ($childEntries as $childEntry) {
           $childEntryData = $this->buildChildEntryData($childEntry, $locale);
-          $newOutputData['colours'][] = $childEntryData;
+          if (isset($colourRecords[$childEntryData['colourCode']])) {
+            // If any colour is represented >once, prefer the colours with SKUs
+            // NOT ending in "DB" or "DW".
+            // https://trello.com/c/rT5KGVO0/105-duplicate-colour-swatches-filter-for-removing-duplicate-colours
+            // TODO Make conditional on brand? Other brands currently have no
+            // duplicates so this would currently have no effect on them.
+            $skuColourSuffix = substr($childEntryData['sku'], -2);
+            if (in_array($skuColourSuffix, ['DB', 'DW'])) {
+              continue;
+            }
+          }
+          $colourRecords[$childEntryData['colourCode']] = $childEntryData;
         }
+        // Make $colourRecords back into a sequential array
+        $newOutputData['colours'] = array_values($colourRecords);
 
         $this->attachFeatureData($newOutputData, $entry, $locale, $brand);
 
