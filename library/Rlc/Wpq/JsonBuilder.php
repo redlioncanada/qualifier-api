@@ -272,6 +272,10 @@ class JsonBuilder {
     // Combine together, assuming codes will match
     $data['colours'] = [];
     foreach ($washerColours as $washerColour) {
+      if (!isset($dryerColoursByCode[$washerColour['colourCode']])) {
+        // Only include colours that the washer comes in and the dryer also comes in.
+        continue;
+      }
       $dryerColour = $dryerColoursByCode[$washerColour['colourCode']];
       $newColour = [
         'name' => $washerColour['colourName'],
