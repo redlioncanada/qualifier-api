@@ -15,10 +15,18 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
   private $util;
 
   /**
-   *
    * @var Translator
    */
   private $translator;
+
+  /**
+   * List of sorted sku pairs to keep track of which laundry pairs we've
+   * already processed, indexed first by LOCALE. (There is one instance of this
+   * class per HTTP request.)
+   * 
+   * @var array
+   */
+  private $laundryPairsProcessed = [];
 
   public function __construct() {
     $this->util = ServiceLocator::util();
@@ -28,7 +36,13 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
   public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
       $locale, array &$outputData) {
 
-    $laundryPairs = [];
+    // Init array of pairs to process right now
+    $laundryPairsToProcessThisRound = [];
+    // Ensure initialization of array of all pairs processed for this locale
+    if (!isset($this->laundryPairsProcessed[$locale])) {
+      $this->laundryPairsProcessed[$locale] = [];
+    }
+
     $assocParentSkus = $this->getAssocParentSkus($entry, $entries);
     $productUrls = $this->util->getProductUrls('maytag');
 
@@ -41,7 +55,14 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
       $vPairKey = [$entry->partnumber, $assocParentSku];
       sort($vPairKey);
       $pairKey = implode('|', $vPairKey);
-      if (!isset($laundryPairs[$pairKey])) {
+      // Check if we've already processed it. (E.g. if process() was called for
+      // the dryer of the pair, but we've already processed the same pair when
+      // process() was called for the washer. process() is called for every
+      // product, so this is normal.)
+      if (!in_array($pairKey, $this->laundryPairsProcessed[$locale])) {
+        // Don't process this pair again
+        $this->laundryPairsProcessed[$locale][] = $pairKey;
+
         if ($entry->isInGroupId('SC_Laundry_Laundry_Appliances_Washers')) {
           // Current product is washer
           $washerSku = $entry->partnumber;
@@ -51,8 +72,8 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
           $washerSku = $assocParentSku;
           $dryerSku = $entry->partnumber;
         }
-        $laundryPairs[$pairKey] = [
-          'data' => ['appliance' => $this->translator->translate('laundry', $locale)],
+        $laundryPairsToProcessThisRound[$pairKey] = [
+          'data' => ['appliance' => 'Laundry'],
           'washerSku' => $washerSku,
           'dryerSku' => $dryerSku,
         ];
@@ -62,7 +83,7 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     /*
      * Now that all laundry pairs are collected, add them to the output data
      */
-    foreach ($laundryPairs as $laundryPair) {
+    foreach ($laundryPairsToProcessThisRound as $laundryPair) {
       $newOutputData = $this->buildLaundryPairData($laundryPair, $entries, $locale);
       // Link to washer page
       $newOutputData['url'] = $productUrls[$newOutputData['washerSku']];
@@ -85,7 +106,7 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     // Sku/Name/description
     $data['washerSku'] = $laundryPair['washerSku'];
     $data['dryerSku'] = $laundryPair['dryerSku'];
-    $data['name'] = $washerDescription->name . ' ' . ServiceLocator::translator()->translate('and_dryer', $locale);
+    $data['name'] = $washerDescription->name . ' ' . $this->translator->translate('and_dryer', $locale);
     $data['washerName'] = (string) $washerDescription->name;
     $data['dryerName'] = (string) $dryerDescription->name;
     $data['washerDescription'] = (string) $washerDescription->longdescription;

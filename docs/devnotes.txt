@@ -1,8 +1,3 @@
-FE bug remaining: slides wrong direction when selecting prev screen from bottom nav
-
-NEXT create processor classes for ranges and stoves - reuse code for shared fields
-
-
 - for staging:
   - later maybe - put zend app dirs in proper structure so only public is exposed
 

@@ -3,13 +3,12 @@
 namespace Rlc\Wpq\CatalogEntryProcessor;
 
 use Rlc\Wpq,
-    Lrr\ServiceLocator,
-    Rlc\Wpq\Util;
+    Lrr\ServiceLocator;
 
 abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
   /**
-   * @var Util
+   * @var Wpq\Util
    */
   protected $util;
 
@@ -19,9 +18,10 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
   public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
       $locale, array &$outputData) {
-    $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
 
+    $newOutputData = [];
+    $newOutputData['appliance'] = $this->getCategory();
     $newOutputData['sku'] = $entry->partnumber;
 
     $this->attachCatalogEntryDescriptionData($newOutputData, $entry, $locale);
@@ -59,7 +59,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     foreach ($salesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
       $newSalesFeatureData = [
         // Check if it's a qualified feature and put in the association
-        'featureKey' => $this->util->getFeatureKeyForSalesFeature($localizedSalesFeature, $brand, $newOutputData['appliance']),
+        'featureKey' => $this->util->getFeatureKeyForSalesFeature($localizedSalesFeature, $this->getBrand(), $this->getCategory()),
         'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
         'headline' => $localizedSalesFeature->valueidentifier,
         'description' => $localizedSalesFeature->noteinfo,
@@ -81,8 +81,49 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
     $localeRecord = $description->getRecord($locale);
-    $data['name'] = (string) $localeRecord->name;
-    $data['description'] = (string) $localeRecord->longdescription;
+    $entryData['name'] = (string) $localeRecord->name;
+    $entryData['description'] = (string) $localeRecord->longdescription;
+  }
+
+  /**
+   * @return void
+   */
+  protected function attachPhysicalDimensionData(array &$entryData,
+      Wpq\FeedEntity\CatalogEntry $entry) {
+    $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
+
+    if ($compareFeatureGroup) {
+      /*
+       * The same method of extracting physical dimensions is shared for cooking and fridges
+       */
+
+      // Width
+      $widthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Width",
+      ]);
+      if ($widthAttr) {
+        $entryData['width'] = $this->util->formatPhysicalDimension($widthAttr->value);
+      }
+
+      // Height
+      $heightAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Height",
+      ]);
+      if ($heightAttr) {
+        $entryData['height'] = $this->util->formatPhysicalDimension($heightAttr->value);
+      }
+
+      // Depth
+      $depthAttr = $compareFeatureGroup->getDescriptiveAttributeWhere([
+        'description' => "Dimensions",
+        'valueidentifier' => "Depth",
+      ]);
+      if ($depthAttr) {
+        $entryData['depth'] = $this->util->formatPhysicalDimension($depthAttr->value);
+      }
+    }
   }
 
   /**
@@ -95,4 +136,9 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
    * @return string
    */
   abstract protected function getBrand();
+
+  /**
+   * @return string
+   */
+  abstract protected function getCategory();
 }

@@ -45,4 +45,8 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     return 'maytag';
   }
 
+  protected function getCategory() {
+    return 'Dishwashers';
+  }
+
 }
