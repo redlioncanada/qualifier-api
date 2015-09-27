@@ -86,6 +86,8 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     $data['washerSku'] = $laundryPair['washerSku'];
     $data['dryerSku'] = $laundryPair['dryerSku'];
     $data['name'] = $washerDescription->name . ' ' . ServiceLocator::translator()->translate('and_dryer', $locale);
+    $data['washerName'] = (string) $washerDescription->name;
+    $data['dryerName'] = (string) $dryerDescription->name;
     $data['washerDescription'] = (string) $washerDescription->longdescription;
     $data['dryerDescription'] = (string) $dryerDescription->longdescription;
 
@@ -108,6 +110,10 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     // Combine together, assuming codes will match
     $data['colours'] = [];
     foreach ($washerColours as $washerColour) {
+      if (!isset($dryerColoursByCode[$washerColour['colourCode']])) {
+        // Only include colours that the washer comes in and the dryer also comes in.
+        continue;
+      }
       $dryerColour = $dryerColoursByCode[$washerColour['colourCode']];
       $newColour = [
         'name' => $washerColour['colourName'],
@@ -133,6 +139,8 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     $data['sensorDry'] = false;
     $data['rapidDry'] = false;
     $data['cycleOptions'] = 0;
+    $data['washerCycleOptions'] = 0;
+    $data['dryerCycleOptions'] = 0;
 
     /*
      * Washer features
@@ -148,13 +156,11 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
         $data['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
       }
 
+      // Store # of cycle options for washer, and increment total cycle options number
       $washerCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
       if ($washerCyclesAttr) {
         $data['cycleOptions'] += $washerCyclesAttr->value;
-      }
-      $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
-      if ($dryerCyclesAttr) {
-        $data['cycleOptions'] += $dryerCyclesAttr->value;
+        $data['washerCycleOptions'] = (int) $washerCyclesAttr->value;
       }
     }
 
@@ -194,6 +200,13 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
       $moistureSensorAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Moisture Sensor"]);
       if ($moistureSensorAttr) {
         $data['sensorDry'] = ("Yes" == $moistureSensorAttr->value);
+      }
+
+      // Store # of cycle options for dryer, and increment total cycle options number
+      $dryerCyclesAttr = $dryerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Cycles"]);
+      if ($dryerCyclesAttr) {
+        $data['cycleOptions'] += $dryerCyclesAttr->value;
+        $data['dryerCycleOptions'] = (int) $dryerCyclesAttr->value;
       }
     }
 
