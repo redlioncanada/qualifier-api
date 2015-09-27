@@ -14,7 +14,7 @@ foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
     continue;
   }
   foreach ($grp->getDescriptiveAttributes() as $attr) {
-    $data['descr-attrs'][$grpName][] = [
+    $entryData['descr-attrs'][$grpName][] = [
       'description' => $attr->description,
       'valueidentifier' => $attr->valueidentifier,
       'value' => $attr->value,

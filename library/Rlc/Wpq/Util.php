@@ -38,18 +38,21 @@ class Util {
   public function getFeatureKeyForSalesFeature(FeedEntity\DescriptiveAttribute $localizedSalesFeature,
       $brand, $category) {
     $result = null;
-    $salesFeatureAssocs = ServiceLocator::salesFeatureAssocs()[$brand][$category];
-    foreach ($salesFeatureAssocs as $valueidentifier => $featureKey) {
-      if ('/' === $valueidentifier[0]) {
-        // Regex
-        if (preg_match($valueidentifier, $localizedSalesFeature->valueidentifier)) {
-          $result = $featureKey;
-          break;
-        }
-      } else {
-        if ($valueidentifier == $localizedSalesFeature->valueidentifier) {
-          $result = $featureKey;
-          break;
+    $salesFeatureAssocs = ServiceLocator::salesFeatureAssocs();
+    if (isset($salesFeatureAssocs[$brand]) &&
+        isset($salesFeatureAssocs[$brand][$category])) {
+      foreach ($salesFeatureAssocs as $valueidentifier => $featureKey) {
+        if ('/' === $valueidentifier[0]) {
+          // Regex
+          if (preg_match($valueidentifier, $localizedSalesFeature->valueidentifier)) {
+            $result = $featureKey;
+            break;
+          }
+        } else {
+          if ($valueidentifier == $localizedSalesFeature->valueidentifier) {
+            $result = $featureKey;
+            break;
+          }
         }
       }
     }

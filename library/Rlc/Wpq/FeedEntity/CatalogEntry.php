@@ -13,6 +13,8 @@ class CatalogEntry extends AbstractSimpleRecord {
   private $catalogEntryDescription;
 
   /**
+   * Keyed by group ID to avoid duplicates
+   * 
    * @var CatalogGroup
    */
   private $catalogGroups = [];
@@ -59,6 +61,8 @@ class CatalogEntry extends AbstractSimpleRecord {
    * Gets all catalog groups including their parent groups, recursively,
    * in one flat array.
    * 
+   * Returns a numerically indexed array.
+   * 
    * @return CatalogGroup[]
    */
   public function getAllCatalogGroups() {
@@ -67,9 +71,16 @@ class CatalogEntry extends AbstractSimpleRecord {
     foreach ($directGroups as $directGroup) {
       $allGroups = array_merge($allGroups, $directGroup->getAncestors());
     }
-    return $allGroups;
+    return array_values($allGroups);
   }
 
+  /**
+   * Gets catalog group(s) that this product is directly assigned to.
+   * 
+   * Keyed by group ID.
+   * 
+   * @return CatalogGroup[]
+   */
   public function getCatalogGroups() {
     return $this->catalogGroups;
   }
@@ -119,7 +130,7 @@ class CatalogEntry extends AbstractSimpleRecord {
   }
 
   public function addCatalogGroup(CatalogGroup $catalogGroup) {
-    $this->catalogGroups[] = $catalogGroup;
+    $this->catalogGroups[$catalogGroup->identifier] = $catalogGroup;
     return $this;
   }
 

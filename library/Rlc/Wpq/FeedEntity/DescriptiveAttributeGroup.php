@@ -90,4 +90,13 @@ class DescriptiveAttributeGroup {
     return null;
   }
 
+  /**
+   * @param string $value
+   * @return bool
+   */
+  public function descriptiveAttributeExistsByValueIdentifier($value) {
+    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $value]);
+    return (bool) $attr;
+  }
+
 }
