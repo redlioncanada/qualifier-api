@@ -90,4 +90,24 @@ class DescriptiveAttributeGroup {
     return null;
   }
 
+  /**
+   * @param array   $criteria Associative field => value conditions
+   * @param string  $locale   OPTIONAL
+   * @return bool
+   */
+  public function descriptiveAttributeExistsWhere(array $criteria, $locale = null) {
+    $attr = $this->getDescriptiveAttributeWhere($criteria, $locale);
+    return (bool) $attr;
+  }
+
+  /**
+   * @param string  $value
+   * @param string  $locale   OPTIONAL
+   * @return bool
+   */
+  public function descriptiveAttributeExistsByValueIdentifier($value, $locale = null) {
+    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $value], $locale);
+    return (bool) $attr;
+  }
+
 }
