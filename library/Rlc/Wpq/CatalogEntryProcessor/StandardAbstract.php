@@ -48,7 +48,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
     $this->attachFeatureData($newOutputData, $entry, $locale);
 
-    $productUrls = $this->util->getProductUrls($this->getBrand());
+    $productUrls = $this->util->getProductUrls($this->getBrand(), $locale);
     $newOutputData['url'] = isset($productUrls[$entry->partnumber]) ? $productUrls[$entry->partnumber] : null;
 
 

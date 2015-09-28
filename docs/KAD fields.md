@@ -1,4 +1,4 @@
-To search for remaining action items: ^-\s+(?!X)
+To search for remaining action items: ^-\s+(?!X\s)
 
 X = implemented somehow
 ! = flag warning to RLC
@@ -26,31 +26,34 @@ X = implemented somehow
 - X panelReady - SalesFeature exists
 
 # KitchenAid Fridge
-- width (in inches) (int)
-- height (in inches) (int)
-- energyStar
-- volume
-- topMount 
-- bottomMount
-- frenchDoor5
-- frenchDoor 
-- indoorDispenser
-- filtered
-- exteriorDispenser
-- indoorIce
-- standardDepth
-- counterDepth
-- builtIn
-- producerPreserver  
-- extendFreshPlus
-- freshChill
-- preservaCare 
-- extendFresh 
-- freshChill
-- maxCool
+- X width (in inches) (int)
+- X height (in inches) (int)
+    + both with standard func (reads CompareFeatures, converts fractions to decimals)
+- X energyStar - compare feature exists, or sales feature exists
+- !X volume
+    + "Total Capacity" comparefeature - flag to Bianca I kept it named 'capacity' for consistency with maytag fridges
+- X topMount - same as MTG
+- X bottomMount - same as MTG
+- !X frenchDoor5
+    + "5-Door Configuration" salesfeature exists
+    + flag to Bianca that I called it '5door' because it doesn't seem necesarily related to french door
+- X frenchDoor - same as MTG
+- ?X indoorDispenser - same as MTG - comparefeature "Dispenser Type" not 'no dispenser' - just confirm this and the rest of the dispenser-related items
+- ?X filtered - comparefeature = 'Yes'
+- ?X exteriorDispenser - comparefeature "Dispenser Type" has 'exterior'
+- ?X indoorIce - comparefeature "Dispenser Type" has 'ice'
+- ?X standardDepth - equivalent to !counterDepth and !builtIn ?
+- X counterDepth - "counter[- ]depth" in name or "counter-depth" salesfeature exists
+- X builtIn - "built[- ]in" in name
+- X producePreserver - "Produce Preserver" salesfeature exists
+- X extendFreshPlus - salesfeature exists: "ExtendFresh\u2122 Temperature Management System"
+- X freshChill
+- X preservaCare 
+- X extendFresh - salesfeature exists: "ExtendFresh\u2122 Plus Temperature Management System"
+- X maxCool
 
 # KitchenAid Cooktops
-- width
+- X width - standard func (reads CompareFeatures, converts fractions to decimals)
 - induction (bool)
 - electric (bool)
 - gas (bool)
@@ -72,7 +75,7 @@ X = implemented somehow
 - 20KBTUDual (bool)  
 
 # KitchenAid Ranges
-- width (in inches) (int)
+- X width (in inches) (int) - standard func (reads CompareFeatures, converts fractions to decimals)
 - volume (in cubic feet) (float)
 - warmingDrawer (bool) 
 - aquaLift (bool)
@@ -99,7 +102,7 @@ X = implemented somehow
 
 
 # KitchenAid Wall Ovens
-- width (in inches) (int)
+- X width (in inches) (int) - standard func (reads CompareFeatures, converts fractions to decimals)
 - volume (in cubic feet) (float) 
 - single (bool)
 - combi (bool)
@@ -110,7 +113,9 @@ X = implemented somehow
 
 
 # KitchenAid Vents
-- width (in inches) (int)
+- !X width (in inches) (int)
+    + standard func (reads CompareFeatures, converts fractions to decimals)
+    + some without dimenions (5 out of 38). e.g. http://www.kitchenaid.ca/en_CA/shop/major-appliances-1/hoods-and-vents-2/hoods-and-vents-3/-[KVIB606DBS]-5568101/KVIB606DBS/
 - islandMount
 - wallMount
 - underCabinet 
@@ -121,10 +126,4 @@ X = implemented somehow
 - easyConversion
 - automaticOn
 - warmingLamps
-
-
-
-
-
-
 

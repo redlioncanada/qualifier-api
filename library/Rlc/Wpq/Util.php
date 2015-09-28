@@ -7,7 +7,7 @@ use Lrr\ServiceLocator;
 class Util {
 
   /**
-   * Keyed by brand
+   * Keyed by brand, then locale (3 dimensional)
    * 
    * @var array
    */
@@ -86,30 +86,41 @@ class Util {
    * @todo include all feed files now that I have them
    * 
    * @param string $brand
+   * @param string $locale
    * @return void
    */
-  public function getProductUrls($brand) {
-    if (!isset($this->productUrlsCache[$brand])) {
-      $this->productUrlsCache[$brand] = [];
-      // I only have data for maytag, en_CA for now
-      // TODO integrate other data
-      if ('maytag' == $brand) {
-        $filePath = realpath(APPLICATION_PATH . '/../data/source-xml/Maytag_product_feed_en_CA.txt');
-        if (!$filePath) {
-          return;
-        }
-        $fileHandle = fopen($filePath, 'r');
-        fgetcsv($fileHandle, 0, "\t"); // Skip headers
-        while ($row = fgetcsv($fileHandle, 0, "\t")) {
-          // NB the file actually has >1 URL per parent sku, cause they're actually
-          // for child skus, but also include parent sku. But because of the way this
-          // assignment works, we'll still end up with just one URL (doesn't matter
-          // which) per parent sku, which is what we want.
-          $this->productUrlsCache[$brand][$row[11]] = $row[2];
-        }
+  public function getProductUrls($brand, $locale) {
+    // For capitalization in filename
+    static $brandNameMap = [
+      'maytag' => 'Maytag',
+      'kitchenaid' => 'KitchenAid',
+      'whirlpool' => 'Whirlpool',
+    ];
+
+    if (!isset($this->productUrlsCache[$brand][$locale])) {
+      $this->productUrlsCache[$brand][$locale] = [];
+      $filePath = realpath(
+          APPLICATION_PATH
+          . '/../data/source-xml/'
+          . $brandNameMap[$brand]
+          . '_product_feed_'
+          . $locale
+          . '.txt'
+      );
+      if (!$filePath) {
+        return;
+      }
+      $fileHandle = fopen($filePath, 'r');
+      fgetcsv($fileHandle, 0, "\t"); // Skip headers
+      while ($row = fgetcsv($fileHandle, 0, "\t")) {
+        // NB the file actually has >1 URL per parent sku, cause they're actually
+        // for child skus, but also include parent sku. But because of the way this
+        // assignment works, we'll still end up with just one URL (doesn't matter
+        // which) per parent sku, which is what we want.
+        $this->productUrlsCache[$brand][$locale][$row[11]] = $row[2];
       }
     }
-    return $this->productUrlsCache[$brand];
+    return $this->productUrlsCache[$brand][$locale];
   }
 
   public function buildChildEntryData(FeedEntity\CatalogEntry $childEntry,

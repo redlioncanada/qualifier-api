@@ -44,7 +44,7 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     }
 
     $assocParentSkus = $this->getAssocParentSkus($entry, $entries);
-    $productUrls = $this->util->getProductUrls('maytag');
+    $productUrls = $this->util->getProductUrls('maytag', $locale);
 
     /**
      * Collect all laundry pairs involving this washer or dryer
