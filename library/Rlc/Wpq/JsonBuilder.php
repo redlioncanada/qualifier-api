@@ -36,11 +36,11 @@ class JsonBuilder {
       // The strat class for these first two will return the same 'appliance'
       // field value but diff 'type' field values. Meanwhile, other strat
       // classes will not set 'type' at all.
-      'SC_Kitchen_Cooking_Ranges' => 'Maytag\\Ranges',
-      'SC_Kitchen_Cooking_Wall_Ovens' => 'Maytag\\WallOvens',
-      'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers' => 'Maytag\\Dishwashers',
-      'SC_Kitchen_Refrigeration_Refrigerators' => 'Maytag\\Fridges',
-      'SC_Laundry_Laundry_Appliances_Laundry_Pairs' => 'Maytag\\LaundryPairs',
+      // 'SC_Kitchen_Cooking_Ranges' => 'Maytag\\Ranges',
+      // 'SC_Kitchen_Cooking_Wall_Ovens' => 'Maytag\\WallOvens',
+      // 'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers' => 'Maytag\\Dishwashers',
+      // 'SC_Kitchen_Refrigeration_Refrigerators' => 'Maytag\\Fridges',
+      // 'SC_Laundry_Laundry_Appliances_Laundry_Pairs' => 'Maytag\\LaundryPairs',
     ],
 //    'whirlpool' => [
 //      'SC_Kitchen_Dishwasher__Cleaning_Dishwashers' => 'Whirlpool\\Dishwashers',
@@ -52,8 +52,8 @@ class JsonBuilder {
 //      'SC_Laundry_Laundry_Laundry_Pairs' => 'Whirlpool\\LaundryPairs',
 //    ],
     'kitchenaid' => [
-      'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
-      'SC_Major_Appliances_Refrigerators_Refrigerators' => 'KitchenAid\\Fridges',
+       'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
+//      'SC_Major_Appliances_Refrigerators_Refrigerators' => 'KitchenAid\\Fridges',
 //      'SC_Major_Appliances_Cooktops_Cooktops' => 'KitchenAid\\Cooktops',
 //      'SC_Major_Appliances_Ranges_Ranges' => 'KitchenAid\\Ranges',
 //      'SC_Major_Appliances_Wall_Ovens_Wall_Ovens' => 'KitchenAid\\WallOvens',

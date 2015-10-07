@@ -55,18 +55,18 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     /*
      * Attach sales feature data
      */
-    $newOutputData['salesFeatures'] = [];
-    foreach ($salesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
-      $newSalesFeatureData = [
-        // Check if it's a qualified feature and put in the association
-        'featureKey' => $this->util->getFeatureKeyForSalesFeature($localizedSalesFeature, $this->getBrand(), $this->getCategory()),
-        'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
-        'headline' => $localizedSalesFeature->valueidentifier,
-        'description' => $localizedSalesFeature->noteinfo,
-      ];
+    // $newOutputData['salesFeatures'] = [];
+    // foreach ($salesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+    //   $newSalesFeatureData = [
+    //     // Check if it's a qualified feature and put in the association
+    //     'featureKey' => $this->util->getFeatureKeyForSalesFeature($localizedSalesFeature, $this->getBrand(), $this->getCategory()),
+    //     'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
+    //     'headline' => $localizedSalesFeature->valueidentifier,
+    //     'description' => $localizedSalesFeature->noteinfo,
+    //   ];
 
-      $newOutputData['salesFeatures'][] = $newSalesFeatureData;
-    }
+    //   $newOutputData['salesFeatures'][] = $newSalesFeatureData;
+    // }
 
     /**
      * Finally add to final output data

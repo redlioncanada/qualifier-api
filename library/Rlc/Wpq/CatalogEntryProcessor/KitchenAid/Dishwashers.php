@@ -9,6 +9,32 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
+    
+    
+    
+
+foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
+      if (in_array($grpName, ['Endeca', 'EndecaProps'])) {
+        continue;
+      }
+      foreach ($grp->getDescriptiveAttributes() as $attr) {
+        $entryData['descr-attrs'][$grpName][] = [
+          'description' => $attr->description,
+          'valueidentifier' => $attr->valueidentifier,
+          'value' => $attr->value,
+          'noteinfo' => $attr->noteinfo,
+        ];
+      }
+    }
+
+
+
+    return;
+
+
+
+
+
     $description = $entry->getDescription();
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;

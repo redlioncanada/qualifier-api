@@ -3,22 +3,25 @@ To search for remaining action items: ^-\s+(?!X\s)
 X = implemented somehow
 ! = flag warning to RLC
 ? = question for RLC/WP
+* = waiting to hear back
 
 # KitchenAid Dishwasher
 - X bottleWash - SalesFeature exists
 - X proDry - SalesFeature exists
-- ! placeSettings
+- *! placeSettings
      + they've removed this from the feed. e.g. KDFE104DSS-NAR had it as a comparefeature under config/overview as of july 26, but now gone for all.
 - X proScrub - SalesFeature exists
 - X proWash - SalesFeature exists
 - X cleanWater - SalesFeature exists
-- !X decibels
+- *!X decibels
     + "(\d+) dBA" in name, not all have it (KDFE104DSS-NAR doesn't)
-- ? culinary Caddy
+- ? culinary Caddy - found, but only for KDTM704EBS-NAR. checking with Chris that this is right
     + can't find, closest thing is "Utility Basket (Upper Rack)" e.g. http://www.kitchenaid.com/shop/major-appliances-1/dishwashers-2/dishwashers-3/-[KDTM354ESS]-408526/KDTM354ESS/
+    + score for utility basket - JB
+    + email thread: https://mail.google.com/mail/u/0/#search/from%3Achris.taylor%40redlioncanada.com+OR+to%3Achris.taylor%40redlioncanada.com/15015457d2e316c0
 - X thirdLevelRack - SalesFeature exists
 - X pocketHandleConsole - "Pocket Handle" in name
-- ?X FID
+- X FID
     + used group:
         SC_Major_Appliances_Dishwashers_Dishwashers_Fully_Integrated
         similar to this one for MTG:
@@ -42,7 +45,7 @@ X = implemented somehow
 - ?X filtered - comparefeature = 'Yes'
 - ?X exteriorDispenser - comparefeature "Dispenser Type" has 'exterior'
 - ?X indoorIce - comparefeature "Dispenser Type" has 'ice'
-- ?X standardDepth - equivalent to !counterDepth and !builtIn ?
+- X standardDepth - default if not (counterDepth or builtIn)
 - X counterDepth - "counter[- ]depth" in name or "counter-depth" salesfeature exists
 - X builtIn - "built[- ]in" in name
 - X producePreserver - "Produce Preserver" salesfeature exists

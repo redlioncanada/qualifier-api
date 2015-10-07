@@ -5,7 +5,11 @@ use Lrr\ServiceLocator;
 class Wpq_FeedProcessorController extends Zend_Controller_Action {
 
   public function indexAction() {
-    set_time_limit(0);
+    // Don't stop if the connection drops
+    ignore_user_abort(true);
+    // Set 30 minutes for sanity - this should only be reached if something
+    // bad happens and we don't want to tie up resources forever.
+    set_time_limit(30 * 60);
 
     $config = ServiceLocator::config();
     $brands = $config->brands->toArray();
