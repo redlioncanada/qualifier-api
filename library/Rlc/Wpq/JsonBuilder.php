@@ -435,6 +435,26 @@ class JsonBuilder {
       $data['salesFeatures'][] = $new;
     }
 
+    /*
+     * Attach compare feature data (for print view)
+     */
+    $data['washerCompareFeatures'] = [];
+    $data['dryerCompareFeatures'] = [];
+
+    // Washers
+    if ($washerCompareFeatureGroup) {
+      foreach ($washerCompareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $data['washerCompareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
+    }
+
+    // Dryers
+    if ($dryerCompareFeatureGroup) {
+      foreach ($dryerCompareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $data['dryerCompareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
+    }
+
     return $data;
   }
 
@@ -750,6 +770,16 @@ class JsonBuilder {
       ];
 
       $data['salesFeatures'][] = $new;
+    }
+
+    /*
+     * Attach compare feature data (for print view)
+     */
+    $data['compareFeatures'] = [];
+    if ($compareFeatureGroup) {
+      foreach ($compareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $data['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
     }
   }
 
