@@ -41,7 +41,7 @@ class Util {
     $salesFeatureAssocs = ServiceLocator::salesFeatureAssocs();
     if (isset($salesFeatureAssocs[$brand]) &&
         isset($salesFeatureAssocs[$brand][$category])) {
-      foreach ($salesFeatureAssocs as $valueidentifier => $featureKey) {
+      foreach ($salesFeatureAssocs[$brand][$category] as $valueidentifier => $featureKey) {
         if ('/' === $valueidentifier[0]) {
           // Regex
           if (preg_match($valueidentifier, $localizedSalesFeature->valueidentifier)) {

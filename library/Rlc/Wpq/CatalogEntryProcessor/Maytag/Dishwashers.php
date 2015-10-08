@@ -34,7 +34,9 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $allCatalogGroupIds = array_map(function ($grp) {
       return (string) $grp->identifier;
     }, $allCatalogGroups);
+    // TODO Oct 7 2015 version of feed no longer has this category anywhere
     $entryData['FID'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Fully_integrated_Console', $allCatalogGroupIds);
+    // TODO Oct 7 2015 version of feed uses 'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_Front_Control_Dishwashers' instead
     $entryData['frontConsole'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', $allCatalogGroupIds);
 
     // Add image for dishwashers

@@ -19,6 +19,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
   public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
       $locale, array &$outputData) {
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
+    $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
 
     $newOutputData = [];
     $newOutputData['appliance'] = $this->getCategory();
@@ -66,6 +67,17 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
       ];
 
       $newOutputData['salesFeatures'][] = $newSalesFeatureData;
+    }
+    
+    
+    /*
+     * Attach compare feature data (for print view)
+     */
+    $newOutputData['compareFeatures'] = [];
+    if ($compareFeatureGroup) {
+      foreach ($compareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
     }
 
     /**
