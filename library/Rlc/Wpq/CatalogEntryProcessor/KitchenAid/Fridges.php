@@ -76,7 +76,6 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
         $entryData['indoorDispenser'] = ('No Dispenser' != $dispenserTypeAttr->value);
         // Exterior dispenser
         $entryData['exteriorDispenser'] = (false !== stripos($dispenserTypeAttr->value, 'exterior'));
-        fwrite(STDOUT, $dispenserTypeAttr->value . "," . var_export(stripos($dispenserTypeAttr->value, 'exterior'), true) . "\n");
         // In-door ice
         $entryData['indoorIce'] = (false !== stripos($dispenserTypeAttr->value, 'ice'));
       }
