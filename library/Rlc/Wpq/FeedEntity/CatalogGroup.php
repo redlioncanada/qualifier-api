@@ -31,7 +31,7 @@ class CatalogGroup extends AbstractCompoundRecord {
   }
 
   /**
-   * Get all parents recursively as flat array.
+   * Get all parents recursively as flat array, keyed by group ID.
    * 
    * @return CatalogGroup[]
    */
@@ -39,7 +39,8 @@ class CatalogGroup extends AbstractCompoundRecord {
     $ancestors = [];
     $current = $this;
     while ($parent = $current->getParent()) {
-      $ancestors[] = $parent;
+      // Index by group ID to avoid duplicates
+      $ancestors[$parent->identifier] = $parent;
       $current = $parent;
     }
     return $ancestors;

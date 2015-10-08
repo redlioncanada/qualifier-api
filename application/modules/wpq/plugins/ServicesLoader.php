@@ -16,6 +16,21 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
     $serviceLocator = new ServiceLocator();
     ServiceLocator::load($serviceLocator);
 
+    $configPath = realpath(__DIR__ . '/../configs');
+    $config = new Zend_Config_Ini($configPath . '/module.ini', APPLICATION_ENV, true);
+    $locales = $config->locales->toArray();
+    $config->defaultLocale = $locales[0];
+
+    $t11nStrings = (new Zend_Config_Ini($configPath . '/strings.ini'))->toArray();
+    $translator = new Lrr\Translator($t11nStrings, $config->defaultLocale);
+
+    // These may be needed by the rest
+    $serviceLocator
+        ->loadUtil(new Wpq\Util())
+        ->loadConfig($config)
+        ->loadTranslator($translator)
+    ;
+
     $dataPath = realpath(APPLICATION_PATH . '/../data'); // no trailing slash
     // Where to find XML feed files
     $xmlPath = $dataPath . '/source-xml';
@@ -26,21 +41,11 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
     $feedModelBuilder = new Wpq\FeedModelBuilder($xmlReader);
     $jsonBuilder = new Wpq\JsonBuilder($feedModelBuilder);
 
-    $configPath = realpath(__DIR__ . '/../configs');
-    $config = new Zend_Config_Ini($configPath . '/module.ini', APPLICATION_ENV, true);
-    $locales = $config->locales->toArray();
-    $config->defaultLocale = $locales[0];
-
-    $t11nStrings = json_decode(file_get_contents($configPath . '/strings.json'), true);
-    $translator = new Lrr\Translator($t11nStrings, $config->defaultLocale);
 
     $salesFeatureAssocs = json_decode(file_get_contents($configPath . '/sales-feature-assocs.json'), true);
 
     $serviceLocator
-        ->loadConfig($config)
-        ->loadTranslator($translator)
         ->loadSalesFeatureAssocs($salesFeatureAssocs)
-        ->loadUtil(new Wpq\Util())
         ->loadJsonFileManager(new Wpq\JsonFileManager($jsonPath, $jsonBuilder))
         ->catalogEntryFactory(function(\SimpleXMLElement $record) {
           return new FeedEntity\CatalogEntry($record);
@@ -62,6 +67,19 @@ class Wpq_Plugin_ServicesLoader extends Zend_Controller_Plugin_Abstract {
         })
         ->descriptiveAttributeFactory(function (\SimpleXMLElement $record) {
           return new FeedEntity\DescriptiveAttribute($record);
+        })
+        /**
+         * @return Wpq\CatalogEntryProcessorInterface
+         */
+        ->catalogEntryProcessorFactory(function ($classSuffix) {
+          static $instances = [];
+
+          if (!isset($instances[$classSuffix])) {
+            $fullClassName = '\\Rlc\\Wpq\\CatalogEntryProcessor\\' . $classSuffix;
+            $instances[$classSuffix] = new $fullClassName();
+          }
+
+          return $instances[$classSuffix];
         })
     ;
   }
