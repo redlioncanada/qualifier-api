@@ -98,10 +98,17 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     $washer = $entries[$laundryPair['washerSku']];
     $dryer = $entries[$laundryPair['dryerSku']];
 
+    // Get all the pieces we'll be analysing
     $washerDescription = $washer->getDescription()->getRecord($locale);
     $washerDescriptionDefaultLocale = $washer->getDescription()->getRecord();
+    $washerCompareFeatureGroup = $washer->getDescriptiveAttributeGroup('CompareFeature');
+    $washerSalesFeatureGroup = $washer->getDescriptiveAttributeGroup('SalesFeature');
+    $washerMiscGroup = $washer->getDescriptiveAttributeGroup('Miscellaneous');
     $dryerDescription = $dryer->getDescription()->getRecord($locale);
     $dryerDescriptionDefaultLocale = $dryer->getDescription()->getRecord();
+    $dryerCompareFeatureGroup = $dryer->getDescriptiveAttributeGroup('CompareFeature');
+    $dryerSalesFeatureGroup = $dryer->getDescriptiveAttributeGroup('SalesFeature');
+    $dryerMiscGroup = $dryer->getDescriptiveAttributeGroup('Miscellaneous');
 
     // Sku/Name/description
     $data['washerSku'] = $laundryPair['washerSku'];
@@ -166,10 +173,6 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     /*
      * Washer features
      */
-    $washerCompareFeatureGroup = $washer->getDescriptiveAttributeGroup('CompareFeature');
-    $dryerCompareFeatureGroup = $dryer->getDescriptiveAttributeGroup('CompareFeature');
-    $washerSalesFeatureGroup = $washer->getDescriptiveAttributeGroup('SalesFeature');
-    $dryerSalesFeatureGroup = $dryer->getDescriptiveAttributeGroup('SalesFeature');
 
     if ($washerCompareFeatureGroup) {
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
@@ -313,6 +316,28 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
         $data['dryerCompareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
       }
     }
+    
+    /*
+     * Add disclaimer data
+     */
+    
+    // Washers
+    $washerDisclaimersTemp = [];
+    foreach ($washerMiscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
+      $washerDisclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
+    }
+    ksort($washerDisclaimersTemp, SORT_NUMERIC);
+    // Convert to sequential array after sorting
+    $data['washerDisclaimers'] = array_values($washerDisclaimersTemp);
+    
+    // Dryers
+    $dryerDisclaimersTemp = [];
+    foreach ($dryerMiscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
+      $dryerDisclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
+    }
+    ksort($dryerDisclaimersTemp, SORT_NUMERIC);
+    // Convert to sequential array after sorting
+    $data['dryerDisclaimers'] = array_values($dryerDisclaimersTemp);
 
     return $data;
   }
