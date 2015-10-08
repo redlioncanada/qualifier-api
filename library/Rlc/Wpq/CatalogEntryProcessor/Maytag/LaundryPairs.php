@@ -81,7 +81,7 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
     }
 
     /*
-     * Now that all laundry pairs are collected, add them to the output data
+     * Now that all laundry pairs are collected, process and add them to the output data
      */
     foreach ($laundryPairsToProcessThisRound as $laundryPair) {
       $newOutputData = $this->buildLaundryPairData($laundryPair, $entries, $locale);
@@ -292,6 +292,26 @@ class LaundryPairs implements Wpq\CatalogEntryProcessorInterface {
       ];
 
       $data['salesFeatures'][] = $new;
+    }
+    
+    /*
+     * Attach compare feature data (for print view)
+     */
+    $data['washerCompareFeatures'] = [];
+    $data['dryerCompareFeatures'] = [];
+
+    // Washers
+    if ($washerCompareFeatureGroup) {
+      foreach ($washerCompareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $data['washerCompareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
+    }
+
+    // Dryers
+    if ($dryerCompareFeatureGroup) {
+      foreach ($dryerCompareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $data['dryerCompareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
     }
 
     return $data;
