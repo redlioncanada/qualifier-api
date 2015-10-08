@@ -20,6 +20,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
       $locale, array &$outputData) {
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
+    $miscGroup = $entry->getDescriptiveAttributeGroup('Miscellaneous');
 
     $newOutputData = [];
     $newOutputData['appliance'] = $this->getCategory();
@@ -68,8 +69,8 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
       $newOutputData['salesFeatures'][] = $newSalesFeatureData;
     }
-    
-    
+
+
     /*
      * Attach compare feature data (for print view)
      */
@@ -79,6 +80,19 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
         $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
       }
     }
+
+
+    /*
+     * Add disclaimer data
+     */
+    $disclaimersTemp = [];
+    foreach ($miscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
+      $disclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
+    }
+    ksort($disclaimersTemp, SORT_NUMERIC);
+    // Convert to sequential array after sorting
+    $newOutputData['disclaimers'] = array_values($disclaimersTemp);
+
 
     /**
      * Finally add to final output data

@@ -1,14 +1,16 @@
 <?php
 
-$x = simplexml_load_file(__DIR__ . '/../data/source-xml/WP_CA_DescriptiveAttribute.xml');
+$x = simplexml_load_file(__DIR__ . '/../data/source-xml/MTG_CA_DescriptiveAttribute.xml');
 
 foreach ($x->record as $r) {
-  // if ('CompareFeature' !== (string) $r->groupname) continue;
+  if ('Miscellaneous' !== (string) $r->groupname) continue;
+  if ('Disclaimer' !== (string) $r->description) continue;
   if ('en_CA' !== (string) $r->locale) continue;
   echo $r->partnumber . "\n"
-      . $r->noteinfo . "\n"
-      . $r->description . "\n"
-      . $r->valueidentifier . "\n"
-      . $r->value . "\n"
+      . 'noteinfo:' . $r->noteinfo . "\n"
+      . 'description:' . $r->description . "\n"
+      . 'valueidentifier:' . $r->valueidentifier . "\n"
+      . 'sequence:' . $r->sequence . "\n"
+      . 'value:' . $r->value . "\n"
       . "====================================\n";
 }
