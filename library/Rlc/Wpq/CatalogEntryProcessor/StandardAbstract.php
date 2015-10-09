@@ -93,6 +93,8 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     // Convert to sequential array after sorting
     $newOutputData['disclaimers'] = array_values($disclaimersTemp);
 
+    // Give a chance for subclass to add to final processing
+    $this->postProcess($entry, $entries, $locale, $newOutputData);
 
     /**
      * Finally add to final output data
@@ -153,10 +155,32 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
   }
 
   /**
+   * 
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param array $entries        \Rlc\Wpq\FeedEntity\CatalogEntry[]
+   * @param string $locale
+   * @param array $newOutputData  Difference from process() arguments -- this is
+   *                              a reference to the single new record created
+   *                              by process(), not the set of all records so far.
+   * 
    * @return void
    */
-  abstract protected function attachFeatureData(array &$entryData,
-      Wpq\FeedEntity\CatalogEntry $entry, $locale);
+  protected function postProcess(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale, array &$newOutputData) {
+    // Nothing by default
+  }
+
+  /**
+   * @param array $entryData REFERENCE
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param string $locale
+   * 
+   * @return void
+   */
+  protected function attachFeatureData(array &$entryData,
+      Wpq\FeedEntity\CatalogEntry $entry, $locale) {
+    // Nothing by default
+  }
 
   /**
    * @return string
