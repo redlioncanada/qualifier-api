@@ -1,6 +1,6 @@
 Order Deny,Allow
 
-SetEnv APPLICATION_ENV staging
+SetEnv APPLICATION_ENV testing
 
 RewriteEngine On
 # The following rule tells Apache that if the requested filename
