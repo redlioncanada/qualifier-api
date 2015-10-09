@@ -1,0 +1,67 @@
+// Format for a washer with 2 associated dryers
+// Note "stacked" was a dryer feature -- now gone
+{
+    "appliance": "Washers",
+    "sku": "MHW3100DW-NAR",
+    "name": "Maytag Maxima\u00ae Front Load Washing Machine with Large Capacity and PowerWash\u00ae Cycle 4.8 cu. ft. I.E.C.",
+    "description": "To tackle your dirtiest jobs, this front load washing machine gives you the Best Cleaning in its class enabled by the PowerWash\u00ae\u00a0cycle<sup>2<\/sup>.* With a combination of extra cleaning action, heated water and a thorough rinse, this large capacity washer helps remove even your toughest stains. Designed to take on your toughest loads with 4.8cu. ft. I.E.C. capacity, this heavy duty washing machine is also built to last thanks to the Maytag\u00ae Commercial Technology we put under the hood. We're so confident in the reliability of Maxima\u00ae front load washers that we back the direct drive motor and stainless steel wash basket with a 10-year limited parts warranty<sup>1<\/sup>.** Plus, thisfront load washing machine is designed, assembled and engineered in the U.S.A. in Clyde, Ohio.",
+    "colours": [
+        {
+            "sku": "MHW3100DW",
+            "colourCode": "WH",
+            "colourName": "White",
+            "prices": {
+                "CAD": "1149.99"
+            }
+        }
+    ],
+    "capacity": 4.8,
+    "vibrationControl": true,
+    "rapidWash": false,
+    "washerWrinkleControl": false,
+    "steamEnhanced": false,
+    "cycleOptions": 8,
+    "frontLoad": true,
+    "topLoad": false,
+    "image": "\/digitalassets\/MHW3100DW\/Pair_244X312_P130793_.jpg",
+    "url": "http:\/\/www.maytag.ca\/-[MHW3100DW]-1505680\/MHW3100DW\/",
+    "salesFeatures": [
+        // ... same as before
+    ],
+    "compareFeatures": {
+        // ... same as before
+    },
+    "disclaimers": [
+        // ... same as before
+    ],
+    "dryers": [
+        {
+            "sku": "MHW3100DW-NAR",
+            "name": "Maytag Maxima\u00ae Front Load Washing Machine with Large Capacity and PowerWash\u00ae Cycle 4.8 cu. ft. I.E.C.",
+            "description": "To tackle your dirtiest jobs, this front load washing machine gives you the Best Cleaning in its class enabled by the PowerWash\u00ae\u00a0cycle<sup>2<\/sup>.* With a combination of extra cleaning action, heated water and a thorough rinse, this large capacity washer helps remove even your toughest stains. Designed to take on your toughest loads with 4.8cu. ft. I.E.C. capacity, this heavy duty washing machine is also built to last thanks to the Maytag\u00ae Commercial Technology we put under the hood. We're so confident in the reliability of Maxima\u00ae front load washers that we back the direct drive motor and stainless steel wash basket with a 10-year limited parts warranty<sup>1<\/sup>.** Plus, thisfront load washing machine is designed, assembled and engineered in the U.S.A. in Clyde, Ohio.",
+            "colours": [
+                {
+                    "sku": "MHW3100DW",
+                    "colourCode": "WH",
+                    "colourName": "White",
+                    "prices": {
+                        "CAD": "1149.99"
+                    }
+                }
+            ],
+            "url": "http:\/\/www.maytag.ca\/-[MHW3100DW]-1505680\/MHW3100DW\/",
+            "salesFeatures": [
+                // ... same as usual, but separate from washer sales features now, since there are 2 dryers
+            ],
+            "compareFeatures": {
+                // ... same as usual
+            },
+            "disclaimers": [
+                // ... same as usual
+            ]
+        },
+        {
+            // ... another dryer
+        }
+    ]
+}

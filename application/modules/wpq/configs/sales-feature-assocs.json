@@ -28,16 +28,7 @@
       "/capacity$/i": "capacity",
       "/^capacit\u00e9/i": "capacity"
     },
-    "Laundry-Dryers": {
-      "Rapid Dry Cycle": "rapidDry",
-      "Programme de s\u00e9chage rapide": "rapidDry",
-      "Wrinkle Control Cycle": "dryerWrinkleControl",
-      "Extra-Large Capacity": "capacity",
-      "Tr\u00e8s grande capacit\u00e9": "capacity",
-      "SoundGuard\u00ae Stainless Steel Dryer Drum": "soundGuard",
-      "Tambour de s\u00e9cheuse en acier inoxydable SoundGuard\u2122": "soundGuard"
-    },
-    "Laundry-Washers": {
+    "Washers": {
       "Rapid Wash Cycle": "rapidWash",
       "Steam-Enhanced Cycles": "steamEnhanced",
       "Wrinkle Control Cycle": "washerWrinkleControl",
