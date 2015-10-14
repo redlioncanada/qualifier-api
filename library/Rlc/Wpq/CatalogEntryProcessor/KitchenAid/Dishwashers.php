@@ -9,32 +9,6 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
-    
-    
-    
-
-foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
-      if (in_array($grpName, ['Endeca', 'EndecaProps'])) {
-        continue;
-      }
-      foreach ($grp->getDescriptiveAttributes() as $attr) {
-        $entryData['descr-attrs'][$grpName][] = [
-          'description' => $attr->description,
-          'valueidentifier' => $attr->valueidentifier,
-          'value' => $attr->value,
-          'noteinfo' => $attr->noteinfo,
-        ];
-      }
-    }
-
-
-
-    return;
-
-
-
-
-
     $description = $entry->getDescription();
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
@@ -65,7 +39,8 @@ foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
     $entryData['cleanWater'] = false;
     $entryData['thirdLevelRack'] = false;
     $entryData['panelReady'] = false;
-    
+    $entryData['culinaryCaddy'] = false;
+
     if ($salesFeatureGroup) {
       // All are yes if feature exists, no otherwise
       $entryData['bottleWash'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Bottle Wash");
@@ -75,6 +50,7 @@ foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
       $entryData['cleanWater'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Clean Water Wash System");
       $entryData['thirdLevelRack'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Third Level Rack");
       $entryData['panelReady'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Panel-Ready Design");
+      $entryData['culinaryCaddy'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Culinary Caddy");
     }
 
     /*

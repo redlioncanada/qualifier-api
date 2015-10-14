@@ -15,10 +15,7 @@ X = implemented somehow
 - X cleanWater - SalesFeature exists
 - *!X decibels
     + "(\d+) dBA" in name, not all have it (KDFE104DSS-NAR doesn't)
-- ? culinary Caddy - found, but only for KDTM704EBS-NAR. checking with Chris that this is right
-    + can't find, closest thing is "Utility Basket (Upper Rack)" e.g. http://www.kitchenaid.com/shop/major-appliances-1/dishwashers-2/dishwashers-3/-[KDTM354ESS]-408526/KDTM354ESS/
-    + score for utility basket - JB
-    + email thread: https://mail.google.com/mail/u/0/#search/from%3Achris.taylor%40redlioncanada.com+OR+to%3Achris.taylor%40redlioncanada.com/15015457d2e316c0
+- X culinaryCaddy - SalesFeature exists
 - X thirdLevelRack - SalesFeature exists
 - X pocketHandleConsole - "Pocket Handle" in name
 - X FID
