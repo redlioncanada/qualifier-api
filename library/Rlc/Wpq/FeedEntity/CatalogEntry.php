@@ -47,6 +47,14 @@ class CatalogEntry extends AbstractSimpleRecord {
   private $childEntries = [];
 
   /**
+   * Optional array corresponding to catalog entries assigned by records in
+   * MerchandisingAssociation with type="X-SELL".
+   * 
+   * @var CatalogEntry[]
+   */
+  private $xSellAssocs = [];
+
+  /**
    * Optional array of associated records in the B2C_Price file. N.B. they may
    * have various currencies, start/enddates, and published 1/0 flags. See
    * comment in Wpq\FeedEntity\Price.
@@ -188,6 +196,24 @@ class CatalogEntry extends AbstractSimpleRecord {
     return $this;
   }
 
+  
+  /**
+   * @return CatalogEntry[]
+   */
+  public function getXSellAssocs() {
+    return $this->xSellAssocs;
+  }
+
+  /**
+   * @param CatalogEntry $xSellAssoc
+   * @return \Rlc\Wpq\FeedEntity\CatalogEntry self
+   */
+  public function addXSellAssoc(CatalogEntry $xSellAssoc) {
+    $this->xSellAssocs[] = $xSellAssoc;
+    return $this;
+  }
+
+  
   /**
    * @param \Rlc\Wpq\FeedEntity\Price $price
    * @return \Rlc\Wpq\FeedEntity\CatalogEntry

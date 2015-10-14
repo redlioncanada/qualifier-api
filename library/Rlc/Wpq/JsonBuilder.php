@@ -52,13 +52,27 @@ class JsonBuilder {
 //      'SC_Laundry_Laundry_Laundry_Pairs' => 'Whirlpool\\LaundryPairs',
 //    ],
     'kitchenaid' => [
-       'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
+      'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
 //      'SC_Major_Appliances_Refrigerators_Refrigerators' => 'KitchenAid\\Fridges',
 //      'SC_Major_Appliances_Cooktops_Cooktops' => 'KitchenAid\\Cooktops',
 //      'SC_Major_Appliances_Ranges_Ranges' => 'KitchenAid\\Ranges',
 //      'SC_Major_Appliances_Wall_Ovens_Wall_Ovens' => 'KitchenAid\\WallOvens',
 //      'SC_Major_Appliances_Hoods_and_Vents_Hoods_and_Vents' => 'KitchenAid\\Vents',
     ],
+  ];
+
+  /**
+   * Catalog group IDs of groups that should be included in feedModelBuilder,
+   * but not processed into the main result set.
+   * 
+   * Use case right now is dryers -- they need to be in the overall model
+   * so that the Washers processor can delegate them to Dryers processor itself,
+   * so they can be nested.
+   * 
+   * @var array
+   */
+  private $unprocessedGroups = [
+    'SC_Laundry_Laundry_Appliances_Dryers',
   ];
 
   public function __construct(FeedModelBuilderInterface $feedModelBuilder) {
@@ -73,7 +87,7 @@ class JsonBuilder {
    */
   public function build($brand, $locale) {
     if (!isset($this->feedModelCache[$brand])) {
-      $catalogGroupsFilter = array_keys($this->catalogGroupsConfig[$brand]);
+      $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups);
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $catalogGroupsFilter);
     }
     $entries = $this->feedModelCache[$brand];

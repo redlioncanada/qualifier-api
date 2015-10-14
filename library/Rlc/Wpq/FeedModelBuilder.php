@@ -29,23 +29,26 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
    *                                one of these groups.
    * @return FeedEntity\CatalogEntry[]
    */
-  public function buildFeedModel($brand, $filterForGroups = []) {
+  public function buildFeedModel($brand, array $filterForGroups = []) {
     // Fetch data for associations
     $entryData = $this->xmlReader->readFile($brand, 'CatalogEntry');
     $entryGroupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupCatalogEntryRelationship');
     $groups = $this->getCatalogGroups($brand);
     $priceData = $this->xmlReader->readFile($brand, 'B2C_Price');
+    $merchAssocData = $this->xmlReader->readFile($brand, 'MerchandisingAssociation');
 
     /*
-     * Build array in steps. We're working toward an array of top-level products
-     * (catalog entries) only, with child products (colour variants), categories,
+     * Build array in steps. We're working toward an array that's a complete
+     * list of products (catalog entries), with parent product or child
+     * products (colour variants) as applicable, categories,
      * and all other associations assigned and retrievable using the classes'
      * accessor methods.
      */
 
     // Start by creating two arrays, one just stores all catalog entries by
     // partnumber, and the other stores only top-level entries by partnumber.
-    // It's this 2nd array we'll ultimately return.
+    // Ultimately we'll return the first (all entries), but have the top-level
+    // only array is useful for processing.
     $entries = $topLevelEntries = [];
     foreach ($entryData->record as $entryRecord) {
       $newEntry = ServiceLocator::catalogEntry($entryRecord);
@@ -81,7 +84,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
         }
       }
     }
-
+    
     // Assign prices
     foreach ($priceData->record as $priceRecord) {
       $pricePartNumber = (string) $priceRecord->partnumber;
@@ -151,6 +154,25 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
         unset($topLevelEntries[$sku], $entries[$sku]);
       }
     }
+    
+    
+    /*
+     * Assign X-SELL associations for remaining entries (for washer => dryer assocs)
+     */
+    foreach ($merchAssocData->record as $merchAssocRecord) {
+      if ('X-SELL' != $merchAssocRecord->type) {
+        continue;
+      }
+      
+      $merchAssocPartNumberFrom = (string) $merchAssocRecord->partnumberfrom;
+      $merchAssocPartNumberTo = (string) $merchAssocRecord->partnumberto;
+      if (!isset($entries[$merchAssocPartNumberFrom], $entries[$merchAssocPartNumberTo])) {
+        continue;
+      }
+      
+      $entries[$merchAssocPartNumberFrom]->addXSellAssoc($entries[$merchAssocPartNumberTo]);
+    }
+
 
     $this->assignEntryDescriptions($entries, $brand);
     $this->assignDefiningAttributeValues($entries, $brand);
