@@ -93,7 +93,7 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
       if ($xSellAssoc->isInGroupId('SC_Laundry_Laundry_Appliances_Dryers')) {
         // For all x-sell associated products that are dryers, process into
         // a new entry in the dryers array.
-        $dryerProcessor->process($entry, $entries, $locale, $newOutputData['dryers']);
+        $dryerProcessor->process($xSellAssoc, $entries, $locale, $newOutputData['dryers']);
       }
     }
   }
