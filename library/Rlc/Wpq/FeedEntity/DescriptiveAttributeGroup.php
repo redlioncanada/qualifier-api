@@ -91,22 +91,35 @@ class DescriptiveAttributeGroup {
   }
 
   /**
+   * @param string  $valueidentifier
+   * @param string  $locale   OPTIONAL
+   * @return DescriptiveAttribute or NULL if no matching records
+   */
+  public function getDescriptiveAttributeByValueIdentifier($valueidentifier,
+      $locale = null) {
+    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $valueidentifier], $locale);
+    return $attr;
+  }
+
+  /**
    * @param array   $criteria Associative field => value conditions
    * @param string  $locale   OPTIONAL
    * @return bool
    */
-  public function descriptiveAttributeExistsWhere(array $criteria, $locale = null) {
+  public function descriptiveAttributeExistsWhere(array $criteria,
+      $locale = null) {
     $attr = $this->getDescriptiveAttributeWhere($criteria, $locale);
     return (bool) $attr;
   }
 
   /**
-   * @param string  $value
+   * @param string  $valueidentifier
    * @param string  $locale   OPTIONAL
    * @return bool
    */
-  public function descriptiveAttributeExistsByValueIdentifier($value, $locale = null) {
-    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $value], $locale);
+  public function descriptiveAttributeExistsByValueIdentifier($valueidentifier,
+      $locale = null) {
+    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $valueidentifier], $locale);
     return (bool) $attr;
   }
 

@@ -52,9 +52,9 @@ class JsonBuilder {
 //      'SC_Laundry_Laundry_Laundry_Pairs' => 'Whirlpool\\LaundryPairs',
 //    ],
     'kitchenaid' => [
-      'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
+//      'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
 //      'SC_Major_Appliances_Refrigerators_Refrigerators' => 'KitchenAid\\Fridges',
-//      'SC_Major_Appliances_Cooktops_Cooktops' => 'KitchenAid\\Cooktops',
+      'SC_Major_Appliances_Cooktops_Cooktops' => 'KitchenAid\\Cooktops',
 //      'SC_Major_Appliances_Ranges_Ranges' => 'KitchenAid\\Ranges',
 //      'SC_Major_Appliances_Wall_Ovens_Wall_Ovens' => 'KitchenAid\\WallOvens',
 //      'SC_Major_Appliances_Hoods_and_Vents_Hoods_and_Vents' => 'KitchenAid\\Vents',

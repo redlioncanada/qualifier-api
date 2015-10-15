@@ -74,24 +74,24 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     /*
      * Attach compare feature data (for print view)
      */
-    $newOutputData['compareFeatures'] = [];
-    if ($compareFeatureGroup) {
-      foreach ($compareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
-        $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
-      }
-    }
+//    $newOutputData['compareFeatures'] = [];
+//    if ($compareFeatureGroup) {
+//      foreach ($compareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+//        $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+//      }
+//    }
 
 
     /*
      * Add disclaimer data
      */
-    $disclaimersTemp = [];
-    foreach ($miscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
-      $disclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
-    }
-    ksort($disclaimersTemp, SORT_NUMERIC);
-    // Convert to sequential array after sorting
-    $newOutputData['disclaimers'] = array_values($disclaimersTemp);
+//    $disclaimersTemp = [];
+//    foreach ($miscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
+//      $disclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
+//    }
+//    ksort($disclaimersTemp, SORT_NUMERIC);
+//    // Convert to sequential array after sorting
+//    $newOutputData['disclaimers'] = array_values($disclaimersTemp);
 
     // Give a chance for subclass to add to final processing
     $this->postProcess($entry, $entries, $locale, $newOutputData);
