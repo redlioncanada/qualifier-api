@@ -7,53 +7,8 @@ use Rlc\Wpq,
 
 class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
-  public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
-      $locale, array &$outputData) {
-
-    $description = $entry->getDescription();
-    $entryData['gas'] = (bool) stripos($description->name, 'gas');
-    $entryData['electric'] = (bool) stripos($description->name, 'electric');
-    $entryData['induction'] = (bool) stripos($description->name, 'induction');
-    
-    if ($entryData['induction']) {
-      return;
-    }
-
-
-    return parent::process($entry, $entries, $locale, $outputData);
-  }
-
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
-    
-    
-    
-    
-
-
-
-    // DEV CODE
-    foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
-      if (in_array($grpName, ['Endeca', 'EndecaProps'])) {
-        continue;
-      }
-      foreach ($grp->getDescriptiveAttributes() as $attr) {
-        $entryData['descr-attrs'][$grpName][] = [
-          'description' => $attr->description,
-          'valueidentifier' => $attr->valueidentifier,
-          'value' => $attr->value,
-          'noteinfo' => $attr->noteinfo,
-        ];
-      }
-    }
-
-
-
-
-
-
-    
-    
     $description = $entry->getDescription();
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
@@ -72,17 +27,61 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
      */
 
     // Init all to false
-
+    $entryData['cookShield'] = false;
+    $entryData['touchActivated'] = false;
+    $entryData['meltAndHold'] = false;
+    $entryData['electricEvenHeat'] = false;
+    $entryData['inductionSimmer'] = false;
+    $entryData['performanceBoost'] = false;
+    $entryData['5KBTUSimmer'] = false;
+    $entryData['15KBTU'] = false;
+    $entryData['18KBTUEvenHeat'] = false;
+    $entryData['20KBTUDual'] = false;
 
     if ($salesFeatureGroup) {
-      
+      $entryData['cookShield'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("CookShield Finish");
+
+      $entryData['touchActivated'] = (
+          $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Touch-Activated Electronic Controls")
+          // Try the name/descr
+          ||
+          preg_match('/Touch[ -]Activated Controls/i', $description->name) ||
+          preg_match('/Touch[ -]Activated Controls/i', $description->longdescription)
+          );
+
+      $entryData['meltAndHold'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Melt and Hold");
+
+      $entryData['electricEvenHeat'] = (
+          $entryData['electric'] &&
+          stripos($description->longdescription, "even-heat")
+          );
+
+      $entryData['inductionSimmer'] = (
+          $entryData['induction'] &&
+          $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Simmer Function")
+          );
+
+      $entryData['performanceBoost'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Performance Boost");
+
+      $entryData['5KBTUSimmer'] = (
+          $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"5K BTU Even-Heat\u2122 Simmer Burner"'))
+          // 6K BTU also counts
+          ||
+          $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"6K BTU Even-Heat\u2122 Simmer Burner"'))
+          );
+
+      $entryData['15KBTU'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifierMatch("15K BTU");
+      $entryData['18KBTUEvenHeat'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"18K BTU Even-Heat\u2122 Gas Grill"'));
+      $entryData['20KBTUDual'] = (
+          $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("20K BTU Professional Dual Ring Burner") ||
+          $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"20K BTU Ultra Power\u2122 Dual-Flame Burner"'))
+          );
     }
 
     /*
      * Compare-feature-based info
      */
 
-    $entryData['5Elements'] = false;
     $entryData['5Burners'] = false;
     $entryData['6Burners'] = false;
 
@@ -90,8 +89,7 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
       $numElementsFeature = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Number of Elements-Burners");
       // TODO burners and elements are the same thing; RLC may want to change
       // this once they hear that.
-      $entryData['5Elements'] = 5 <= $numElementsFeature->value;
-      $entryData['5Burners'] = $entryData['5Elements'];
+      $entryData['5Burners'] = 5 <= $numElementsFeature->value;
       $entryData['6Burners'] = 6 <= $numElementsFeature->value;
     }
 
@@ -99,12 +97,6 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Other
      */
 
-//    $allCatalogGroups = $entry->getAllCatalogGroups();
-//    $allCatalogGroupIds = array_map(function ($grp) {
-//      return (string) $grp->identifier;
-//    }, $allCatalogGroups);
-//     in_array('...', $allCatalogGroupIds);
-//     
     // Add image
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
 

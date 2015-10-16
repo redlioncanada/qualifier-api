@@ -102,6 +102,36 @@ class DescriptiveAttributeGroup {
   }
 
   /**
+   * Returns first match
+   * 
+   * @param string  $pattern
+   * @param string  $regex    OPTIONAL default false
+   * @param string  $locale   OPTIONAL
+   * @return DescriptiveAttribute or NULL if no matching records
+   */
+  public function getDescriptiveAttributeByValueIdentifierMatch($pattern,
+      $regex = false, $locale = null) {
+
+    if (is_null($locale)) {
+      $locale = $this->defaultLocale;
+    }
+
+    foreach ($this->attrsByLocale[$locale] as $attr) {
+      if (
+          ($regex && !preg_match($pattern, $attr->valueidentifier)) ||
+          (!$regex && (false === stripos($attr->valueidentifier, $pattern)))
+      ) {
+        continue;
+      }
+      // All values match in record
+      return $attr;
+    }
+
+    // No matching records found
+    return null;
+  }
+
+  /**
    * @param array   $criteria Associative field => value conditions
    * @param string  $locale   OPTIONAL
    * @return bool
@@ -120,6 +150,18 @@ class DescriptiveAttributeGroup {
   public function descriptiveAttributeExistsByValueIdentifier($valueidentifier,
       $locale = null) {
     $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $valueidentifier], $locale);
+    return (bool) $attr;
+  }
+
+  /**
+   * @param string  $pattern
+   * @param string  $regex    OPTIONAL default false
+   * @param string  $locale   OPTIONAL
+   * @return bool
+   */
+  public function descriptiveAttributeExistsByValueIdentifierMatch($pattern,
+      $regex = false, $locale = null) {
+    $attr = $this->getDescriptiveAttributeByValueIdentifierMatch($pattern, $regex, $locale);
     return (bool) $attr;
   }
 
