@@ -20,7 +20,7 @@ X = implemented somehow
 - X proScrub - SalesFeature exists
 - X proWash - SalesFeature exists
 - X cleanWater - SalesFeature exists
-- / decibels - use compare feature
+- X decibels - use compare feature "Decibel Level (dBA)"
 - X culinaryCaddy - SalesFeature exists
 - X thirdLevelRack - SalesFeature exists
 - X pocketHandleConsole - "Pocket Handle" in name
