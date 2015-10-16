@@ -53,45 +53,68 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     $productUrls = $this->util->getProductUrls($this->getBrand(), $locale);
     $newOutputData['url'] = isset($productUrls[$entry->partnumber]) ? $productUrls[$entry->partnumber] : null;
 
+    
+    
+    
 
+
+    // DEV CODE
+//    foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
+//      if (in_array($grpName, ['Endeca', 'EndecaProps', 'Gallery'])) {
+//        continue;
+//      }
+//      foreach ($grp->getDescriptiveAttributes() as $attr) {
+//        $newOutputData['descr-attrs'][$grpName][] = [
+//          'description' => $attr->description,
+//          'valueidentifier' => $attr->valueidentifier,
+//          'value' => $attr->value,
+//          'noteinfo' => $attr->noteinfo,
+//        ];
+//      }
+//    }
+
+
+
+    
+    
     /*
      * Attach sales feature data
      */
-    // $newOutputData['salesFeatures'] = [];
-    // foreach ($salesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
-    //   $newSalesFeatureData = [
-    //     // Check if it's a qualified feature and put in the association
-    //     'featureKey' => $this->util->getFeatureKeyForSalesFeature($localizedSalesFeature, $this->getBrand(), $this->getCategory()),
-    //     'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
-    //     'headline' => $localizedSalesFeature->valueidentifier,
-    //     'description' => $localizedSalesFeature->noteinfo,
-    //   ];
+     $newOutputData['salesFeatures'] = [];
+     foreach ($salesFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedSalesFeature) {
+       $newSalesFeatureData = [
+         // Check if it's a qualified feature and put in the association
+         'featureKey' => $this->util->getFeatureKeyForSalesFeature($localizedSalesFeature, $this->getBrand(), $this->getCategory()),
+         'top3' => ($localizedSalesFeature->valuesequence <= 3), // double check using field for this purpose - is it same as sequence?
+         'headline' => $localizedSalesFeature->valueidentifier,
+         'description' => $localizedSalesFeature->noteinfo,
+       ];
 
-    //   $newOutputData['salesFeatures'][] = $newSalesFeatureData;
-    // }
+       $newOutputData['salesFeatures'][] = $newSalesFeatureData;
+     }
 
 
     /*
      * Attach compare feature data (for print view)
      */
-//    $newOutputData['compareFeatures'] = [];
-//    if ($compareFeatureGroup) {
-//      foreach ($compareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
-//        $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
-//      }
-//    }
+    $newOutputData['compareFeatures'] = [];
+    if ($compareFeatureGroup) {
+      foreach ($compareFeatureGroup->getDescriptiveAttributes(null, $locale) as $localizedCompareFeature) {
+        $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
+      }
+    }
 
 
     /*
      * Add disclaimer data
      */
-//    $disclaimersTemp = [];
-//    foreach ($miscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
-//      $disclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
-//    }
-//    ksort($disclaimersTemp, SORT_NUMERIC);
-//    // Convert to sequential array after sorting
-//    $newOutputData['disclaimers'] = array_values($disclaimersTemp);
+    $disclaimersTemp = [];
+    foreach ($miscGroup->getDescriptiveAttributes(['description' => "Disclaimer"], $locale) as $localizedDisclaimer) {
+      $disclaimersTemp[$localizedDisclaimer->sequence] = $localizedDisclaimer->value;
+    }
+    ksort($disclaimersTemp, SORT_NUMERIC);
+    // Convert to sequential array after sorting
+    $newOutputData['disclaimers'] = array_values($disclaimersTemp);
 
     // Give a chance for subclass to add to final processing
     $this->postProcess($entry, $entries, $locale, $newOutputData);
