@@ -53,32 +53,9 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
       $entryData['steamEnhanced'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
     }
 
-    /*
-     * Pair image
-     */
-    // Goes before image URLs in feed to make them relative to http://maytag.com
+    // Add image for washers
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
-    $galleryGroup = $entry->getDescriptiveAttributeGroup('Gallery');
-    if ($galleryGroup) {
-      foreach ($galleryGroup->getDescriptiveAttributes(null, $locale) as $attr) {
-        // Check if we've found the right attr
-        if (false === strpos($attr->image1, 'Pair_244X312_')) {
-          continue;
-        }
-        // Split up urls and find the one of the right dimensions
-        $imageUrls = explode('|', $attr->image1);
-        foreach ($imageUrls as $imageUrl) {
-          if (false !== strpos($imageUrl, 'Pair_244X312_')) {
-            $entryData['image'] = $imageUrlPrefix . $imageUrl;
-            break 2;
-          }
-        }
-      }
-    }
-    // If still not set, use no image image
-    if (!isset($entryData['image'])) {
-      $entryData['image'] = $imageUrlPrefix . '/No Image Available/Standalone_244X312.png';
-    }
+    $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
   }
 
   protected function postProcess(Wpq\FeedEntity\CatalogEntry $entry,
