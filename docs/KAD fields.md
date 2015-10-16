@@ -1,24 +1,31 @@
-To search for remaining action items: ^-\s+(?!X\s)
-
-X = implemented somehow
+# Legend
+/ = defined somehow (can be implemented) but not yet implemented
+X/ = implemented but needs testing
+X = implemented + tested
 ! = flag warning to RLC
 ? = question for RLC/WP
+* = waiting to hear back
+
+# Regex Searches
+
+- All action items: ^-\s+(?!X\s)
+- Something's ready to implement (questions may remain): ^-\s+[!?*]*/[!?*]*\s+
+- Items to communicate about: ^-\s+[/X]*[!?]+[/X!?]*\s+
+- Items waiting to hear back: ^-\s+[/X]*\*+[/X!?*]*\s+
 
 # KitchenAid Dishwasher
 - X bottleWash - SalesFeature exists
 - X proDry - SalesFeature exists
-- ! placeSettings
+- *! placeSettings
      + they've removed this from the feed. e.g. KDFE104DSS-NAR had it as a comparefeature under config/overview as of july 26, but now gone for all.
 - X proScrub - SalesFeature exists
 - X proWash - SalesFeature exists
 - X cleanWater - SalesFeature exists
-- !X decibels
-    + "(\d+) dBA" in name, not all have it (KDFE104DSS-NAR doesn't)
-- ? culinary Caddy
-    + can't find, closest thing is "Utility Basket (Upper Rack)" e.g. http://www.kitchenaid.com/shop/major-appliances-1/dishwashers-2/dishwashers-3/-[KDTM354ESS]-408526/KDTM354ESS/
+- X decibels - use compare feature "Decibel Level (dBA)"
+- X culinaryCaddy - SalesFeature exists
 - X thirdLevelRack - SalesFeature exists
 - X pocketHandleConsole - "Pocket Handle" in name
-- ?X FID
+- X FID
     + used group:
         SC_Major_Appliances_Dishwashers_Dishwashers_Fully_Integrated
         similar to this one for MTG:
@@ -30,19 +37,18 @@ X = implemented somehow
 - X height (in inches) (int)
     + both with standard func (reads CompareFeatures, converts fractions to decimals)
 - X energyStar - compare feature exists, or sales feature exists
-- !X volume
-    + "Total Capacity" comparefeature - flag to Bianca I kept it named 'capacity' for consistency with maytag fridges
+- X capacity
+    + "Total Capacity" comparefeature
 - X topMount - same as MTG
 - X bottomMount - same as MTG
-- !X frenchDoor5
+- X 5door (originally frenchDoor5)
     + "5-Door Configuration" salesfeature exists
-    + flag to Bianca that I called it '5door' because it doesn't seem necesarily related to french door
 - X frenchDoor - same as MTG
-- ?X indoorDispenser - same as MTG - comparefeature "Dispenser Type" not 'no dispenser' - just confirm this and the rest of the dispenser-related items
-- ?X filtered - comparefeature = 'Yes'
-- ?X exteriorDispenser - comparefeature "Dispenser Type" has 'exterior'
-- ?X indoorIce - comparefeature "Dispenser Type" has 'ice'
-- ?X standardDepth - equivalent to !counterDepth and !builtIn ?
+- X indoorDispenser - same as MTG - comparefeature "Dispenser Type" not 'no dispenser'
+- X filtered - comparefeature = 'Yes'
+- X exteriorDispenser - comparefeature "Dispenser Type" has 'exterior'
+- X indoorIce - comparefeature "Dispenser Type" has 'ice'
+- X standardDepth - default if not (counterDepth or builtIn)
 - X counterDepth - "counter[- ]depth" in name or "counter-depth" salesfeature exists
 - X builtIn - "built[- ]in" in name
 - X producePreserver - "Produce Preserver" salesfeature exists
@@ -54,56 +60,59 @@ X = implemented somehow
 
 # KitchenAid Cooktops
 - X width - standard func (reads CompareFeatures, converts fractions to decimals)
-- induction (bool)
-- electric (bool)
-- gas (bool)
-- 5Elements (bool)  
-- 5Burners (bool)  
-- 6Burners (bool) 
-- dishwasherSafeKnobs (bool) 
-- cookShield (bool) 
-- touchActivated (bool)
-- electricInduction (bool)
-- meltAndHold (bool)
-- electricEvenHeat (bool) 
-- inductionSimmer (bool) 
-- performanceBoost (bool)
-- 5KBTUSimmerMelt (bool) 
-- 5KBTUSimmer (bool)
-- 15KBTU (bool)
-- 18KBTUEvenHeat (bool)
-- 20KBTUDual (bool)  
+- X induction (bool) - name contains "induction"
+- X electric (bool) - name contains "electric"
+- X gas (bool) - name contains "gas"
+- X 5Burners (bool)  - check "Number of Elements-Burners" comparefeature
+- X 6Burners (bool) - check "Number of Elements-Burners" comparefeature
+- X cookShield (bool) - has "CookShield Finish" salesfeature
+- X touchActivated (bool) - name/descr contains "Touch[ -]Activated Controls" or has SF "Touch-Activated Electronic Controls"
+- X meltAndHold (bool) - has "Melt and Hold" SF
+- X electricEvenHeat (bool) - is electric type AND has "even-heat" in description
+- X inductionSimmer (bool) - is induction type AND has "Simmer Function" SF
+- X performanceBoost (bool) - has SF "Performance Boost"
+- X 5KBTUSimmer (bool) - has SF: 5 or 6 + "K BTU Even-Heat\u2122 Simmer Burner" -- 6 also counts
+- X 15KBTU (bool) - has SF _containing_ "15K BTU"
+- X 18KBTUEvenHeat (bool) - has "18K BTU Even-Heat\u2122 Gas Grill" SF
+- X 20KBTUDual (bool) - has at least one of these SFs:
+        + "20K BTU Professional Dual Ring Burner"
+        + "20K BTU Ultra Power\u2122 Dual-Flame Burner"
 
 # KitchenAid Ranges
-- X width (in inches) (int) - standard func (reads CompareFeatures, converts fractions to decimals)
-- volume (in cubic feet) (float)
-- warmingDrawer (bool) 
-- aquaLift (bool)
-- trueConvection (bool)
-- temperatureProbe (bool)
-- wirelessProbe (bool)
-- steamRack (bool)
-- bakingDrawer (bool)
-- gas (bool) 
-- evenHeat (bool)
-- inductionSimmer (bool) 
-- performanceBoost (bool)
-- meltAndHold (bool)
-- electricEvenHeat (bool)
-- 5KBTUSimmer (bool) 
-- 5KBTUSimmerMelt (bool) 
-- 15KBTU (bool)  
-- 18KBTUEvenHeat (bool)
-- 20KBTUDual (bool)  
-- double (bool)
-- 5BurnersElements 
-- 6BurnersElements
-- electric
+- X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
+- !X capacity (in cubic feet) (float) - value of CF "Capacity"
+    + flag that it's a total for doubles
+- X warmingDrawer (bool) has SF "Warming Drawer" OR name contains "Warming Drawer"
+- X aquaLift (bool) - has SF "Aqualift\u00ae"
+- X trueConvection (bool) - has SF "Even-Heat\u2122 True Convection"
+- X temperatureProbe (bool)
+    +  value of CF :
+                        "description": "Controls",
+                        "valueidentifier": "Selections",
+            contains "Temperature Probe"
+- X wirelessProbe (bool) - has SF "Wireless Probe"
+- X steamRack (bool) - has SF "Steam Rack"
+- X bakingDrawer (bool) - has SF "Baking drawer"
+- X gas (bool) - CF "Fuel Type" is "Gas" or "Dual Fuel"
+- X electric (bool) - CF "Fuel Type" is "Electric" only - false for "Dual Fuel"
+- X evenHeat (bool) - has SF _containing_ "Even-Heat\u2122 Ultra Element" - applies to cooktop part, not oven
+- X 5KBTUSimmerMelt (bool) - has SF "5K BTU Simmer\/Melt Burner - Reduces to 500 BTUs"
+- X 15KBTU (bool) - has at least one burner that is at least 15K BTU:
+    + use presence of CF matching:
+        "description": "Cooktop Features",
+        "valueidentifier": "****** Element-Burner Power",
+        "value": (>= 15,000) " BTU",
+- X 20KBTUDual (bool) - same as for cooktops - has at least one of these SFs:
+        + "20K BTU Professional Dual Ring Burner" (no examples of this currently in Ranges, but since some Cooktops have it, and we're using it for this field there, might as well put it here too)
+        + "20K BTU Ultra Power\u2122 Dual-Flame Burner"
+- X double (bool) - name contains "double"
+- X 5Burners - check "Number of Cooking Element-Burners" CF (originally '5BurnersElements')
+- X 6Burners - check "Number of Cooking Element-Burners" CF (originally '6BurnersElements')
 
 
 # KitchenAid Wall Ovens
-- X width (in inches) (int) - standard func (reads CompareFeatures, converts fractions to decimals)
-- volume (in cubic feet) (float) 
+- X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
+- capacity (in cubic feet) (float) 
 - single (bool)
 - combi (bool)
 - double (bool)
@@ -113,9 +122,9 @@ X = implemented somehow
 
 
 # KitchenAid Vents
-- !X width (in inches) (int)
+- X width (in inches)
     + standard func (reads CompareFeatures, converts fractions to decimals)
-    + some without dimenions (5 out of 38). e.g. http://www.kitchenaid.ca/en_CA/shop/major-appliances-1/hoods-and-vents-2/hoods-and-vents-3/-[KVIB606DBS]-5568101/KVIB606DBS/
+    + separately from standard func, check if width is null and if so check product name for /\b(\d+)"\b/ and use $1 if found
 - islandMount
 - wallMount
 - underCabinet 

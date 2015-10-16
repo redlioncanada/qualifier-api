@@ -11,18 +11,12 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
+    $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
 
     /*
      * Name/description-based info - use default locale (English)
      */
-
-    // Decibels
-    $entryData['decibels'] = null;
-    $decibelMatches = [];
-    if (preg_match('@(\d+) dBA@', $description->name, $decibelMatches)) {
-      $entryData['decibels'] = $decibelMatches[1];
-    }
 
     // Pocket handle console
     $entryData['pocketHandleConsole'] = (false !== strpos($description->name, "Pocket Handle"));
@@ -39,7 +33,8 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['cleanWater'] = false;
     $entryData['thirdLevelRack'] = false;
     $entryData['panelReady'] = false;
-    
+    $entryData['culinaryCaddy'] = false;
+
     if ($salesFeatureGroup) {
       // All are yes if feature exists, no otherwise
       $entryData['bottleWash'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Bottle Wash");
@@ -49,6 +44,20 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
       $entryData['cleanWater'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Clean Water Wash System");
       $entryData['thirdLevelRack'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Third Level Rack");
       $entryData['panelReady'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Panel-Ready Design");
+      $entryData['culinaryCaddy'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Culinary Caddy");
+    }
+    
+    /*
+     * Compare-feature-based info
+     */
+    
+    // Init these to null
+    $entryData['decibels'] = null;
+    
+    if ($compareFeatureGroup) {
+      // Decibels
+      $decibelsAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Decibel Level (dBA)");
+      $entryData['decibels'] = $decibelsAttr->value;
     }
 
     /*
