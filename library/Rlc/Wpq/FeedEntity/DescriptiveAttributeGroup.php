@@ -36,7 +36,7 @@ class DescriptiveAttributeGroup {
    * 
    * @param array   $criteria OPTIONAL Associative field => value conditions
    * @param string  $locale   OPTIONAL
-   * @return DescriptiveAttribute[] or empty [] if no matching records
+   * @return array of DescriptiveAttribute[] or empty [] if no matching records
    */
   public function getDescriptiveAttributes(array $criteria = null,
       $locale = null) {

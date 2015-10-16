@@ -7,48 +7,8 @@ use Rlc\Wpq,
 
 class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
-//  public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
-//      $locale, array &$outputData) {
-//    
-//    
-//    $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
-//
-//    $dispenserTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Dispenser Type"]);
-//    if (!$dispenserTypeAttr || ('No Dispenser' != $dispenserTypeAttr->value)) {
-//      return;
-//    }
-//
-//
-//    return parent::process($entry, $entries, $locale, $outputData);
-//  }
-
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
-
-
-
-
-
-
-    // DEV CODE
-    foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
-      if (in_array($grpName, ['Endeca', 'EndecaProps'])) {
-        continue;
-      }
-      foreach ($grp->getDescriptiveAttributes() as $attr) {
-        $entryData['descr-attrs'][$grpName][] = [
-          'description' => $attr->description,
-          'valueidentifier' => $attr->valueidentifier,
-          'value' => $attr->value,
-          'noteinfo' => $attr->noteinfo,
-        ];
-      }
-    }
-
-
-
-
-
     $description = $entry->getDescription(); // property retrieval will use default locale
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');

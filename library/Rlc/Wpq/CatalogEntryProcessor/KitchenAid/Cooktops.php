@@ -18,9 +18,9 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Name/description-based info - use default locale (English)
      */
 
-    $entryData['gas'] = (bool) stripos($description->name, 'gas');
-    $entryData['electric'] = (bool) stripos($description->name, 'electric');
-    $entryData['induction'] = (bool) stripos($description->name, 'induction');
+    $entryData['gas'] = false !== stripos($description->name, 'gas');
+    $entryData['electric'] = false !== stripos($description->name, 'electric');
+    $entryData['induction'] = false !== stripos($description->name, 'induction');
 
     /*
      * Sales-feature-based info
@@ -53,7 +53,7 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
       $entryData['electricEvenHeat'] = (
           $entryData['electric'] &&
-          stripos($description->longdescription, "even-heat")
+          false !== stripos($description->longdescription, "even-heat")
           );
 
       $entryData['inductionSimmer'] = (
@@ -82,15 +82,16 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Compare-feature-based info
      */
 
+    // Init all to false
     $entryData['5Burners'] = false;
     $entryData['6Burners'] = false;
 
     if ($compareFeatureGroup) {
-      $numElementsFeature = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Number of Elements-Burners");
-      // TODO burners and elements are the same thing; RLC may want to change
-      // this once they hear that.
-      $entryData['5Burners'] = 5 <= $numElementsFeature->value;
-      $entryData['6Burners'] = 6 <= $numElementsFeature->value;
+      $numElementsAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Number of Elements-Burners");
+      if ($numElementsAttr) {
+        $entryData['5Burners'] = 5 <= $numElementsAttr->value;
+        $entryData['6Burners'] = 6 <= $numElementsAttr->value;
+      }
     }
 
     /*

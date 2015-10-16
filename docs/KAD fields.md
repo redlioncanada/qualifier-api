@@ -80,34 +80,34 @@ X = implemented + tested
 
 # KitchenAid Ranges
 - X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
-- / capacity (in cubic feet) (float) - value of CF "Capacity"
-- / warmingDrawer (bool) has SF "Warming Drawer" OR name contains "Warming Drawer"
-- / aquaLift (bool) - has SF "Aqualift\u00ae"
-- / trueConvection (bool) - has SF "Even-Heat\u2122 True Convection"
-- / temperatureProbe (bool)
+- !X capacity (in cubic feet) (float) - value of CF "Capacity"
+    + flag that it's a total for doubles
+- X warmingDrawer (bool) has SF "Warming Drawer" OR name contains "Warming Drawer"
+- X aquaLift (bool) - has SF "Aqualift\u00ae"
+- X trueConvection (bool) - has SF "Even-Heat\u2122 True Convection"
+- X temperatureProbe (bool)
     +  value of CF :
                         "description": "Controls",
                         "valueidentifier": "Selections",
             contains "Temperature Probe"
-- / wirelessProbe (bool) - has SF "Wireless Probe"
-- / steamRack (bool) - has SF "Steam Rack"
-- / bakingDrawer (bool) - has SF "Baking drawer"
-- / gas (bool) - CF "Fuel Type" is "Gas" or "Dual Fuel"
-- / electric (bool) - CF "Fuel Type" is "Electric" only - false for "Dual Fuel"
-- / evenHeat (bool) - has SF _containing_ "Even-Heat\u2122 Ultra Element" - applies to cooktop part, not oven
-- / 5KBTUSimmer (bool) - delete
-- / 5KBTUSimmerMelt (bool) - has SF "5K BTU Simmer\/Melt Burner - Reduces to 500 BTUs"
-- / 15KBTU (bool) - has at least one burner that is at least 15K BTU:
+- X wirelessProbe (bool) - has SF "Wireless Probe"
+- X steamRack (bool) - has SF "Steam Rack"
+- X bakingDrawer (bool) - has SF "Baking drawer"
+- X gas (bool) - CF "Fuel Type" is "Gas" or "Dual Fuel"
+- X electric (bool) - CF "Fuel Type" is "Electric" only - false for "Dual Fuel"
+- X evenHeat (bool) - has SF _containing_ "Even-Heat\u2122 Ultra Element" - applies to cooktop part, not oven
+- X 5KBTUSimmerMelt (bool) - has SF "5K BTU Simmer\/Melt Burner - Reduces to 500 BTUs"
+- X 15KBTU (bool) - has at least one burner that is at least 15K BTU:
     + use presence of CF matching:
         "description": "Cooktop Features",
-        "valueidentifier": "******-Burner Power",
+        "valueidentifier": "****** Element-Burner Power",
         "value": (>= 15,000) " BTU",
-- / 20KBTUDual (bool) - same as for cooktops - has at least one of these SFs:
+- X 20KBTUDual (bool) - same as for cooktops - has at least one of these SFs:
         + "20K BTU Professional Dual Ring Burner" (no examples of this currently in Ranges, but since some Cooktops have it, and we're using it for this field there, might as well put it here too)
         + "20K BTU Ultra Power\u2122 Dual-Flame Burner"
 - X double (bool) - name contains "double"
-- / 5BurnersElements - check "Number of Cooking Element-Burners" CF
-- / 6BurnersElements - check "Number of Cooking Element-Burners" CF
+- X 5Burners - check "Number of Cooking Element-Burners" CF (originally '5BurnersElements')
+- X 6Burners - check "Number of Cooking Element-Burners" CF (originally '6BurnersElements')
 
 
 # KitchenAid Wall Ovens
