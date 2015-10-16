@@ -30,6 +30,12 @@ abstract class AbstractCompoundRecord {
     $this->records[$key] = $record;
   }
 
+  /**
+   * Warning - this is for convenience when accessing properties of rich value
+   * objects, but when you try the same thing on a \SimpleXMLElement (such as is
+   * returned from getRecord()), you get an object which may not work as
+   * expected in some contexts where it is not implicitly cast to string.
+   */
   public function __get($name) {
     return ServiceLocator::util()->trim((string) $this->getRecord()->$name);
   }

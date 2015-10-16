@@ -15,6 +15,9 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
     $entryData['placeSettings'] = rand(12, 16);
 
+    // Init to null
+    $entryData['decibels'] = null;
+    
     if ($compareFeatureGroup) {
       // Decibels
       $decibelLevelAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Decibel Level"]);
