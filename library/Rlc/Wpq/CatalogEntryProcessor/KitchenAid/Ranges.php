@@ -7,22 +7,6 @@ use Rlc\Wpq,
 
 class Ranges extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
-//  public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
-//      $locale, array &$outputData) {
-//
-//    $description = $entry->getDescription();
-//    $entryData['gas'] = (bool) stripos($description->name, 'gas');
-//    $entryData['electric'] = (bool) stripos($description->name, 'electric');
-//    $entryData['induction'] = (bool) stripos($description->name, 'induction');
-//    
-//    if (!$entryData['electric']) {
-//      return;
-//    }
-//
-//
-//    return parent::process($entry, $entries, $locale, $outputData);
-//  }
-
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
