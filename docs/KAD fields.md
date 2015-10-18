@@ -16,8 +16,7 @@ X = implemented + tested
 # KitchenAid Dishwasher
 - X bottleWash - SalesFeature exists
 - X proDry - SalesFeature exists
-- *! placeSettings
-     + they've removed this from the feed. e.g. KDFE104DSS-NAR had it as a comparefeature under config/overview as of july 26, but now gone for all.
+- X placeSettings - "(decimal) place settings" of CF "capacity"
 - X proScrub - SalesFeature exists
 - X proWash - SalesFeature exists
 - X cleanWater - SalesFeature exists

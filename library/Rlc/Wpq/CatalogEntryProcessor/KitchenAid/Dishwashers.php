@@ -53,11 +53,24 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     
     // Init these to null
     $entryData['decibels'] = null;
+    $entryData['placeSettings'] = null;
     
     if ($compareFeatureGroup) {
       // Decibels
       $decibelsAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Decibel Level (dBA)");
-      $entryData['decibels'] = $decibelsAttr->value;
+      if ($decibelsAttr) {
+        $entryData['decibels'] = $decibelsAttr->value;
+      }
+      
+      // Place settings
+      $placeSettings = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Capacity");
+      if ($placeSettings) {
+        $placeSettingsMatches = [];
+        preg_match('/\d+(?:\.\d+)/i', $placeSettings->value, $placeSettingsMatches);
+        if (count($placeSettingsMatches)) {
+          $entryData['placeSettings'] = $placeSettingsMatches[0];
+        }
+      }
     }
 
     /*
