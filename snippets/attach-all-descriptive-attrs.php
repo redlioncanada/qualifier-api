@@ -12,7 +12,7 @@
  */
 
 foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
-  if (in_array($grpName, ['Endeca', 'EndecaProps'])) {
+  if (in_array($grpName, ['Endeca', 'EndecaProps', 'Gallery'])) {
     continue;
   }
   foreach ($grp->getDescriptiveAttributes() as $attr) {

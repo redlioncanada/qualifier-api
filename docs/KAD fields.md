@@ -79,8 +79,7 @@ X = implemented + tested
 
 # KitchenAid Ranges
 - X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
-- !X capacity (in cubic feet) (float) - value of CF "Capacity"
-    + flag that it's a total for doubles
+- X capacity (in cubic feet) (float) - value of CF "Capacity"
 - X warmingDrawer (bool) has SF "Warming Drawer" OR name contains "Warming Drawer"
 - X aquaLift (bool) - has SF "Aqualift\u00ae"
 - X trueConvection (bool) - has SF "Even-Heat\u2122 True Convection"
@@ -111,13 +110,21 @@ X = implemented + tested
 
 # KitchenAid Wall Ovens
 - X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
-- capacity (in cubic feet) (float) 
-- single (bool)
-- combi (bool)
-- double (bool)
-- easyConvection (bool)  
-- tempuratureProbe (bool)
-- trueConvection (bool)
+- X capacity (in cubic feet) (float) 
+    + first look at CF containing "Oven Capacity"
+        * extract decimal from value
+        * if oven is a double/combi and value contains "each oven", use this x 2
+    + if not there, get all SFs matching "(decimal) Cu. Ft. Capacity"
+        * if double/combi and valueidentifier contains "each oven", use first decimal found x 2
+        * otherwise, sum decimals in all results (could be 2)
+    + if neither of those found, use SF containing "Total Capacity" - extract $1 from "(\d+(?:\.\d+)?)\s+cu\.?\s+ft\.?"
+- X single (bool) - !(combi || double)
+- ?X combi (bool) - name contains "combination"
+    + Is this a type of double? Or are "double", "combination", and "single" mutually exclusive?
+- X double (bool) - name contains "double"
+- / easyConvection (bool)  - has SF "EasyConvect\u2122 Conversion System"
+- / tempuratureProbe (bool) - has SF "Temperature Probe"
+- / trueConvection (bool) - name/description/has SF that contains "True Convection" (try in that order)
 
 
 # KitchenAid Vents
