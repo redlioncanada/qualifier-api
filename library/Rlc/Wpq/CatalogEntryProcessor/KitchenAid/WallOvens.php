@@ -22,6 +22,11 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['combination'] = stripos($description->name, 'combination') !== false;
     $entryData['single'] = !($entryData['double'] || $entryData['combination']);
 
+    $entryData['trueConvection'] = (
+        false !== stripos($description->name, "True Convection") ||
+        false !== stripos($description->longdescription, "True Convection")
+        );
+
     /*
      * Capacity (complex enough for its own section)
      */
@@ -83,31 +88,23 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
      */
 
     // Init all to false
+    $entryData['easyConvection'] = false;
+    $entryData['temperatureProbe'] = false;
 
     if ($salesFeatureGroup) {
-      
-    }
+      $entryData['easyConvection'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"EasyConvect\u2122 Conversion System"'));
+      $entryData['temperatureProbe'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Temperature Probe");
 
-    /*
-     * Compare-feature-based info
-     */
-
-    // Init all to false/null
-
-    if ($compareFeatureGroup) {
-      
+      if (!$entryData['trueConvection']) {
+        // Try for a matching SF if not found earlier in name/description
+        $entryData['trueConvection'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifierMatch("True Convection");
+      }
     }
 
     /*
      * Other
      */
 
-//    $allCatalogGroups = $entry->getAllCatalogGroups();
-//    $allCatalogGroupIds = array_map(function ($grp) {
-//      return (string) $grp->identifier;
-//    }, $allCatalogGroups);
-//     in_array('...', $allCatalogGroupIds);
-//     
     // Add image
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
 

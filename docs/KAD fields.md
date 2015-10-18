@@ -122,9 +122,9 @@ X = implemented + tested
 - ?X combi (bool) - name contains "combination"
     + Is this a type of double? Or are "double", "combination", and "single" mutually exclusive?
 - X double (bool) - name contains "double"
-- / easyConvection (bool)  - has SF "EasyConvect\u2122 Conversion System"
-- / tempuratureProbe (bool) - has SF "Temperature Probe"
-- / trueConvection (bool) - name/description/has SF that contains "True Convection" (try in that order)
+- X easyConvection (bool)  - has SF "EasyConvect\u2122 Conversion System"
+- X tempuratureProbe (bool) - has SF "Temperature Probe"
+- X trueConvection (bool) - name/description/has SF that contains "True Convection" (try in that order)
 
 
 # KitchenAid Vents
