@@ -60,7 +60,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
     // DEV CODE
 //    foreach ($entry->getDescriptiveAttributeGroups() as $grpName => $grp) {
-//      if (in_array($grpName, ['Endeca', 'EndecaProps', 'Gallery'])) {
+//      if (in_array($grpName, ['Endeca', 'EndecaProps', 'Gallery', 'Document'])) {
 //        continue;
 //      }
 //      foreach ($grp->getDescriptiveAttributes() as $attr) {
@@ -92,7 +92,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
        $newOutputData['salesFeatures'][] = $newSalesFeatureData;
      }
-
 
     /*
      * Attach compare feature data (for print view)
@@ -145,7 +144,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
     if ($compareFeatureGroup) {
       /*
-       * The same method of extracting physical dimensions is shared for cooking and fridges
+       * The same method of extracting physical dimensions is shared for most categories
        */
 
       // Width

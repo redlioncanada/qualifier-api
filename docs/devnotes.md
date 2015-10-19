@@ -1,7 +1,8 @@
 # TODO
-  - remove Util::buildChildEntryData() and laundry pair classes!
-  - for staging:
-    - later maybe - put zend app dirs in proper structure so only public is exposed
+* remove Util::buildChildEntryData() and laundry pair classes!
+* sales feature assocs for KAD
+* for staging:
+* later maybe - put zend app dirs in proper structure so only public is exposed
 
 
 =============
