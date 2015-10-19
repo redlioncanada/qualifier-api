@@ -1,5 +1,6 @@
 # TODO
 * sales feature assocs for KAD
+    - put in French translations once I get them
 * for staging:
     - later maybe - put zend app dirs in proper structure so only public is exposed
 

@@ -89,7 +89,9 @@
     },
     "Wall Ovens": {
       "/Cu\\. Ft\\. Capacity/i": "capacity",
+      "/Capacit\u00e9 de .*? pi cu/i": "capacity",
       "/Total Capacity/i": "capacity",
+      "/Capacit\u00e9 totale/i": "capacity",
       "EasyConvect\u2122 Conversion System": "easyConvection",
       "Temperature Probe": "temperatureProbe",
       "/True Convection/i": "trueConvection"

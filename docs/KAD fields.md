@@ -119,7 +119,7 @@ X = implemented + tested
         * otherwise, sum decimals in all results (could be 2)
     + if neither of those found, use SF containing "Total Capacity" - extract $1 from "(\d+(?:\.\d+)?)\s+cu\.?\s+ft\.?"
 - X single (bool) - !(combi || double)
-- ?X combi (bool) - name contains "combination"
+- ?*X combi (bool) - name contains "combination"
     + Is this a type of double? Or are "double", "combination", and "single" mutually exclusive?
 - X double (bool) - name contains "double"
 - X easyConvection (bool)  - has SF "EasyConvect\u2122 Conversion System"
@@ -137,14 +137,14 @@ X = implemented + tested
 - X CFM (int) - use CF "Fan CFM"
 - X exterior - CF "Venting Type" contains "exterior"
 - X nonVented - CF "Venting Type" contains "recirculating"
-- ?X convertible - CF "Venting Type" == "Exterior or Recirculating"
-    + this means it can be installed as EITHER exterior or non-vented (AKA "recirclulating"), right?
-    + when this is true, should exterior and non-vented also be true, or both false?
+- ?*X convertible - CF "Venting Type" == "Exterior or Recirculating"
+    + This means it can be installed as EITHER exterior or non-vented (AKA "recirclulating"), right?
+    + When this is true, should exterior and non-vented also be true, or both false?
 - X easyConversion - has SF "Easy In-line Conversion"
 - X automaticOn - has SF "Automatic Turn On"
 - X warmingLamps - has SF containing "Warming Lamp"
 
 ## non-field-specific questions
 
-- ! not sure if UXB0600DYS-NAR "600 CFM internal blower" belongs in the vents category
-- ! KVUB606DSS-NAR vent is under-the-cabinet type (and will be scored as such) but name says it's island mount: http://www.kitchenaid.ca/en_CA/shop/-[KVUB606DSS]-2104386/KVUB606DSS/
+- !* not sure if UXB0600DYS-NAR "600 CFM internal blower" belongs in the vents category
+- !* KVUB606DSS-NAR vent is under-the-cabinet type (and will be scored as such) but name says it's island mount: http://www.kitchenaid.ca/en_CA/shop/-[KVUB606DSS]-2104386/KVUB606DSS/
