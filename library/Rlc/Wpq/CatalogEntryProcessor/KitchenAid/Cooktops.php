@@ -22,6 +22,11 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['electric'] = false !== stripos($description->name, 'electric');
     $entryData['induction'] = false !== stripos($description->name, 'induction');
 
+    $entryData['electricEvenHeat'] = (
+        $entryData['electric'] &&
+        false !== stripos($description->longdescription, "even-heat")
+        );
+
     /*
      * Sales-feature-based info
      */
@@ -30,7 +35,6 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['cookShield'] = false;
     $entryData['touchActivated'] = false;
     $entryData['meltAndHold'] = false;
-    $entryData['electricEvenHeat'] = false;
     $entryData['inductionSimmer'] = false;
     $entryData['performanceBoost'] = false;
     $entryData['5KBTUSimmer'] = false;
@@ -50,11 +54,6 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
           );
 
       $entryData['meltAndHold'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Melt and Hold");
-
-      $entryData['electricEvenHeat'] = (
-          $entryData['electric'] &&
-          false !== stripos($description->longdescription, "even-heat")
-          );
 
       $entryData['inductionSimmer'] = (
           $entryData['induction'] &&
