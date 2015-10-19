@@ -131,14 +131,20 @@ X = implemented + tested
 - X width (in inches)
     + standard func (reads CompareFeatures, converts fractions to decimals)
     + separately from standard func, check if width is null and if so check product name for /\b(\d+)"\b/ and use $1 if found
-- islandMount
-- wallMount
-- underCabinet 
-- CFM (int)
-- exterior
-- nonVented
-- convertible
-- easyConversion
-- automaticOn
-- warmingLamps
+- X islandMount - CF "Hood Type" == "Island Mount"
+- X wallMount - CF "Hood Type" == "Wall Mount"
+- X underCabinet - CF "Hood Type" == "Under-the-Cabinet"
+- X CFM (int) - use CF "Fan CFM"
+- X exterior - CF "Venting Type" contains "exterior"
+- X nonVented - CF "Venting Type" contains "recirculating"
+- ?X convertible - CF "Venting Type" == "Exterior or Recirculating"
+    + this means it can be installed as EITHER exterior or non-vented (AKA "recirclulating"), right?
+    + when this is true, should exterior and non-vented also be true, or both false?
+- X easyConversion - has SF "Easy In-line Conversion"
+- X automaticOn - has SF "Automatic Turn On"
+- X warmingLamps - has SF containing "Warming Lamp"
 
+## non-field-specific questions
+
+- ! not sure if UXB0600DYS-NAR "600 CFM internal blower" belongs in the vents category
+- ! KVUB606DSS-NAR vent is under-the-cabinet type (and will be scored as such) but name says it's island mount: http://www.kitchenaid.ca/en_CA/shop/-[KVUB606DSS]-2104386/KVUB606DSS/
