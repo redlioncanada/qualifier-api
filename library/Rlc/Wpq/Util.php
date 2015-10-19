@@ -145,4 +145,22 @@ class Util {
     return $newColoursElem;
   }
 
+  /**
+   * Shortcut for extracting a pattern match if found
+   * 
+   * @param string $pattern
+   * @param string $subject
+   * @param int $matchIndex
+   * 
+   * @return string or NULL if no match
+   */
+  public function getPregMatch($pattern, $subject, $matchIndex = 0) {
+    $matches = [];
+    preg_match($pattern, $subject, $matches);
+    if (count($matches)) {
+      return $matches[$matchIndex];
+    }
+    return null;
+  }
+
 }

@@ -16,8 +16,7 @@ X = implemented + tested
 # KitchenAid Dishwasher
 - X bottleWash - SalesFeature exists
 - X proDry - SalesFeature exists
-- *! placeSettings
-     + they've removed this from the feed. e.g. KDFE104DSS-NAR had it as a comparefeature under config/overview as of july 26, but now gone for all.
+- X placeSettings - "(decimal) place settings" of CF "capacity"
 - X proScrub - SalesFeature exists
 - X proWash - SalesFeature exists
 - X cleanWater - SalesFeature exists
@@ -80,8 +79,7 @@ X = implemented + tested
 
 # KitchenAid Ranges
 - X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
-- !X capacity (in cubic feet) (float) - value of CF "Capacity"
-    + flag that it's a total for doubles
+- X capacity (in cubic feet) (float) - value of CF "Capacity"
 - X warmingDrawer (bool) has SF "Warming Drawer" OR name contains "Warming Drawer"
 - X aquaLift (bool) - has SF "Aqualift\u00ae"
 - X trueConvection (bool) - has SF "Even-Heat\u2122 True Convection"
@@ -112,27 +110,41 @@ X = implemented + tested
 
 # KitchenAid Wall Ovens
 - X width (in inches) - standard func (reads CompareFeatures, converts fractions to decimals)
-- capacity (in cubic feet) (float) 
-- single (bool)
-- combi (bool)
-- double (bool)
-- easyConvection (bool)  
-- tempuratureProbe (bool)
-- trueConvection (bool)
+- X capacity (in cubic feet) (float) 
+    + first look at CF containing "Oven Capacity"
+        * extract decimal from value
+        * if oven is a double/combi and value contains "each oven", use this x 2
+    + if not there, get all SFs matching "(decimal) Cu. Ft. Capacity"
+        * if double/combi and valueidentifier contains "each oven", use first decimal found x 2
+        * otherwise, sum decimals in all results (could be 2)
+    + if neither of those found, use SF containing "Total Capacity" - extract $1 from "(\d+(?:\.\d+)?)\s+cu\.?\s+ft\.?"
+- X single (bool) - !(combi || double)
+- ?*X combi (bool) - name contains "combination"
+    + Is this a type of double? Or are "double", "combination", and "single" mutually exclusive?
+- X double (bool) - name contains "double"
+- X easyConvection (bool)  - has SF "EasyConvect\u2122 Conversion System"
+- X tempuratureProbe (bool) - has SF "Temperature Probe"
+- X trueConvection (bool) - name/description/has SF that contains "True Convection" (try in that order)
 
 
 # KitchenAid Vents
 - X width (in inches)
     + standard func (reads CompareFeatures, converts fractions to decimals)
     + separately from standard func, check if width is null and if so check product name for /\b(\d+)"\b/ and use $1 if found
-- islandMount
-- wallMount
-- underCabinet 
-- CFM (int)
-- exterior
-- nonVented
-- convertible
-- easyConversion
-- automaticOn
-- warmingLamps
+- X islandMount - CF "Hood Type" == "Island Mount"
+- X wallMount - CF "Hood Type" == "Wall Mount"
+- X underCabinet - CF "Hood Type" == "Under-the-Cabinet"
+- X CFM (int) - use CF "Fan CFM"
+- X exterior - CF "Venting Type" contains "exterior"
+- X nonVented - CF "Venting Type" contains "recirculating"
+- ?*X convertible - CF "Venting Type" == "Exterior or Recirculating"
+    + This means it can be installed as EITHER exterior or non-vented (AKA "recirclulating"), right?
+    + When this is true, should exterior and non-vented also be true, or both false?
+- X easyConversion - has SF "Easy In-line Conversion"
+- X automaticOn - has SF "Automatic Turn On"
+- X warmingLamps - has SF containing "Warming Lamp"
 
+## non-field-specific questions
+
+- !* not sure if UXB0600DYS-NAR "600 CFM internal blower" belongs in the vents category
+- !* KVUB606DSS-NAR vent is under-the-cabinet type (and will be scored as such) but name says it's island mount: http://www.kitchenaid.ca/en_CA/shop/-[KVUB606DSS]-2104386/KVUB606DSS/

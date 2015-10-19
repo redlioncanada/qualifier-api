@@ -53,7 +53,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     $productUrls = $this->util->getProductUrls($this->getBrand(), $locale);
     $newOutputData['url'] = isset($productUrls[$entry->partnumber]) ? $productUrls[$entry->partnumber] : null;
 
-
     /*
      * Attach sales feature data
      */
@@ -70,7 +69,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
       $newOutputData['salesFeatures'][] = $newSalesFeatureData;
     }
 
-
     /*
      * Attach compare feature data (for print view)
      */
@@ -80,7 +78,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
         $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
       }
     }
-
 
     /*
      * Add disclaimer data
@@ -122,7 +119,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
     if ($compareFeatureGroup) {
       /*
-       * The same method of extracting physical dimensions is shared for cooking and fridges
+       * The same method of extracting physical dimensions is shared for most categories
        */
 
       // Width
