@@ -39,5 +39,65 @@
       "/^Advanced Vibration Control/i": "vibrationControl",
       "/^Contr\u00f4le perfectionn\u00e9 des vibrations/i": "vibrationControl"
     }
+  },
+  "kitchenaid": {
+    "Dishwashers": {
+      "Bottle Wash": "bottleWash",
+      "Advanced ProDry\u2122 System": "proDry",
+      "ProScrub\u00ae Option": "proScrub",
+      "ProWash\u2122 Cycle": "proWash",
+      "Clean Water Wash System": "cleanWater",
+      "Culinary Caddy": "culinaryCaddy",
+      "Third Level Rack": "thirdLevelRack",
+      "Panel-Ready Design": "panelReady"
+    },
+    "Fridges": {
+      "ENERGY STAR\u00ae Qualified": "energyStar",
+      "Counter-depth": "counterDepth",
+      "5-Door Configuration": "5door",
+      "Produce Preserver": "producePreserver",
+      "ExtendFresh\u2122 Temperature Management System": "extendFresh",
+      "ExtendFresh\u2122 Plus Temperature Management System": "extendFreshPlus",
+      "FreshChill\u2122 Temperature-Controlled Full-Width Pantry": "freshChill",
+      "Preserva\u00ae Food Care System": "preservaCare",
+      "Max Cool": "maxCool"
+    },
+    "Cooktops": {
+      "CookShield Finish": "cookShield",
+      "Touch-Activated Electronic Controls": "touchActivated",
+      "Melt and Hold": "meltAndHold",
+      "Simmer Function": "inductionSimmer",
+      "Performance Boost": "performanceBoost",
+      "5K BTU Even-Heat\u2122 Simmer Burner": "5KBTUSimmer",
+      "6K BTU Even-Heat\u2122 Simmer Burner": "5KBTUSimmer",
+      "/15K BTU/i": "15KBTU",
+      "18K BTU Even-Heat\u2122 Gas Grill": "18KBTUEvenHeat",
+      "20K BTU Professional Dual Ring Burner": "20KBTUDual",
+      "20K BTU Ultra Power\u2122 Dual-Flame Burner": "20KBTUDual"
+    },
+    "Ranges": {
+      "Warming Drawer": "warmingDrawer",
+      "Aqualift\u00ae": "aquaLift",
+      "Even-Heat\u2122 True Convection": "trueConvection",
+      "Wireless Probe": "wirelessProbe",
+      "Steam Rack": "steamRack",
+      "Baking drawer": "bakingDrawer",
+      "/Even-Heat\u2122 Ultra Element/i": "evenHeat",
+      "5K BTU Simmer/Melt Burner - Reduces to 500 BTUs": "5KBTUSimmerMelt",
+      "20K BTU Professional Dual Ring Burner": "20KBTUDual",
+      "20K BTU Ultra Power\u2122 Dual-Flame Burner": "20KBTUDual"
+    },
+    "Wall Ovens": {
+      "/Cu\\. Ft\\. Capacity/i": "capacity",
+      "/Total Capacity/i": "capacity",
+      "EasyConvect\u2122 Conversion System": "easyConvection",
+      "Temperature Probe": "temperatureProbe",
+      "/True Convection/i": "trueConvection"
+    },
+    "Vents": {
+      "Easy In-line Conversion": "easyConversion",
+      "Automatic Turn On": "automaticOn",
+      "/Warming Lamp/i": "warmingLamps"
+    }
   }
 }
