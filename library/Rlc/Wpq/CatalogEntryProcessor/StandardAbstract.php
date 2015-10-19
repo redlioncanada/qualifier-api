@@ -79,7 +79,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
       }
     }
 
-
     /*
      * Add disclaimer data
      */

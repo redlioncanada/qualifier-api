@@ -16,12 +16,6 @@ class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $util = ServiceLocator::util();
 
     /*
-     * Name/description-based info - use default locale (English)
-     */
-
-
-
-    /*
      * Sales-feature-based info
      */
 
@@ -77,12 +71,6 @@ class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Other
      */
 
-//    $allCatalogGroups = $entry->getAllCatalogGroups();
-//    $allCatalogGroupIds = array_map(function ($grp) {
-//      return (string) $grp->identifier;
-//    }, $allCatalogGroups);
-//     in_array('...', $allCatalogGroupIds);
-//     
     // Add image
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
 
