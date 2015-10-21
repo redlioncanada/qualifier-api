@@ -33,31 +33,31 @@ class JsonBuilder {
    */
   private $catalogGroupsConfig = [
     'maytag' => [
-      // The strat class for these first two will return the same 'appliance'
-      // field value but diff 'type' field values. Meanwhile, other strat
-      // classes will not set 'type' at all.
-      'SC_Kitchen_Cooking_Ranges' => 'Maytag\\Ranges',
-      'SC_Kitchen_Cooking_Wall_Ovens' => 'Maytag\\WallOvens',
-      'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers' => 'Maytag\\Dishwashers',
-      'SC_Kitchen_Refrigeration_Refrigerators' => 'Maytag\\Fridges',
-      'SC_Laundry_Laundry_Appliances_Washers' => 'Maytag\\Washers',
+    // The strat class for these first two will return the same 'appliance'
+    // field value but diff 'type' field values. Meanwhile, other strat
+    // classes will not set 'type' at all.
+//      'SC_Kitchen_Cooking_Ranges' => 'Maytag\\Ranges',
+//      'SC_Kitchen_Cooking_Wall_Ovens' => 'Maytag\\WallOvens',
+//      'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers' => 'Maytag\\Dishwashers',
+//      'SC_Kitchen_Refrigeration_Refrigerators' => 'Maytag\\Fridges',
+//      'SC_Laundry_Laundry_Appliances_Washers' => 'Maytag\\Washers',
     ],
-//    'whirlpool' => [
+    'whirlpool' => [
+      'SC_Laundry_Laundry_Washers' => 'Whirlpool\\Washers',
 //      'SC_Kitchen_Dishwasher__Cleaning_Dishwashers' => 'Whirlpool\\Dishwashers',
 //      'SC_Kitchen_Refrigeration_Refrigerators' => 'Whirlpool\\Fridges',
 //      'SC_Kitchen_Cooking_Ranges' => 'Whirlpool\\Ranges',
 //      'SC_Kitchen_Cooking_Wall_Ovens' => 'Whirlpool\\WallOvens',
 //      'SC_Kitchen_Cooking_Cooktops' => 'Whirlpool\\Cooktops',
 //      'SC_Kitchen_Cooking_Hoods' => 'Whirlpool\\Hoods',
-//      'SC_Laundry_Laundry_Laundry_Pairs' => 'Whirlpool\\LaundryPairs',
-//    ],
+    ],
     'kitchenaid' => [
-      'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
-      'SC_Major_Appliances_Refrigerators_Refrigerators' => 'KitchenAid\\Fridges',
-      'SC_Major_Appliances_Cooktops_Cooktops' => 'KitchenAid\\Cooktops',
-      'SC_Major_Appliances_Ranges_Ranges' => 'KitchenAid\\Ranges',
-      'SC_Major_Appliances_Wall_Ovens_Wall_Ovens' => 'KitchenAid\\WallOvens',
-      'SC_Major_Appliances_Hoods_and_Vents_Hoods_and_Vents' => 'KitchenAid\\Vents',
+//      'SC_Major_Appliances_Dishwashers_Dishwashers' => 'KitchenAid\\Dishwashers',
+//      'SC_Major_Appliances_Refrigerators_Refrigerators' => 'KitchenAid\\Fridges',
+//      'SC_Major_Appliances_Cooktops_Cooktops' => 'KitchenAid\\Cooktops',
+//      'SC_Major_Appliances_Ranges_Ranges' => 'KitchenAid\\Ranges',
+//      'SC_Major_Appliances_Wall_Ovens_Wall_Ovens' => 'KitchenAid\\WallOvens',
+//      'SC_Major_Appliances_Hoods_and_Vents_Hoods_and_Vents' => 'KitchenAid\\Vents',
     ],
   ];
 
@@ -72,7 +72,13 @@ class JsonBuilder {
    * @var array
    */
   private $unprocessedGroups = [
-    'SC_Laundry_Laundry_Appliances_Dryers',
+    'maytag' => [
+      'SC_Laundry_Laundry_Appliances_Dryers',
+    ],
+    'kitchenaid' => [],
+    'whirlpool' => [
+      'SC_Laundry_Laundry_Dryers',
+    ],
   ];
 
   public function __construct(FeedModelBuilderInterface $feedModelBuilder) {
@@ -87,7 +93,7 @@ class JsonBuilder {
    */
   public function build($brand, $locale) {
     if (!isset($this->feedModelCache[$brand])) {
-      $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups);
+      $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups[$brand]);
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $catalogGroupsFilter);
     }
     $entries = $this->feedModelCache[$brand];
