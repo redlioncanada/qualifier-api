@@ -17,7 +17,7 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
     // Init to null
     $entryData['decibels'] = null;
-    
+
     if ($compareFeatureGroup) {
       // Decibels
       $decibelLevelAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Decibel Level"]);
@@ -39,8 +39,11 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     }, $allCatalogGroups);
     // TODO Oct 7 2015 version of feed no longer has this category anywhere
     $entryData['FID'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Fully_integrated_Console', $allCatalogGroupIds);
-    // TODO Oct 7 2015 version of feed uses 'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_Front_Control_Dishwashers' instead
-    $entryData['frontConsole'] = in_array('SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', $allCatalogGroupIds);
+    $frontConsoleCatalogGroupIds = [
+      'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_BuiltIn_Front_Console', // old category
+      'SC_Kitchen_Dishwashers_and_Kitchen_Cleaning_Dishwashers_Front_Control_Dishwashers', // new versions of the feed use this
+    ];
+    $entryData['frontConsole'] = (bool) count(array_intersect($frontConsoleCatalogGroupIds, $allCatalogGroupIds));
 
     // Add image for dishwashers
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
