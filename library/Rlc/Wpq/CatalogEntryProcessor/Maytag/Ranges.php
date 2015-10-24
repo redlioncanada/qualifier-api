@@ -20,6 +20,8 @@ class Ranges extends CookingAppliances {
     $entryData['maxCapacity'] = false;
     $entryData['warmingDrawer'] = false;
     $entryData['powerBurner'] = false;
+    $entryData['frontControl'] = false;
+    $entryData['rearControl'] = false;
 
     if ($compareFeatureGroup) {
       $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Capacity (cu. ft.)"]);
@@ -49,6 +51,12 @@ class Ranges extends CookingAppliances {
       $drawerTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Drawer Type"]);
       if ($drawerTypeAttr && 'Warming Drawer' == $drawerTypeAttr->value) {
         $entryData['warmingDrawer'] = true;
+      }
+
+      $rangeTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Range Type"]);
+      if ($rangeTypeAttr) {
+        $entryData['frontControl'] = ('Slide-in' == $rangeTypeAttr->value);
+        $entryData['rearControl'] = ('Freestanding' == $rangeTypeAttr->value);
       }
     }
 
