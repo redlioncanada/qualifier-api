@@ -27,7 +27,7 @@ class Dryers extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getBrand() {
-    return 'maytag';
+    return 'whirlpool';
   }
 
   protected function getCategory() {

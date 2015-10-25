@@ -13,12 +13,15 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $washerDescriptionDefaultLocale = $entry->getDescription()->getRecord();
     $washerCompareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $washerSalesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
+    
+    $util = ServiceLocator::util();
 
     /*
      * Washer features
      */
 
-    $entryData['capacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescriptionDefaultLocale->name);
+    // Will try compare features if this doesn't work -- for combos
+    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $washerDescriptionDefaultLocale->name, 1);
 
     // Init some values to ensure they exist
     $entryData['vibrationControl'] = false;
@@ -28,6 +31,11 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['cycleOptions'] = 0;
 
     if ($washerCompareFeatureGroup) {
+      $capacityAttr = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Washer Capacity (cu. ft.)");
+      if ($capacityAttr) {
+        $entryData['capacity'] = $capacityAttr->value;
+      }
+      
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
       if ($avcAttr) {
         $entryData['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
@@ -60,6 +68,7 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
   protected function postProcess(Wpq\FeedEntity\CatalogEntry $entry,
       array $entries, $locale, array &$newOutputData) {
+//    return; // FIXME
     /*
      * Each washer has associated dryers. We do their processing here using
      * their own processing classes, and attach the data.
@@ -73,10 +82,12 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
         $dryerProcessor->process($xSellAssoc, $entries, $locale, $newOutputData['dryers']);
       }
     }
+    
+    $newOutputData['numDryers'] = count($newOutputData['dryers']); // REMOVE AFTER DEV
   }
 
   protected function getBrand() {
-    return 'maytag';
+    return 'whirlpool';
   }
 
   protected function getCategory() {
