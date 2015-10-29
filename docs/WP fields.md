@@ -15,6 +15,7 @@ X = implemented + tested
 - Items I'm blocked on: ^-\s+[^X/\s]+\s+
 
 # Whirlpool Laundry
+
 - X?* capacity (in cubic feet) (float) - match $1 from /(\d+(?:\.\d+))\s+cu\. ft\./ in English name, or "Washer Capacity (cu. ft.)" CF as backup
     + confirm we should include combos
     + and also that their capacity should be the washer capacity, which seems to usually be smaller. or should it be the total of the two? that seems misleading, it's not the total that matters, they serve different purposes.
@@ -57,8 +58,8 @@ X = implemented + tested
     - unless it's for the combo washer/dryers like www.whirlpool.ca/-[WGT4027EW]-1305273/WGT4027EW/
         + confirm those should be included
 
-
 # Whirlpool Dishwasher
+
 - / targetClean (bool) - "TargetClean" in name or description
 - / totalCoverageArm (bool) - has SF "TotalCoverage Spray Arm"
 - / sensorCycle (bool) - has SF "Sensor Cycle"
@@ -72,10 +73,11 @@ X = implemented + tested
 - / compactTallTub (bool) - name contains "Compact Tall Tub"
 - / decibels (int) - CF "Decibel Level"
 - / anyWarePlusBasket (bool) - has SF "AnyWare\u2122 Plus Silverware Basket"
-- /?* FIC (fully Integrated Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Hidden_Control_Console'
-- /?* FCC (Front Control Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Visible_Front_Console'
+- / FIC (fully Integrated Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Hidden_Control_Console'
+- / FCC (Front Control Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Visible_Front_Console'
 
 # Whirlpool Fridge
+
 - X width (float) - StandardAbstract processor
 - X height (float) - StandardAbstract processor
 - / energyStar - has CF "Energy Star\u00ae Qualified" and value != "No"
@@ -83,9 +85,6 @@ X = implemented + tested
 - X bottomMount - same as KAD
 - / sideBySide - same as KAD (CF "Refrigerator Type" == "Side-by-Side"), but change to actually output it
 - X frenchDoor - same as KAD
-- ?* frenchDoor5
-    + can't find, tried same method as KAD (SF "5-Door Configuration")
-    + changed this to "5door" for KAD
 - X filtered - same as KAD
     + renamed from "filteredWater" to be consistent
 - / exteriorWater - CF "Dispenser Type" contains 'exterior' and 'water'
@@ -99,11 +98,20 @@ X = implemented + tested
 - / accuFresh - has SF "AccuFresh\u2122 dual cooling system"
 - / tripleCrisper - has SF that CONTAINS "Triple Crisper system" - sometimes "EasyView", sometimes not
 
+## fields not implemented for now
+
+- frenchDoor5
+    + can't find, tried same method as KAD (SF "5-Door Configuration")
+    + changed this to "5door" for KAD
+    + Chris flagged that data isn't avail
+    + https://trello.com/c/tN1saGz5/6-french-door-4-5-door
+
 ## feed errors
 
 - IC14B-NAR is not a fridge, it's a fridge accessory, but it's in the fridges category
 
 # Whirlpool Cooktops
+
 - width (in inches) (int)
 - electric (bool)
 - induction (bool)
@@ -113,6 +121,7 @@ X = implemented + tested
 - accuSimmer (bool)
 
 # Whirlpool Range
+
 - induction (bool)
 - aquaLift (bool)
 - trueConvection (bool)
@@ -130,6 +139,7 @@ X = implemented + tested
 - frontControl (bool)
 
 # Whirlpool Vents
+
 - width (in inches) (float)
 - islandMount (bool)
 - wallMount (bool)
@@ -143,4 +153,4 @@ X = implemented + tested
 
 # Whirlpool Wall Ovens
 
-- this was missing, confirm this category as well as others
+Confirmed this category and all others. Get fields for this category from latest scoring spreadsheet.
