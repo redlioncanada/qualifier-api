@@ -122,13 +122,13 @@ X = implemented + tested
 
 # Whirlpool Range
 
-- ! induction (bool) - none matching
+- !* induction (bool) - none matching
 - / aquaLift (bool) - name or description contain "aqualift" or has SF "AquaLift\u00ae Self-Clean technology"
 - / trueConvection (bool) - name or description or a SF contains "true convection"
 - / accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System"
-- X electric (bool)
+- X electric (bool) - same as KAD
 - / rapidPreHeat  (bool) - has SF "Rapid Preheat"
-- X gas (bool)
+- X gas (bool) - same as KAD
 - X capacity (int)
 - / maxCapacityRack (bool) - CF "Oven Rack Type" contains "max capacity" *OR* has SF "Max Capacity Recessed Rack"
     + implemented the latter already (copied from MTG)
@@ -136,22 +136,38 @@ X = implemented + tested
 - X warmingDrawer (bool) - same as KAD
 - / single (bool) - should just be !double, but KAD didn't have
 - / frozenBake (bool) - has SF "Frozen Bake\u2122 Technology"
-- X? rearControl (bool) - same as MTG (recent update to MTG)
-- X? frontControl (bool) - same as MTG (recent update to MTG)
+- X?* rearControl (bool) - same as MTG (recent update to MTG)
+- X?* frontControl (bool) - same as MTG (recent update to MTG)
     + they're both false for YWGE755C0BS-NAR
 
-# Whirlpool Vents
+# Whirlpool Hoods
 
-- width (in inches) (float)
-- islandMount (bool)
-- wallMount (bool)
-- CFM (int)
-- underCabinet (bool)
-- exterior (bool)
-- nonVented (bool)
-- convertible (bool)
-- easyConversion (bool)
-- microWaveHoodCombination (bool)
+- X width (in inches) (float)
+- X islandMount (bool) - always false
+- X wallMount (bool)- always false
+- X underCabinet (bool) - but may interact with islandMount and wallMount
+- / CFM (int) - null for UXW7324BSS-NAR
+    + also try "(\d+)[\s-]CFM" in description, but prefer CF if it exists
+- X exterior (bool)
+- X nonVented (bool)
+- X convertible (bool)
+- ?* easyConversion (bool)
+    + can't find
+- ?* microWaveHoodCombination (bool)
+    + these are a separate category -- listed under SC_Kitchen_Cooking_Microwaves_Over_The_Range category
+    + see http://www.whirlpool.com/kitchen-1/cooking-2/over-the-range-3/102110018/ and check "over the range" in the left-hand filters
+    + include these in the Qualifier's "Hoods" category?
+
+## non-field-specific questions and notes
+
+- WP calls this category "Hoods", not "Vents", so the API does too
+- not hoods, just blowers -- like KAD issue - error?
+    + they all have CF hood type = In-Line Blower
+    + UXB0600DYS-NAR
+    + UXB1200DYS-NAR
+    + UXI1200DYS-NAR
+    + UXB1200DYS-NAR
+    + UXB0600DYS-NAR
 
 # Whirlpool Wall Ovens
 
