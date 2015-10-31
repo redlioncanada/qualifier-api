@@ -122,21 +122,23 @@ X = implemented + tested
 
 # Whirlpool Range
 
-- induction (bool)
-- aquaLift (bool)
-- trueConvection (bool)
-- accuBake (bool)
-- electric (bool)
-- rapidPreHeat  (bool)
-- gas (bool)
-- volume (int)
-- maxCapacityRack (bool)
-- double (bool)
-- warmingDrawer (bool)
-- single (bool)
-- frozenBake (bool)
-- rearControl (bool)
-- frontControl (bool)
+- ! induction (bool) - none matching
+- / aquaLift (bool) - name or description contain "aqualift" or has SF "AquaLift\u00ae Self-Clean technology"
+- / trueConvection (bool) - name or description or a SF contains "true convection"
+- / accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System"
+- X electric (bool)
+- / rapidPreHeat  (bool) - has SF "Rapid Preheat"
+- X gas (bool)
+- X capacity (int)
+- / maxCapacityRack (bool) - CF "Oven Rack Type" contains "max capacity" *OR* has SF "Max Capacity Recessed Rack"
+    + implemented the latter already (copied from MTG)
+- X double (bool) - same as KAD
+- X warmingDrawer (bool) - same as KAD
+- / single (bool) - should just be !double, but KAD didn't have
+- / frozenBake (bool) - has SF "Frozen Bake\u2122 Technology"
+- X? rearControl (bool) - same as MTG (recent update to MTG)
+- X? frontControl (bool) - same as MTG (recent update to MTG)
+    + they're both false for YWGE755C0BS-NAR
 
 # Whirlpool Vents
 
