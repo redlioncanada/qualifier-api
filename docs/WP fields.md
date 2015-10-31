@@ -112,13 +112,13 @@ X = implemented + tested
 
 # Whirlpool Cooktops
 
-- width (in inches) (int)
-- electric (bool)
-- induction (bool)
-- gas (bool)
-- dishwasherSafeKnobs (bool)
-- glassTouch (bool)
-- accuSimmer (bool)
+- X width (in inches) (int)
+- X electric (bool)
+- X induction (bool)
+- X gas (bool)
+- / dishwasherSafeKnobs (bool) - has SF "Dishwasher-Safe Knobs"
+- / glassTouch (bool) - has SF "Glass Touch Controls"
+- / accuSimmer (bool) - description contains "AccuSimmer" or has SF containing "AccuSimmer"
 
 # Whirlpool Range
 

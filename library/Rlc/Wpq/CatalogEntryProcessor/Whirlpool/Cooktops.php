@@ -1,6 +1,6 @@
 <?php
 
-namespace Rlc\Wpq\CatalogEntryProcessor\KitchenAid;
+namespace Rlc\Wpq\CatalogEntryProcessor\Whirlpool;
 
 use Rlc\Wpq,
     Lrr\ServiceLocator;
@@ -104,7 +104,7 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getBrand() {
-    return 'kitchenaid';
+    return 'whirlpool';
   }
 
   protected function getCategory() {
