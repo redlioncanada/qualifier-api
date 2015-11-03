@@ -45,18 +45,18 @@ X = implemented + tested
 
 # Whirlpool Dishwasher
 
-- / targetClean (bool) - "TargetClean" in name or description
-- / totalCoverageArm (bool) - has SF "TotalCoverage Spray Arm"
-- / sensorCycle (bool) - has SF "Sensor Cycle"
-- / ez2Lift (bool) - has SF "EZ-2-Lift\u2122 Adjustable Upper Rack"
-- / silverwareSpray (bool) - has SF "Silverware Spray"
-- / accuSense (bool) - has SF AccuSense(R) Soil Sensor
-- / placeSettings (int) - CF "Capacity" - no regex, entire value
-- / compactTallTub (bool) - name contains "Compact Tall Tub"
-- / decibels (int) - CF "Decibel Level"
-- / anyWarePlusBasket (bool) - has SF "AnyWare\u2122 Plus Silverware Basket"
-- / FIC (fully Integrated Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Hidden_Control_Console'
-- / FCC (Front Control Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Visible_Front_Console'
+- X targetClean (bool) - "TargetClean" in name or description
+- X compactTallTub (bool) - name contains "Compact Tall Tub"
+- X totalCoverageArm (bool) - has SF "TotalCoverage Spray Arm"
+- X sensorCycle (bool) - has SF "Sensor Cycle"
+- X ez2Lift (bool) - has SF "EZ-2-Lift\u2122 Adjustable Upper Rack"
+- X silverwareSpray (bool) - has SF "Silverware Spray"
+- X accuSense (bool) - has SF "AccuSense\u00ae Soil Sensor"
+- X anyWarePlusBasket (bool) - has SF "AnyWare\u2122 Plus Silverware Basket"
+- X placeSettings (int) - CF "Capacity" - entire value, but can still use regex in case it changes to include words or decimal in the future
+- X decibels (int) - CF "Decibel Level"
+- X FIC (fully Integrated Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Hidden_Control_Console'
+- X FCC (Front Control Console) (bool) - is in catalog group 'SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Visible_Front_Console'
 
 # Whirlpool Fridge
 

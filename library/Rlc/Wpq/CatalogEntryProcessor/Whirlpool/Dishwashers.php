@@ -18,50 +18,46 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Name/description-based info - use default locale (English)
      */
 
-    // Pocket handle console
-    $entryData['pocketHandleConsole'] = (false !== strpos($description->name, "Pocket Handle"));
+    $entryData['targetClean'] = (false !== stripos($description->name, "TargetClean")) ||
+        (false !== stripos($description->longdescription, "TargetClean"));
+    $entryData['compactTallTub'] = false !== stripos($description->name, "Compact Tall Tub");
 
     /*
      * Sales-feature-based info
      */
 
     // Init all to false
-    $entryData['bottleWash'] = false;
-    $entryData['proDry'] = false;
-    $entryData['proScrub'] = false;
-    $entryData['proWash'] = false;
-    $entryData['cleanWater'] = false;
-    $entryData['thirdLevelRack'] = false;
-    $entryData['panelReady'] = false;
-    $entryData['culinaryCaddy'] = false;
+    $entryData['totalCoverageArm'] = false;
+    $entryData['sensorCycle'] = false;
+    $entryData['ez2Lift'] = false;
+    $entryData['silverwareSpray'] = false;
+    $entryData['accuSense'] = false;
+    $entryData['anyWarePlusBasket'] = false;
 
     if ($salesFeatureGroup) {
-      // All are yes if feature exists, no otherwise
-      $entryData['bottleWash'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Bottle Wash");
-      $entryData['proDry'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Advanced ProDry\u2122 System"'));
-      $entryData['proScrub'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ProScrub\u00ae Option"'));
-      $entryData['proWash'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ProWash\u2122 Cycle"'));
-      $entryData['cleanWater'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Clean Water Wash System");
-      $entryData['thirdLevelRack'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Third Level Rack");
-      $entryData['panelReady'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Panel-Ready Design");
-      $entryData['culinaryCaddy'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Culinary Caddy");
+      $entryData['totalCoverageArm'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("TotalCoverage Spray Arm");
+      $entryData['sensorCycle'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Sensor Cycle");
+      $entryData['ez2Lift'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"EZ-2-Lift\u2122 Adjustable Upper Rack"'));
+      $entryData['silverwareSpray'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Silverware Spray");
+      $entryData['accuSense'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"AccuSense\u00ae Soil Sensor"'));
+      $entryData['anyWarePlusBasket'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"AnyWare\u2122 Plus Silverware Basket"'));
     }
-    
+
     /*
      * Compare-feature-based info
      */
-    
+
     // Init these to null
     $entryData['decibels'] = null;
     $entryData['placeSettings'] = null;
-    
+
     if ($compareFeatureGroup) {
       // Decibels
-      $decibelsAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Decibel Level (dBA)");
+      $decibelsAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Decibel Level");
       if ($decibelsAttr) {
         $entryData['decibels'] = $decibelsAttr->value;
       }
-      
+
       // Place settings
       $placeSettings = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Capacity");
       if ($placeSettings) {
@@ -74,15 +70,15 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     }
 
     /*
-     * Other
+     * Catalog group based info
      */
 
-    // FID
     $allCatalogGroups = $entry->getAllCatalogGroups();
     $allCatalogGroupIds = array_map(function ($grp) {
       return (string) $grp->identifier;
     }, $allCatalogGroups);
-    $entryData['FID'] = in_array('SC_Major_Appliances_Dishwashers_Dishwashers_Fully_Integrated', $allCatalogGroupIds);
+    $entryData['FIC'] = in_array('SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Hidden_Control_Console', $allCatalogGroupIds);
+    $entryData['FCC'] = in_array('SC_Kitchen_Dishwasher__Cleaning_Dishwashers_BuiltIn_Visible_Front_Console', $allCatalogGroupIds);
 
     // Add image for dishwashers
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
