@@ -7,58 +7,87 @@ use Rlc\Wpq,
 
 class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
+  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale) {
+    $washerDescription = $entry->getDescription();
+    return false === stripos($washerDescription->name, 'combination');
+  }
+
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     // Get all the pieces we'll be analysing
-    $washerDescriptionDefaultLocale = $entry->getDescription()->getRecord();
+    $washerDescription = $entry->getDescription();
     $washerCompareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $washerSalesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
-    
+
     $util = ServiceLocator::util();
 
     /*
      * Washer features
      */
 
-    // Will try compare features if this doesn't work -- for combos
-    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $washerDescriptionDefaultLocale->name, 1);
-
     // Init some values to ensure they exist
     $entryData['vibrationControl'] = false;
-    $entryData['rapidWash'] = false;
-    $entryData['washerWrinkleControl'] = false;
-    $entryData['steamEnhanced'] = false;
-    $entryData['cycleOptions'] = 0;
+    $entryData['energyStar'] = false;
+    $entryData['ecoBoost'] = false;
+    $entryData['fanFresh'] = false;
+    $entryData['adaptiveWash'] = false;
+    $entryData['colorLast'] = false;
+    $entryData['smoothWave'] = false;
 
+    // Name/description based fields
+    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $washerDescription->name, 1);
+    $entryData['quickWash'] = false !== stripos($washerDescription->name, "Quick Wash"); // will try CF as backup
+    $entryData['quietWash'] = false !== stripos($washerDescription->longdescription, "Quiet Wash"); // will try CF as backup
+    $entryData['frontLoad'] = (
+        (false !== stripos($washerDescription->name, 'front load')) ||
+        (false !== stripos($washerDescription->longdescription, 'front load'))
+        );
+    $entryData['topLoad'] = !$entryData['frontLoad'];
+
+
+    // Compare feature based fields
     if ($washerCompareFeatureGroup) {
-      $capacityAttr = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Washer Capacity (cu. ft.)");
-      if ($capacityAttr) {
-        $entryData['capacity'] = $capacityAttr->value;
-      }
-      
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
       if ($avcAttr) {
         $entryData['vibrationControl'] = !in_array($avcAttr->value, ["No", "None"]);
       }
 
-      // Store # of cycle options for washer, and increment total cycle options number
-      $washerCyclesAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Number of Wash Cycles"]);
-      if ($washerCyclesAttr) {
-        $entryData['cycleOptions'] += $washerCyclesAttr->value;
+      $energyStarAttr = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
+      if ($energyStarAttr) {
+        $entryData['energyStar'] = "No" != $energyStarAttr->value;
+      }
+
+      $optionsSelAttr = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Option Selections");
+      if ($optionsSelAttr) {
+        $entryData['ecoBoost'] = false !== stripos($optionsSelAttr->value, "EcoBoost");
+      }
+
+      if (!$entryData['quickWash']) {
+        $washerCycleSelAttr = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Washer Cycle Selections");
+        if ($washerCycleSelAttr) {
+          $entryData['quickWash'] = false !== stripos($washerCycleSelAttr->value, "Quick Wash");
+        }
+      }
+
+      if (!$entryData['quietWash']) {
+        $soundPkgAttr = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Sound Package");
+        if ($soundPkgAttr) {
+          $entryData['quietWash'] = false !== stripos($soundPkgAttr->value, "Quiet Wash");
+        }
+      }
+
+      $fanFresh = $washerCompareFeatureGroup->getDescriptiveAttributeByValueIdentifier(json_decode('"Fan Fresh\u00ae-Fresh Hold\u00ae"'));
+      if ($fanFresh) {
+        $entryData['fanFresh'] = "No" != $fanFresh->value;
       }
     }
 
-    $entryData['frontLoad'] = (
-        (false !== stripos($washerDescriptionDefaultLocale->name, 'front load')) ||
-        (false !== stripos($washerDescriptionDefaultLocale->longdescription, 'front load'))
-        );
-    $entryData['topLoad'] = !$entryData['frontLoad'];
-
+    // Sales feature based fields
     if ($washerSalesFeatureGroup) {
-      // Just has to exist
-      $entryData['rapidWash'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Rapid Wash Cycle"]);
-      $entryData['washerWrinkleControl'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Wrinkle Control Cycle"]);
-      $entryData['steamEnhanced'] = (bool) $washerSalesFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => "Steam-Enhanced Cycles"]);
+      $entryData['adaptiveWash'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Adaptive Wash Technology");
+      $entryData['colorLast'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ColorLast\u2122 Option"'));
+      $entryData['smoothWave'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Smooth Wave Stainless Steel Wash Basket");
     }
 
     // Add image for washers
@@ -68,7 +97,6 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
   protected function postProcess(Wpq\FeedEntity\CatalogEntry $entry,
       array $entries, $locale, array &$newOutputData) {
-//    return; // FIXME
     /*
      * Each washer has associated dryers. We do their processing here using
      * their own processing classes, and attach the data.
@@ -82,8 +110,8 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
         $dryerProcessor->process($xSellAssoc, $entries, $locale, $newOutputData['dryers']);
       }
     }
-    
-    $newOutputData['numDryers'] = count($newOutputData['dryers']); // REMOVE AFTER DEV
+
+//    $newOutputData['numDryers'] = count($newOutputData['dryers']); // REMOVE AFTER DEV
   }
 
   protected function getBrand() {

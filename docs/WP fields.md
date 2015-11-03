@@ -18,15 +18,15 @@ X = implemented + tested
 
 ## Exclude filters
 
-- / exclude combo washer/dryers by looking for "combination" in en_CA name
+- X exclude combo washer/dryers by looking for "combination" in en_CA name
 
 ## Field rules
 
-- / capacity (in cubic feet) (float) - match $1 from /(\d+(?:\.\d+))\s+cu\. ft\./ in English name - note combos are excluded
-    + remove part for combos
-- / energyStar (bool) - has CF "Energy Star\u00ae Qualified" and value != "No"
-- / ecoBoost (bool) - CF "Option Selections" contains "EcoBoost"
-- / quickWash (bool) - "Quick Wash" found in name or in CF "Washer Cycle Selections"
+- X capacity (in cubic feet) (float) - match $1 from /(\d+(?:\.\d+))\s+cu\. ft\./ in English name - note combos are excluded
+- X energyStar (bool) - has CF "Energy Star\u00ae Qualified" and value != "No"
+- X ecoBoost (bool) - CF "Option Selections" contains "EcoBoost"
+- X quickWash (bool) - "Quick Wash" found in name or in CF "Washer Cycle Selections"
+- X quietWash (bool) - either description or CF "Sound Package" contain "Quiet Wash"
 - ?* loadAndGo (bool)
     + is it this feature? http://www.whirlpool.ca/-[YWET4027EW]-1305284/YWET4027EW/
 
@@ -35,15 +35,13 @@ X = implemented + tested
 
     https://trello.com/c/BzBCewsE/2-loadandgo
 
-- / fanFresh (bool) - has CF "Fan Fresh\u00ae-Fresh Hold\u00ae" and value != "No"
+- X fanFresh (bool) - has CF "Fan Fresh\u00ae-Fresh Hold\u00ae" and value != "No"
 - X vibrationControl (bool) - same as MTG
-- / quietWash (bool) - either description or CF "Sound Package" contain "Quiet Wash"
-- / silentSteel (bool) - has SF "SilentSteel\u2122 Dryer Drum"
 - X frontLoad (bool) - same as MTG
 - X topLoad (bool) - same as MTG
-- / adaptiveWash (bool) - has SF "Adaptive Wash Technology"
-- / colorLast (bool) - has SF "ColorLast\u2122 Option"
-- / smoothWave (bool) - has SF "Smooth Wave Stainless Steel Wash Basket"
+- X adaptiveWash (bool) - has SF "Adaptive Wash Technology"
+- X colorLast (bool) - has SF "ColorLast\u2122 Option"
+- X smoothWave (bool) - has SF "Smooth Wave Stainless Steel Wash Basket"
 
 # Whirlpool Dishwasher
 
