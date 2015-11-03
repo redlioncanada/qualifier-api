@@ -16,48 +16,34 @@ X = implemented + tested
 
 # Whirlpool Laundry
 
-- X?* capacity (in cubic feet) (float) - match $1 from /(\d+(?:\.\d+))\s+cu\. ft\./ in English name, or "Washer Capacity (cu. ft.)" CF as backup
-    + confirm we should include combos
-        * NO --> see if it's easy to exclude them
-    + and also that their capacity should be the washer capacity, which seems to usually be smaller. or should it be the total of the two? that seems misleading, it's not the total that matters, they serve different purposes.
+## Exclude filters
+
+- / exclude combo washer/dryers by looking for "combination" in en_CA name
+
+## Field rules
+
+- / capacity (in cubic feet) (float) - match $1 from /(\d+(?:\.\d+))\s+cu\. ft\./ in English name - note combos are excluded
+    + remove part for combos
 - / energyStar (bool) - has CF "Energy Star\u00ae Qualified" and value != "No"
 - / ecoBoost (bool) - CF "Option Selections" contains "EcoBoost"
 - / quickWash (bool) - "Quick Wash" found in name or in CF "Washer Cycle Selections"
-- ?* quickDry (bool) rapiddry?
-    + sounds like for dryers, i thought we're not scoring those
 - ?* loadAndGo (bool)
     + is it this feature? http://www.whirlpool.ca/-[YWET4027EW]-1305284/YWET4027EW/
 
         HE Agitator with Fabric Softener Cap
         Get high-efficiency cleaning and convenient fabric softener dispensing at just the right time so you can simply **load the washer and go**.
 
+    https://trello.com/c/BzBCewsE/2-loadandgo
+
 - / fanFresh (bool) - has CF "Fan Fresh\u00ae-Fresh Hold\u00ae" and value != "No"
 - X vibrationControl (bool) - same as MTG
 - / quietWash (bool) - either description or CF "Sound Package" contain "Quiet Wash"
-- ?* quietDry (bool)
-    + DRYERS?
 - / silentSteel (bool) - has SF "SilentSteel\u2122 Dryer Drum"
 - X frontLoad (bool) - same as MTG
 - X topLoad (bool) - same as MTG
 - / adaptiveWash (bool) - has SF "Adaptive Wash Technology"
 - / colorLast (bool) - has SF "ColorLast\u2122 Option"
 - / smoothWave (bool) - has SF "Smooth Wave Stainless Steel Wash Basket"
-- ?* quadBaffles (bool)
-    + DRYERS?
-    + would be that dryer has SF "Quad Baffles"
-- ?* advancedMoistureSensing (bool)
-    + DRYERS?
-    + has SF "Advanced Moisture Sensing System"
-- ?* accuDry (bool)
-    + DRYERS?
-- ?* wrinkleShield (bool)
-    + DRYERS?
-- ?* steamRefresh (bool)
-    + DRYERS?
-- ?* gas (bool)
-    - this is a dryer feature, right? doesn't make sense
-    - unless it's for the combo washer/dryers like www.whirlpool.ca/-[WGT4027EW]-1305273/WGT4027EW/
-        + confirm those should be included
 
 # Whirlpool Dishwasher
 
@@ -66,10 +52,7 @@ X = implemented + tested
 - / sensorCycle (bool) - has SF "Sensor Cycle"
 - / ez2Lift (bool) - has SF "EZ-2-Lift\u2122 Adjustable Upper Rack"
 - / silverwareSpray (bool) - has SF "Silverware Spray"
-- ?* accuSense (bool)
-    + same thing as sensor cycle?
-    + every sensor cycle description says "Get perfect cleaning every time with the Sensor cycle. The AccuSense\u00ae soil sensor measures load size and soil level during the prewash, and the dishwasher adjusts to the right wash and dry settings throughout the wash cycle to deliver precise cleaning to your dishes."
-        * e.g. http://www.whirlpool.ca/en_CA/-[WDT920SADM]-1304822/WDT920SADM/
+- / accuSense (bool) - has SF AccuSense(R) Soil Sensor
 - / placeSettings (int) - CF "Capacity" - no regex, entire value
 - / compactTallTub (bool) - name contains "Compact Tall Tub"
 - / decibels (int) - CF "Decibel Level"
@@ -123,7 +106,7 @@ X = implemented + tested
 
 # Whirlpool Range
 
-- !* induction (bool) - none matching
+- / induction (bool) - name or description contain "induction", or analogue of KAD rule
 - / aquaLift (bool) - name or description contain "aqualift" or has SF "AquaLift\u00ae Self-Clean technology"
 - / trueConvection (bool) - name or description or a SF contains "true convection"
 - / accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System"
@@ -137,10 +120,8 @@ X = implemented + tested
 - X warmingDrawer (bool) - same as KAD
 - / single (bool) - should just be !double, but KAD didn't have
 - / frozenBake (bool) - has SF "Frozen Bake\u2122 Technology"
-- X?* rearControl (bool) - same as MTG (recent update to MTG)
-- X?* frontControl (bool) - same as MTG (recent update to MTG)
-    + they're both false for YWGE755C0BS-NAR
-    + i probably just missed it because the string is different even though it contains freestanding
+- X rearControl (bool) - same as MTG (recent update to MTG)
+- X frontControl (bool) - same as MTG (recent update to MTG)
 
 # Whirlpool Hoods
 
@@ -155,15 +136,17 @@ X = implemented + tested
 - X convertible (bool)
 - ?* easyConversion (bool)
     + can't find
+    + https://trello.com/c/jWe4kMD8/10-easyconversion
 - ?* microWaveHoodCombination (bool)
     + these are a separate category -- listed under SC_Kitchen_Cooking_Microwaves_Over_The_Range category
     + see http://www.whirlpool.com/kitchen-1/cooking-2/over-the-range-3/102110018/ and check "over the range" in the left-hand filters
     + include these in the Qualifier's "Hoods" category?
+    + https://trello.com/c/S2QpSUyk/11-microwavehoodcombination
 
 ## non-field-specific questions and notes
 
-- WP calls this category "Hoods", not "Vents", so the API does too
-- not hoods, just blowers -- like KAD issue - error?
+- ! WP calls this category "Hoods", not "Vents", so the API does too
+- ? not hoods, just blowers -- like KAD issue - error?
     + they all have CF hood type = In-Line Blower
     + UXB0600DYS-NAR
     + UXB1200DYS-NAR
