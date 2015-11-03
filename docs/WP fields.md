@@ -18,6 +18,7 @@ X = implemented + tested
 
 - X?* capacity (in cubic feet) (float) - match $1 from /(\d+(?:\.\d+))\s+cu\. ft\./ in English name, or "Washer Capacity (cu. ft.)" CF as backup
     + confirm we should include combos
+        * NO --> see if it's easy to exclude them
     + and also that their capacity should be the washer capacity, which seems to usually be smaller. or should it be the total of the two? that seems misleading, it's not the total that matters, they serve different purposes.
 - / energyStar (bool) - has CF "Energy Star\u00ae Qualified" and value != "No"
 - / ecoBoost (bool) - CF "Option Selections" contains "EcoBoost"
@@ -139,6 +140,7 @@ X = implemented + tested
 - X?* rearControl (bool) - same as MTG (recent update to MTG)
 - X?* frontControl (bool) - same as MTG (recent update to MTG)
     + they're both false for YWGE755C0BS-NAR
+    + i probably just missed it because the string is different even though it contains freestanding
 
 # Whirlpool Hoods
 
@@ -171,4 +173,12 @@ X = implemented + tested
 
 # Whirlpool Wall Ovens
 
-Confirmed this category and all others. Get fields for this category from latest scoring spreadsheet.
+- X width
+- X capacity
+    + no capacity info for 1 of 8: http://www.whirlpool.ca/-[WOS52EM4AS]-1304404/WOS52EM4AS/
+- X single
+- X double
+- X combination
+- X trueConvection
+- / accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System" (same as Ranges)
+- / digitalThermometer - has SF containing "thermometer"
