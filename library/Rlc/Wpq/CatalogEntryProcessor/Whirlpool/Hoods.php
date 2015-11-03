@@ -7,6 +7,14 @@ use Rlc\Wpq,
 
 class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
+  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale) {
+    return !in_array($entry->partnumber, [
+          'UXB0600DYS-NAR', 'UXB1200DYS-NAR', 'UXI1200DYS-NAR', 'UXB1200DYS-NAR',
+          'UXB0600DYS-NAR'
+    ]);
+  }
+
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
