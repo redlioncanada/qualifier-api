@@ -135,8 +135,8 @@ class Ranges extends Wpq\CatalogEntryProcessor\StandardAbstract {
       
       $rangeTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Range Type"]);
       if ($rangeTypeAttr) {
-        $entryData['frontControl'] = ('Slide-in' == $rangeTypeAttr->value);
-        $entryData['rearControl'] = ('Freestanding' == $rangeTypeAttr->value);
+        $entryData['frontControl'] = false !== stripos($rangeTypeAttr->value, 'slide-in');
+        $entryData['rearControl'] = false !== stripos($rangeTypeAttr->value, 'freestanding');
       }
     }
 
