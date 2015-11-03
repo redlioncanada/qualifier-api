@@ -143,8 +143,8 @@ X = implemented + tested
 
 ## non-field-specific questions and notes
 
-- ! WP calls this category "Hoods", not "Vents", so the API does too
-- ? not hoods, just blowers -- like KAD issue - error?
+- !* WP calls this category "Hoods", not "Vents", so the API does too
+- ?* not hoods, just blowers -- like KAD issue - error?
     + they all have CF hood type = In-Line Blower
     + UXB0600DYS-NAR
     + UXB1200DYS-NAR
