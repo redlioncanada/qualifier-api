@@ -27,14 +27,7 @@ X = implemented + tested
 - X ecoBoost (bool) - CF "Option Selections" contains "EcoBoost"
 - X quickWash (bool) - "Quick Wash" found in name or in CF "Washer Cycle Selections"
 - X quietWash (bool) - either description or CF "Sound Package" contain "Quiet Wash"
-- ?* loadAndGo (bool)
-    + is it this feature? http://www.whirlpool.ca/-[YWET4027EW]-1305284/YWET4027EW/
-
-        HE Agitator with Fabric Softener Cap
-        Get high-efficiency cleaning and convenient fabric softener dispensing at just the right time so you can simply **load the washer and go**.
-
-    https://trello.com/c/BzBCewsE/2-loadandgo
-
+- / loadAndGo (bool) - has SF "Load & Go™ System"
 - X fanFresh (bool) - has CF "Fan Fresh\u00ae-Fresh Hold\u00ae" and value != "No"
 - X vibrationControl (bool) - same as MTG
 - X frontLoad (bool) - same as MTG
@@ -104,20 +97,21 @@ X = implemented + tested
 
 # Whirlpool Range
 
-- / induction (bool) - name or description contain "induction", or analogue of KAD rule
-- / aquaLift (bool) - name or description contain "aqualift" or has SF "AquaLift\u00ae Self-Clean technology"
-- / trueConvection (bool) - name or description or a SF contains "true convection"
-- / accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System"
-- X electric (bool) - same as KAD
-- / rapidPreHeat  (bool) - has SF "Rapid Preheat"
+- X induction (bool) - name or description contain "induction"
+- X aquaLift (bool) - name or description contain "aqualift" or has SF "AquaLift\u00ae Self-Clean technology"
+- X trueConvection (bool) - name or description or a SF contains "true convection"
+- X accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System"
+- X rapidPreHeat  (bool) - has SF "Rapid Preheat"
 - X gas (bool) - same as KAD
+- X electric (bool) - same as KAD
 - X capacity (int)
-- / maxCapacityRack (bool) - CF "Oven Rack Type" contains "max capacity" *OR* has SF "Max Capacity Recessed Rack"
-    + implemented the latter already (copied from MTG)
+- X maxCapacity (bool) - CF "Oven Rack Type" contains "max capacity" *OR* has SF "Max Capacity Recessed Rack"
+    + copied the former from MTG
+    + renamed from "maxCapacityRack" to match MTG
 - X double (bool) - same as KAD
 - X warmingDrawer (bool) - same as KAD
-- / single (bool) - should just be !double, but KAD didn't have
-- / frozenBake (bool) - has SF "Frozen Bake\u2122 Technology"
+- X single (bool) - should just be !double, but KAD didn't have
+- X frozenBake (bool) - has SF "Frozen Bake\u2122 Technology"
 - X rearControl (bool) - same as MTG (recent update to MTG)
 - X frontControl (bool) - same as MTG (recent update to MTG)
 
