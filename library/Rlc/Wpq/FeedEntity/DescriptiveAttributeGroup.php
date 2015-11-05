@@ -67,18 +67,23 @@ class DescriptiveAttributeGroup {
   /**
    * Retrieve a single DescriptiveAttribute
    * 
-   * @param array   $criteria Associative field => value conditions
-   * @param string  $locale   OPTIONAL
+   * @param array   $criteria       Associative field => value conditions
+   * @param string  $locale         OPTIONAL
+   * @param string  $caseSensitive  OPTIONAL, default false
    * @return DescriptiveAttribute or NULL if no matching records
    */
-  public function getDescriptiveAttributeWhere(array $criteria, $locale = null) {
+  public function getDescriptiveAttributeWhere(array $criteria, $locale = null,
+      $caseSensitive = false) {
     if (is_null($locale)) {
       $locale = $this->defaultLocale;
     }
 
     foreach ($this->attrsByLocale[$locale] as $attr) {
       foreach ($criteria as $field => $value) {
-        if ($value != $attr->$field) {
+        if (
+            ($caseSensitive && $value != $attr->$field) ||
+            (!$caseSensitive && strtolower($value) != strtolower($attr->$field))
+        ) {
           continue 2;
         }
       }

@@ -72,7 +72,13 @@ class JsonBuilder {
    * @var array
    */
   private $unprocessedGroups = [
-    'SC_Laundry_Laundry_Appliances_Dryers',
+    'maytag' => [
+      'SC_Laundry_Laundry_Appliances_Dryers',
+    ],
+    'kitchenaid' => [],
+    'whirlpool' => [
+      'SC_Laundry_Laundry_Dryers',
+    ],
   ];
 
   public function __construct(FeedModelBuilderInterface $feedModelBuilder) {
@@ -87,7 +93,7 @@ class JsonBuilder {
    */
   public function build($brand, $locale) {
     if (!isset($this->feedModelCache[$brand])) {
-      $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups);
+      $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups[$brand]);
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $catalogGroupsFilter);
     }
     $entries = $this->feedModelCache[$brand];
