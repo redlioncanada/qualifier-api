@@ -121,8 +121,7 @@ X = implemented + tested
 - X islandMount (bool) - always false
 - X wallMount (bool)- always false
 - X underCabinet (bool) - but may interact with islandMount and wallMount
-- / CFM (int) - null for UXW7324BSS-NAR
-    + also try "(\d+)[\s-]CFM" in description, but prefer CF if it exists
+- X CFM (int) - same as KAD already implemented (CF), OR as backup try "(\d+)[\s-]CFM" in description, but prefer CF if it exists (added to cover UXW7324BSS-NAR)
 - X exterior (bool)
 - X nonVented (bool)
 - X convertible (bool)

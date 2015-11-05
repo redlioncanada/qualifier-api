@@ -24,21 +24,6 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $util = ServiceLocator::util();
 
     /*
-     * Sales-feature-based info
-     */
-
-    // Init all to false
-    $entryData['easyConversion'] = false;
-    $entryData['automaticOn'] = false;
-    $entryData['warmingLamps'] = false;
-
-    if ($salesFeatureGroup) {
-      $entryData['easyConversion'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Easy In-line Conversion");
-      $entryData['automaticOn'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Automatic Turn On");
-      $entryData['warmingLamps'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifierMatch("Warming Lamp");
-    }
-
-    /*
      * Compare-feature-based info
      */
 
@@ -87,6 +72,11 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Other
      */
 
+    if (is_null($entryData['cfm'])) {
+      // If no CompareFeature, try in description
+      $entryData['cfm'] = $util->getPregMatch('/(\d+)[\s-]CFM/i', $description->longdescription, 1);
+    }
+    
     // Add image
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
 
