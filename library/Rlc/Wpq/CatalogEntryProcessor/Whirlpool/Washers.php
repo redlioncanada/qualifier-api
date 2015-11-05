@@ -45,7 +45,6 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
         );
     $entryData['topLoad'] = !$entryData['frontLoad'];
 
-
     // Compare feature based fields
     if ($washerCompareFeatureGroup) {
       $avcAttr = $washerCompareFeatureGroup->getDescriptiveAttributeWhere(['valueidentifier' => 'Advanced Vibration Control']);
@@ -88,6 +87,7 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
       $entryData['adaptiveWash'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Adaptive Wash Technology");
       $entryData['colorLast'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ColorLast\u2122 Option"'));
       $entryData['smoothWave'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Smooth Wave Stainless Steel Wash Basket");
+      $entryData['loadAndGo'] = $washerSalesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Load & Go\u2122 System"'));
     }
 
     // Add image for washers

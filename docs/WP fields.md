@@ -27,7 +27,7 @@ X = implemented + tested
 - X ecoBoost (bool) - CF "Option Selections" contains "EcoBoost"
 - X quickWash (bool) - "Quick Wash" found in name or in CF "Washer Cycle Selections"
 - X quietWash (bool) - either description or CF "Sound Package" contain "Quiet Wash"
-- / loadAndGo (bool) - has SF "Load & Go™ System"
+- X loadAndGo (bool) - has SF "Load & Go\u2122 System"
 - X fanFresh (bool) - has CF "Fan Fresh\u00ae-Fresh Hold\u00ae" and value != "No"
 - X vibrationControl (bool) - same as MTG
 - X frontLoad (bool) - same as MTG
