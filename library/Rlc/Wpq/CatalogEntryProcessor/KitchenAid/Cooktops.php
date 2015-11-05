@@ -18,9 +18,9 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Name/description-based info - use default locale (English)
      */
 
-    $entryData['gas'] = false !== stripos($description->name, 'gas');
-    $entryData['electric'] = false !== stripos($description->name, 'electric');
     $entryData['induction'] = false !== stripos($description->name, 'induction');
+    $entryData['electric'] = !$entryData['induction'] && (false !== stripos($description->name, 'electric'));
+    $entryData['gas'] = false !== stripos($description->name, 'gas');
 
     $entryData['electricEvenHeat'] = (
         $entryData['electric'] &&

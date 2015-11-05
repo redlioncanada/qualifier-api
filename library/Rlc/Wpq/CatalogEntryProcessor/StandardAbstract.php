@@ -18,6 +18,11 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
   public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
       $locale, array &$outputData) {
+
+    if (!$this->filterEntries($entry, $entries, $locale)) {
+      return;
+    }
+    
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $miscGroup = $entry->getDescriptiveAttributeGroup('Miscellaneous');
@@ -152,7 +157,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
   }
 
   /**
-   * 
    * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
    * @param array $entries        \Rlc\Wpq\FeedEntity\CatalogEntry[]
    * @param string $locale
@@ -165,6 +169,23 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
   protected function postProcess(Wpq\FeedEntity\CatalogEntry $entry,
       array $entries, $locale, array &$newOutputData) {
     // Nothing by default
+  }
+
+
+  /**
+   * Decide whether to include a given entry in the results. Defaults to include
+   * everything.
+   * 
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param array $entries        \Rlc\Wpq\FeedEntity\CatalogEntry[]
+   * @param string $locale
+   * 
+   * @return bool true = include the entry and continue processing, or
+   * false = discard
+   */
+  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale) {
+    return true;
   }
 
   /**
