@@ -118,9 +118,9 @@ X = implemented + tested
 # Whirlpool Hoods
 
 - X width (in inches) (float)
-- X islandMount (bool) - always false
-- X wallMount (bool)- always false
-- X/ underCabinet (bool) - but may interact with islandMount and wallMount
+- X islandMount (bool) - CF "Hood Type" exists and has value "Island Canopy"
+- X wallMount (bool) - CF "Hood Type" exists and has value "Wall Canopy"
+- X underCabinet (bool) - CF "Hood Type" exists and has value in ["Under Cabinet", "Under-the-Cabinet"]
 - X CFM (int) - same as KAD already implemented (CF), OR as backup try "(\d+)[\s-]CFM" in description, but prefer CF if it exists (added to cover UXW7324BSS-NAR)
 - X exterior (bool)
 - X nonVented (bool)
@@ -144,6 +144,9 @@ X = implemented + tested
     + UXI1200DYS-NAR
     + UXB1200DYS-NAR
     + UXB0600DYS-NAR
+- ?* for some models (e.g. UXL5430BSS-NAR) all 3 of islandMount/wallMount/underCabinet are false
+    + is this okay? what to do if not?
+    + they have hood type = custom hood liner
 
 # Whirlpool Wall Ovens
 
