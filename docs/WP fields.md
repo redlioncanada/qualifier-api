@@ -98,9 +98,9 @@ X = implemented + tested
 - X electric (bool)
 - X induction (bool)
 - X gas (bool)
-- / dishwasherSafeKnobs (bool) - has SF "Dishwasher-Safe Knobs"
-- / glassTouch (bool) - has SF "Glass Touch Controls"
-- / accuSimmer (bool) - description contains "AccuSimmer" or has SF containing "AccuSimmer"
+- X dishwasherSafeKnobs (bool) - has SF "Dishwasher-Safe Knobs"
+- X glassTouch (bool) - has SF "Glass Touch Controls"
+- X accuSimmer (bool) - description contains "AccuSimmer" or has SF containing "AccuSimmer"
 
 # Whirlpool Range
 
