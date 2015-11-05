@@ -60,6 +60,9 @@ X = implemented + tested
 - X bottomMount - same as KAD
 - X sideBySide - same as KAD (CF "Refrigerator Type" == "Side-by-Side"), but change to actually output it
 - X frenchDoor - same as KAD
+- X 4or5door - name or description contains "4-door" or "Double Drawer French Door"
+    + renamed from "frenchDoor5"
+    + https://trello.com/c/tN1saGz5/6-french-door-4-5-door
 - X filtered - same as KAD
     + renamed from "filteredWater" to be consistent
 - X exteriorWater - CF "Dispenser Type" contains 'exterior' and 'water'
@@ -72,14 +75,6 @@ X = implemented + tested
 - X accuChill - has SF "Accu-Chill\u2122 Temperature Management System" - I'm now just making all DescriptiveAttr searches ignore case by default. otherwise I might have missed other inconsistencies
 - X accuFresh - has SF "AccuFresh\u2122 dual cooling system"
 - X tripleCrisper - has SF that CONTAINS "Triple Crisper system" - sometimes "EasyView", sometimes not
-
-## fields not implemented for now
-
-- frenchDoor5
-    + can't find, tried same method as KAD (SF "5-Door Configuration")
-    + changed this to "5door" for KAD
-    + Chris flagged that data isn't avail
-    + https://trello.com/c/tN1saGz5/6-french-door-4-5-door
 
 ## feed errors
 
