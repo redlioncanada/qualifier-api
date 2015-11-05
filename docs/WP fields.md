@@ -120,7 +120,7 @@ X = implemented + tested
 - X width (in inches) (float)
 - X islandMount (bool) - always false
 - X wallMount (bool)- always false
-- X underCabinet (bool) - but may interact with islandMount and wallMount
+- X/ underCabinet (bool) - but may interact with islandMount and wallMount
 - X CFM (int) - same as KAD already implemented (CF), OR as backup try "(\d+)[\s-]CFM" in description, but prefer CF if it exists (added to cover UXW7324BSS-NAR)
 - X exterior (bool)
 - X nonVented (bool)
@@ -148,11 +148,11 @@ X = implemented + tested
 # Whirlpool Wall Ovens
 
 - X width
-- X capacity
+- X! capacity - same as KAD
     + no capacity info for 1 of 8: http://www.whirlpool.ca/-[WOS52EM4AS]-1304404/WOS52EM4AS/
-- X single
-- X double
-- X combination
-- X trueConvection
-- / accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System" (same as Ranges)
-- / digitalThermometer - has SF containing "thermometer"
+- X single - same as KAD
+- X double - same as KAD
+- X combination - same as KAD
+- X trueConvection - same as KAD
+- X accuBake (bool) - has SF "AccuBake\u00ae Temperature Management System" (same as Ranges)
+- X digitalThermometer - has SF containing "thermometer"

@@ -96,12 +96,12 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
      */
 
     // Init all to false
-    $entryData['easyConvection'] = false;
-    $entryData['temperatureProbe'] = false;
+    $entryData['accuBake'] = false;
+    $entryData['digitalThermometer'] = false;
 
     if ($salesFeatureGroup) {
-      $entryData['easyConvection'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"EasyConvect\u2122 Conversion System"'));
-      $entryData['temperatureProbe'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Temperature Probe");
+      $entryData['accuBake'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"AccuBake\u00ae Temperature Management System"'));
+      $entryData['digitalThermometer'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifierMatch("thermometer");
 
       if (!$entryData['trueConvection']) {
         // Try for a matching SF if not found earlier in name/description
