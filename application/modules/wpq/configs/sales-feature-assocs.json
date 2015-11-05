@@ -25,6 +25,8 @@
       "PowerCold\u2122 Feature": "powerCold",
       "Fonction PowerCold\u2122": "powerCold",
       "/Factory[ -]Installed Ice Maker/i": "factoryInstalledIceMaker",
+      "Adjustable-Temperature Refrigerated Drawer": "adjustableTempDrawer",
+      "Tiroir r\u00e9frig\u00e9r\u00e9 \u00e0 temp\u00e9rature r\u00e9glable": "adjustableTempDrawer",
       "/capacity$/i": "capacity",
       "/^capacit\u00e9/i": "capacity"
     },
