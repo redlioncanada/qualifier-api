@@ -71,6 +71,7 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
           $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory-Installed Ice Maker"]) ||
           $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Factory Installed Ice Maker"])
           );
+      $entryData['adjustableTempDrawer'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Adjustable-Temperature Refrigerated Drawer");
     }
 
     // Add image for fridges
