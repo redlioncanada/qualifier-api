@@ -36,7 +36,7 @@ class DescriptiveAttributeGroup {
    * 
    * @param array   $criteria OPTIONAL Associative field => value conditions
    * @param string  $locale   OPTIONAL
-   * @return DescriptiveAttribute[] or empty [] if no matching records
+   * @return array of DescriptiveAttribute[] or empty [] if no matching records
    */
   public function getDescriptiveAttributes(array $criteria = null,
       $locale = null) {
@@ -67,18 +67,23 @@ class DescriptiveAttributeGroup {
   /**
    * Retrieve a single DescriptiveAttribute
    * 
-   * @param array   $criteria Associative field => value conditions
-   * @param string  $locale   OPTIONAL
+   * @param array   $criteria       Associative field => value conditions
+   * @param string  $locale         OPTIONAL
+   * @param string  $caseSensitive  OPTIONAL, default false
    * @return DescriptiveAttribute or NULL if no matching records
    */
-  public function getDescriptiveAttributeWhere(array $criteria, $locale = null) {
+  public function getDescriptiveAttributeWhere(array $criteria, $locale = null,
+      $caseSensitive = false) {
     if (is_null($locale)) {
       $locale = $this->defaultLocale;
     }
 
     foreach ($this->attrsByLocale[$locale] as $attr) {
       foreach ($criteria as $field => $value) {
-        if ($value != $attr->$field) {
+        if (
+            ($caseSensitive && $value != $attr->$field) ||
+            (!$caseSensitive && strtolower($value) != strtolower($attr->$field))
+        ) {
           continue 2;
         }
       }
@@ -91,23 +96,81 @@ class DescriptiveAttributeGroup {
   }
 
   /**
+   * @param string  $valueidentifier
+   * @param string  $locale   OPTIONAL
+   * @return DescriptiveAttribute or NULL if no matching records
+   */
+  public function getDescriptiveAttributeByValueIdentifier($valueidentifier,
+      $locale = null) {
+    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $valueidentifier], $locale);
+    return $attr;
+  }
+
+  /**
+   * @param string  $pattern
+   * @param int     $limit    OPTIONAL default no limit (0)
+   * @param bool    $regex    OPTIONAL default false
+   * @param string  $locale   OPTIONAL
+   * @return array of DescriptiveAttribute[] (empty array if no matches)
+   */
+  public function getDescriptiveAttributesByValueIdentifierMatch($pattern,
+      $limit = 0, $regex = false, $locale = null) {
+
+    if (is_null($locale)) {
+      $locale = $this->defaultLocale;
+    }
+
+    $results = [];
+    foreach ($this->attrsByLocale[$locale] as $attr) {
+      if (
+          ($regex && !preg_match($pattern, $attr->valueidentifier)) ||
+          (!$regex && (false === stripos($attr->valueidentifier, $pattern)))
+      ) {
+        // No match
+        continue;
+      }
+      // Match
+      $results[] = $attr;
+      if ($limit && count($results) >= $limit) {
+        break;
+      }
+    }
+
+    return $results;
+  }
+
+  /**
    * @param array   $criteria Associative field => value conditions
    * @param string  $locale   OPTIONAL
    * @return bool
    */
-  public function descriptiveAttributeExistsWhere(array $criteria, $locale = null) {
+  public function descriptiveAttributeExistsWhere(array $criteria,
+      $locale = null) {
     $attr = $this->getDescriptiveAttributeWhere($criteria, $locale);
     return (bool) $attr;
   }
 
   /**
-   * @param string  $value
+   * @param string  $valueidentifier
    * @param string  $locale   OPTIONAL
    * @return bool
    */
-  public function descriptiveAttributeExistsByValueIdentifier($value, $locale = null) {
-    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $value], $locale);
+  public function descriptiveAttributeExistsByValueIdentifier($valueidentifier,
+      $locale = null) {
+    $attr = $this->getDescriptiveAttributeWhere(["valueidentifier" => $valueidentifier], $locale);
     return (bool) $attr;
+  }
+
+  /**
+   * @param string  $pattern
+   * @param bool    $regex    OPTIONAL default false
+   * @param string  $locale   OPTIONAL
+   * @return bool
+   */
+  public function descriptiveAttributeExistsByValueIdentifierMatch($pattern,
+      $regex = false, $locale = null) {
+    $results = $this->getDescriptiveAttributesByValueIdentifierMatch($pattern, 1, $regex, $locale);
+    return !empty($results);
   }
 
 }

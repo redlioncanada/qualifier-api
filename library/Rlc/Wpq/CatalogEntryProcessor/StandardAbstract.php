@@ -18,6 +18,11 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
   public function process(Wpq\FeedEntity\CatalogEntry $entry, array $entries,
       $locale, array &$outputData) {
+
+    if (!$this->filterEntries($entry, $entries, $locale)) {
+      return;
+    }
+    
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $miscGroup = $entry->getDescriptiveAttributeGroup('Miscellaneous');
@@ -53,7 +58,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     $productUrls = $this->util->getProductUrls($this->getBrand(), $locale);
     $newOutputData['url'] = isset($productUrls[$entry->partnumber]) ? $productUrls[$entry->partnumber] : null;
 
-
     /*
      * Attach sales feature data
      */
@@ -70,7 +74,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
       $newOutputData['salesFeatures'][] = $newSalesFeatureData;
     }
 
-
     /*
      * Attach compare feature data (for print view)
      */
@@ -80,7 +83,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
         $newOutputData['compareFeatures'][$localizedCompareFeature->description][$localizedCompareFeature->valueidentifier] = $localizedCompareFeature->value;
       }
     }
-
 
     /*
      * Add disclaimer data
@@ -93,6 +95,8 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
     // Convert to sequential array after sorting
     $newOutputData['disclaimers'] = array_values($disclaimersTemp);
 
+    // Give a chance for subclass to add to final processing
+    $this->postProcess($entry, $entries, $locale, $newOutputData);
 
     /**
      * Finally add to final output data
@@ -120,7 +124,7 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
     if ($compareFeatureGroup) {
       /*
-       * The same method of extracting physical dimensions is shared for cooking and fridges
+       * The same method of extracting physical dimensions is shared for most categories
        */
 
       // Width
@@ -153,10 +157,48 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
   }
 
   /**
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param array $entries        \Rlc\Wpq\FeedEntity\CatalogEntry[]
+   * @param string $locale
+   * @param array $newOutputData  Difference from process() arguments -- this is
+   *                              a reference to the single new record created
+   *                              by process(), not the set of all records so far.
+   * 
    * @return void
    */
-  abstract protected function attachFeatureData(array &$entryData,
-      Wpq\FeedEntity\CatalogEntry $entry, $locale);
+  protected function postProcess(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale, array &$newOutputData) {
+    // Nothing by default
+  }
+
+
+  /**
+   * Decide whether to include a given entry in the results. Defaults to include
+   * everything.
+   * 
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param array $entries        \Rlc\Wpq\FeedEntity\CatalogEntry[]
+   * @param string $locale
+   * 
+   * @return bool true = include the entry and continue processing, or
+   * false = discard
+   */
+  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale) {
+    return true;
+  }
+
+  /**
+   * @param array $entryData REFERENCE
+   * @param \Rlc\Wpq\FeedEntity\CatalogEntry $entry
+   * @param string $locale
+   * 
+   * @return void
+   */
+  protected function attachFeatureData(array &$entryData,
+      Wpq\FeedEntity\CatalogEntry $entry, $locale) {
+    // Nothing by default
+  }
 
   /**
    * @return string

@@ -1,11 +1,19 @@
 <?php
 
-namespace Rlc\Wpq\CatalogEntryProcessor\KitchenAid;
+namespace Rlc\Wpq\CatalogEntryProcessor\Whirlpool;
 
 use Rlc\Wpq,
     Lrr\ServiceLocator;
 
-class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
+class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
+
+  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale) {
+    return !in_array($entry->partnumber, [
+          'UXB0600DYS-NAR', 'UXB1200DYS-NAR', 'UXI1200DYS-NAR', 'UXB1200DYS-NAR',
+          'UXB0600DYS-NAR'
+    ]);
+  }
 
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
@@ -14,21 +22,6 @@ class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
     $util = ServiceLocator::util();
-
-    /*
-     * Sales-feature-based info
-     */
-
-    // Init all to false
-    $entryData['easyConversion'] = false;
-    $entryData['automaticOn'] = false;
-    $entryData['warmingLamps'] = false;
-
-    if ($salesFeatureGroup) {
-      $entryData['easyConversion'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Easy In-line Conversion");
-      $entryData['automaticOn'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Automatic Turn On");
-      $entryData['warmingLamps'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifierMatch("Warming Lamp");
-    }
 
     /*
      * Compare-feature-based info
@@ -47,9 +40,17 @@ class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
       // Hood-type-related properties
       $hoodTypeAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Hood Type");
       if ($hoodTypeAttr) {
-        $entryData['islandMount'] = "Island Mount" == $hoodTypeAttr->value;
-        $entryData['wallMount'] = "Wall Mount" == $hoodTypeAttr->value;
-        $entryData['underCabinet'] = "Under-the-Cabinet" == $hoodTypeAttr->value;
+        $entryData['islandMount'] = "Island Canopy" == $hoodTypeAttr->value;
+
+        // These are mutually exclusive
+        if (!$entryData['islandMount']) {
+          $entryData['wallMount'] = "Wall Canopy" == $hoodTypeAttr->value;
+
+          if (!$entryData['wallMount']) {
+            $entryData['underCabinet'] = in_array($hoodTypeAttr->value, ["Under Cabinet",
+              "Under-the-Cabinet"]);
+          }
+        }
       }
 
       // Fan CFM
@@ -71,6 +72,11 @@ class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Other
      */
 
+    if (is_null($entryData['cfm'])) {
+      // If no CompareFeature, try in description
+      $entryData['cfm'] = $util->getPregMatch('/(\d+)[\s-]CFM/i', $description->longdescription, 1);
+    }
+    
     // Add image
     $entryData['image'] = $imageUrlPrefix . $entry->fullimage;
 
@@ -83,11 +89,11 @@ class Vents extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getBrand() {
-    return 'kitchenaid';
+    return 'whirlpool';
   }
 
   protected function getCategory() {
-    return 'Vents';
+    return 'Hoods';
   }
 
 }
