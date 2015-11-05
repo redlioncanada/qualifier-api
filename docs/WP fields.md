@@ -146,7 +146,7 @@ X = implemented + tested
 # Whirlpool Wall Ovens
 
 - X width
-- X! capacity - same as KAD
+- X!* capacity - same as KAD
     + no capacity info for 1 of 8: http://www.whirlpool.ca/-[WOS52EM4AS]-1304404/WOS52EM4AS/
 - X single - same as KAD
 - X double - same as KAD
