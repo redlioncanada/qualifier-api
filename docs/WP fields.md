@@ -62,23 +62,23 @@ X = implemented + tested
 
 - X width (float) - StandardAbstract processor
 - X height (float) - StandardAbstract processor
-- / energyStar - has CF "Energy Star\u00ae Qualified" and value != "No"
+- X energyStar - has CF "Energy Star\u00ae Qualified" and value != "No"
 - X topMount - same as KAD
 - X bottomMount - same as KAD
-- / sideBySide - same as KAD (CF "Refrigerator Type" == "Side-by-Side"), but change to actually output it
+- X sideBySide - same as KAD (CF "Refrigerator Type" == "Side-by-Side"), but change to actually output it
 - X frenchDoor - same as KAD
 - X filtered - same as KAD
     + renamed from "filteredWater" to be consistent
-- / exteriorWater - CF "Dispenser Type" contains 'exterior' and 'water'
-- / exteriorIce - CF "Dispenser Type" contains 'exterior' and 'ice'
-- / factoryInstalledIce - CF "Ice Maker" contains 'factory installed'
+- X exteriorWater - CF "Dispenser Type" contains 'exterior' and 'water'
+- X exteriorIce - CF "Dispenser Type" contains 'exterior' and 'ice'
+- X factoryInstalledIce - CF "Ice Maker" contains 'factory installed'
 - X counterDepth - name contains \bcounter[- ]depth\b or has SF "counter depth styling" (ignoring case)
 - X standardDepth - !counterDepth
 - X freshFlowProducePreserver - almost same as MTG, except for case. has SF "FreshFlow\u2122 Produce Preserver"
-- / freshStor - has SF "FreshStor\u2122 Refrigerated Drawer"
-- / accuChill - has SF "Accu-Chill\u2122 Temperature Management System" - I'm now just making all DescriptiveAttr searches ignore case by default. otherwise I might have missed other inconsistencies
-- / accuFresh - has SF "AccuFresh\u2122 dual cooling system"
-- / tripleCrisper - has SF that CONTAINS "Triple Crisper system" - sometimes "EasyView", sometimes not
+- X freshStor - has SF "FreshStor\u2122 Refrigerated Drawer"
+- X accuChill - has SF "Accu-Chill\u2122 Temperature Management System" - I'm now just making all DescriptiveAttr searches ignore case by default. otherwise I might have missed other inconsistencies
+- X accuFresh - has SF "AccuFresh\u2122 dual cooling system"
+- X tripleCrisper - has SF that CONTAINS "Triple Crisper system" - sometimes "EasyView", sometimes not
 
 ## fields not implemented for now
 

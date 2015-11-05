@@ -26,15 +26,15 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
      */
 
     // Init these to false
-    $entryData['energyStar'] = false; // I think this is actually true for all anyway
+    $entryData['energyStar'] = false;
     $entryData['topMount'] = false;
     $entryData['bottomMount'] = false;
     $entryData['frenchDoor'] = false;
-    $sideBySide = false; // Not part of response, but part of logic
-    $entryData['indoorDispenser'] = false;
+    $entryData['sideBySide'] = false; // Part of response for WP
     $entryData['filtered'] = false;
-    $entryData['exteriorDispenser'] = false;
-    $entryData['indoorIce'] = false;
+    $entryData['exteriorWater'] = false;
+    $entryData['exteriorIce'] = false;
+    $entryData['factoryInstalledIce'] = false;
 
     if ($compareFeatureGroup) {
       // These just have to exist
@@ -54,15 +54,20 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
         } elseif ("French Door" == $fridgeTypeAttr->value) {
           $entryData['frenchDoor'] = true;
         } elseif ("Side-by-Side" == $fridgeTypeAttr->value) {
-          $sideBySide = true;
+          $entryData['sideBySide'] = true;
         }
       }
-      $entryData['bottomMount'] = !($entryData['topMount'] || $entryData['frenchDoor'] || $sideBySide);
+      $entryData['bottomMount'] = !($entryData['topMount'] || $entryData['frenchDoor'] || $entryData['sideBySide']);
 
       // filtered
       $filteredAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Filtered Water"]);
       if ($filteredAttr) {
         $entryData['filtered'] = ('Yes' == $filteredAttr->value);
+      }
+
+      $iceMakerAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Ice Maker");
+      if ($iceMakerAttr) {
+        $entryData['factoryInstalledIce'] = (false !== stripos($iceMakerAttr->value, 'factory installed'));
       }
 
       /*
@@ -71,12 +76,10 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
       $dispenserTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Dispenser Type"]);
       if ($dispenserTypeAttr) {
-        // In-door dispenser
-        $entryData['indoorDispenser'] = ('No Dispenser' != $dispenserTypeAttr->value);
-        // Exterior dispenser
-        $entryData['exteriorDispenser'] = (false !== stripos($dispenserTypeAttr->value, 'exterior'));
-        // In-door ice
-        $entryData['indoorIce'] = (false !== stripos($dispenserTypeAttr->value, 'ice'));
+        $entryData['exteriorWater'] = (false !== stripos($dispenserTypeAttr->value, 'exterior')) &&
+            (false !== stripos($dispenserTypeAttr->value, 'water'));
+        $entryData['exteriorIce'] = (false !== stripos($dispenserTypeAttr->value, 'exterior')) &&
+            (false !== stripos($dispenserTypeAttr->value, 'ice'));
       }
     }
 
@@ -85,17 +88,16 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
      */
 
     // Init these to false
-    $entryData['5door'] = false;
-    $entryData['producePreserver'] = false;
-    $entryData['extendFresh'] = false;
-    $entryData['extendFreshPlus'] = false;
-    $entryData['freshChill'] = false;
-    $entryData['preservaCare'] = false;
-    $entryData['maxCool'] = false;
+    $entryData['freshFlowProducePreserver'] = false;
+    $entryData['freshStor'] = false;
+    $entryData['accuChill'] = false;
+    $entryData['accuFresh'] = false;
+    $entryData['tripleCrisper'] = false;
 
     if ($salesFeatureGroup) {
       // If energyStar wasn't found in comparefeatures, try here (yes, it has
-      // a different case in the salesfeature group)
+      // a different case in the salesfeature group - although since a new
+      // change, this func ignores case when scanning)
       if (!$entryData['energyStar']) {
         $entryData['energyStar'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ENERGY STAR\u00ae Qualified"'));
       }
@@ -105,13 +107,11 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
       }
 
       // These just have to exist
-      $entryData['5door'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("5-Door Configuration");
       $entryData['freshFlowProducePreserver'] = (bool) $salesFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => json_decode('"FreshFlow\u2122 Produce Preserver"')]);
-      $entryData['extendFresh'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ExtendFresh\u2122 Temperature Management System"'));
-      $entryData['extendFreshPlus'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"ExtendFresh\u2122 Plus Temperature Management System"'));
-      $entryData['freshChill'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"FreshChill\u2122 Temperature-Controlled Full-Width Pantry"'));
-      $entryData['preservaCare'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Preserva\u00ae Food Care System"'));
-      $entryData['maxCool'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier("Max Cool");
+      $entryData['freshStor'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"FreshStor\u2122 Refrigerated Drawer"'));
+      $entryData['accuChill'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Accu-Chill\u2122 Temperature Management System"'));
+      $entryData['accuFresh'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"AccuFresh\u2122 dual cooling system"'));
+      $entryData['tripleCrisper'] = $salesFeatureGroup->descriptiveAttributeExistsByValueIdentifierMatch("Triple Crisper system");
     }
 
     // Add image for fridges
