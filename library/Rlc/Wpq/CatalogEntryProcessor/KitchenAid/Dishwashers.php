@@ -63,10 +63,10 @@ class Dishwashers extends Wpq\CatalogEntryProcessor\StandardAbstract {
       }
       
       // Place settings
-      $placeSettings = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Capacity");
+      $placeSettings = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Number of Place Settings");
       if ($placeSettings) {
         $placeSettingsMatches = [];
-        preg_match('/\d+(?:\.\d+)/i', $placeSettings->value, $placeSettingsMatches);
+        preg_match('/\d+(?:\.\d+)?/i', $placeSettings->value, $placeSettingsMatches);
         if (count($placeSettingsMatches)) {
           $entryData['placeSettings'] = $placeSettingsMatches[0];
         }
