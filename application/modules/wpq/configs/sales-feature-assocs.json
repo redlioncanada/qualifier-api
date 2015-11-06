@@ -134,5 +134,25 @@
       "Mise en marche automatique": "automaticOn",
       "/Warming Lamp/i": "warmingLamps"
     }
+  },
+  "whirlpool": {
+    "Cooktops": {
+      "Dishwasher-Safe Knobs": "dishwasherSafeKnobs",
+      "Glass Touch Controls": "glassTouch",
+      "/AccuSimmer/i": "accuSimmer"
+    },
+    "Dishwashers": {
+      "TotalCoverage Spray Arm": "totalCoverageArm",
+      "Sensor Cycle": "sensorCycle",
+      "EZ-2-Lift\u2122 Adjustable Upper Rack": "ez2Lift",
+      "Silverware Spray": "silverwareSpray",
+      "AccuSense\u00ae Soil Sensor": "accuSense",
+      "AnyWare\u2122 Plus Silverware Basket": "anyWarePlusBasket"
+    },
+    "Fridges": {},
+    "Hoods": {},
+    "Ranges": {},
+    "Wall Ovens": {},
+    "Washers": {}
   }
 }
