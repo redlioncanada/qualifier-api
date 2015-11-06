@@ -45,48 +45,77 @@
   "kitchenaid": {
     "Dishwashers": {
       "Bottle Wash": "bottleWash",
+      "Gicleur pour bouteilles": "bottleWash",
       "Advanced ProDry\u2122 System": "proDry",
+      "Système ProDry™ perfectionné": "proDry",
       "ProScrub\u00ae Option": "proScrub",
+      "Option ProScrub®": "proScrub",
       "ProWash\u2122 Cycle": "proWash",
+      "Programme ProWash™": "proWash",
       "Clean Water Wash System": "cleanWater",
+      "Système de lavage à eau microfiltrée": "cleanWater",
       "Culinary Caddy": "culinaryCaddy",
+      "Panier à ustensiles Culinary Caddy": "culinaryCaddy",
       "Third Level Rack": "thirdLevelRack",
-      "Panel-Ready Design": "panelReady"
+      "Panier de troisième niveau": "thirdLevelRack",
+      "Panel-Ready Design": "panelReady",
+      "Modèle prêt à recevoir un panneau": "panelReady"
     },
     "Fridges": {
       "ENERGY STAR\u00ae Qualified": "energyStar",
+      "Homologation ENERGY STAR®": "energyStar",
       "Counter-depth": "counterDepth",
+      "profondeur de comptoir": "counterDepth",
       "5-Door Configuration": "5door",
+      "Configuration à 5 portes": "5door",
       "Produce Preserver": "producePreserver",
+      "Conservateur de fruits et légumes": "producePreserver",
       "ExtendFresh\u2122 Temperature Management System": "extendFresh",
+      "Système de gestion de la température ExtendFresh™": "extendFresh",
       "ExtendFresh\u2122 Plus Temperature Management System": "extendFreshPlus",
+      "Système de gestion de la température ExtendFresh™ Plus": "extendFreshPlus",
       "FreshChill\u2122 Temperature-Controlled Full-Width Pantry": "freshChill",
+      "Garde-manger pleine largeur à température contrôlée FreshChill™": "freshChill",
       "Preserva\u00ae Food Care System": "preservaCare",
-      "Max Cool": "maxCool"
+      "Système de conservation des aliments Preserva®": "preservaCare",
+      "Max Cool": "maxCool",
+      "Fonction de refroidissement Max Cool": "maxCool"
     },
     "Cooktops": {
       "CookShield Finish": "cookShield",
+      "Revêtement protecteur": "cookShield",
       "Touch-Activated Electronic Controls": "touchActivated",
+      "Commandes tactiles": "touchActivated",
       "Melt and Hold": "meltAndHold",
       "Simmer Function": "inductionSimmer",
+      "Les réglages de mijotage Even-Heat™ aident à éliminer les approximations et à trouver le niveau parfait de mijotage": "inductionSimmer",
       "Performance Boost": "performanceBoost",
+      "Intensification de la performance": "performanceBoost",
       "5K BTU Even-Heat\u2122 Simmer Burner": "5KBTUSimmer",
       "6K BTU Even-Heat\u2122 Simmer Burner": "5KBTUSimmer",
+      "Brûleur de mijotage Even-Heat™ de 6000 BTU": "5KBTUSimmer",
       "/15K BTU/i": "15KBTU",
       "18K BTU Even-Heat\u2122 Gas Grill": "18KBTUEvenHeat",
       "20K BTU Professional Dual Ring Burner": "20KBTUDual",
+      "Brûleur à double couronne professionnel de 20 000 BTU": "20KBTUDual",
       "20K BTU Ultra Power\u2122 Dual-Flame Burner": "20KBTUDual"
     },
     "Ranges": {
       "Warming Drawer": "warmingDrawer",
       "Aqualift\u00ae": "aquaLift",
       "Even-Heat\u2122 True Convection": "trueConvection",
+      "Convection véritable Even-Heat™": "trueConvection",
       "Wireless Probe": "wirelessProbe",
+      "Sonde sans fil": "wirelessProbe",
       "Steam Rack": "steamRack",
+      "Bac pour cuisson à vapeur": "steamRack",
       "Baking drawer": "bakingDrawer",
+      "Tiroir de cuisson": "bakingDrawer",
       "/Even-Heat\u2122 Ultra Element/i": "evenHeat",
+      "/\u00c9l\u00e9ment Even-Heat\u2122 Ultra/i": "evenHeat",
       "5K BTU Simmer/Melt Burner - Reduces to 500 BTUs": "5KBTUSimmerMelt",
       "20K BTU Professional Dual Ring Burner": "20KBTUDual",
+      "Brûleur à double couronne professionnel de 20 000 BTU": "20KBTUDual",
       "20K BTU Ultra Power\u2122 Dual-Flame Burner": "20KBTUDual"
     },
     "Wall Ovens": {
@@ -96,11 +125,13 @@
       "/Capacit\u00e9 totale/i": "capacity",
       "EasyConvect\u2122 Conversion System": "easyConvection",
       "Temperature Probe": "temperatureProbe",
-      "/True Convection/i": "trueConvection"
+      "/True Convection/i": "trueConvection",
+      "/Convection v\u00e9ritable/i": "trueConvection"
     },
     "Vents": {
       "Easy In-line Conversion": "easyConversion",
       "Automatic Turn On": "automaticOn",
+      "Mise en marche automatique": "automaticOn",
       "/Warming Lamp/i": "warmingLamps"
     }
   }
