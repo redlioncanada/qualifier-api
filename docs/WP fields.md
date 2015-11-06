@@ -116,38 +116,23 @@ X = implemented + tested
 - X islandMount (bool) - CF "Hood Type" exists and has value "Island Canopy"
 - X wallMount (bool) - CF "Hood Type" exists and has value "Wall Canopy"
 - X underCabinet (bool) - CF "Hood Type" exists and has value in ["Under Cabinet", "Under-the-Cabinet"]
+- X customHoodLiner (bool) - CF Hood Type = "Custom Hood Liners"
+- X inLineBlower (bool) - CF Hood Type =  "In-Line Blower"
 - X CFM (int) - same as KAD already implemented (CF), OR as backup try "(\d+)[\s-]CFM" in description, but prefer CF if it exists (added to cover UXW7324BSS-NAR)
 - X exterior (bool)
 - X nonVented (bool)
 - X convertible (bool)
-- ?* easyConversion (bool)
-    + can't find
-    + https://trello.com/c/jWe4kMD8/10-easyconversion
 - ?* microWaveHoodCombination (bool)
     + these are a separate category -- listed under SC_Kitchen_Cooking_Microwaves_Over_The_Range category
     + see http://www.whirlpool.com/kitchen-1/cooking-2/over-the-range-3/102110018/ and check "over the range" in the left-hand filters
     + include these in the Qualifier's "Hoods" category?
     + https://trello.com/c/S2QpSUyk/11-microwavehoodcombination
 
-## non-field-specific questions and notes
-
-- !* WP calls this category "Hoods", not "Vents", so the API does too
-- ?* not hoods, just blowers -- like KAD issue - error?
-    + they all have CF hood type = In-Line Blower
-    + UXB0600DYS-NAR
-    + UXB1200DYS-NAR
-    + UXI1200DYS-NAR
-    + UXB1200DYS-NAR
-    + UXB0600DYS-NAR
-- ?* for some models (e.g. UXL5430BSS-NAR) all 3 of islandMount/wallMount/underCabinet are false
-    + is this okay? what to do if not?
-    + they have hood type = custom hood liner
-
 # Whirlpool Wall Ovens
 
 - X width
-- X!* capacity - same as KAD
-    + no capacity info for 1 of 8: http://www.whirlpool.ca/-[WOS52EM4AS]-1304404/WOS52EM4AS/
+- X capacity - same as KAD
+    + no capacity info for 1 of 8: http://www.whirlpool.ca/-[WOS52EM4AS]-1304404/WOS52EM4AS/ --> so be it
 - X single - same as KAD
 - X double - same as KAD
 - X combination - same as KAD
