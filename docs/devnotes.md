@@ -2,6 +2,7 @@
 * sales feature assocs for KAD
     - put in French translations once I get them
 * sales feature assocs for WP
+* xdebug profile to look for memory hogging parts
 * don't keep trying to process if a file is missing
 * for staging:
     - later maybe - put zend app dirs in proper structure so only public is exposed
