@@ -54,6 +54,7 @@ X = implemented + tested
 # Whirlpool Fridge
 
 - X width (float) - StandardAbstract processor
+- capacity (float) - 
 - X height (float) - StandardAbstract processor
 - X energyStar - has CF "Energy Star\u00ae Qualified" and value != "No"
 - X topMount - same as KAD
