@@ -36,9 +36,9 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['capacity'] = null;
 
     // First try name/description
-    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $description->name, 1);
+    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $description->name, 1);
     if (is_null($entryData['capacity'])) {
-      $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $description->longdescription, 1);
+      $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $description->longdescription, 1);
     }
 
     // Then try CF

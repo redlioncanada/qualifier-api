@@ -13,6 +13,7 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
+    $util = ServiceLocator::util();
 
     /*
      * Name/description-based info
@@ -23,11 +24,17 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     // If this one's false, will check again in salesfeatures
     $entryData['counterDepth'] = (bool) preg_match('@\bcounter[- ]depth\b@i', $description->name);
 
+    // For capacity, try name/description first
+    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $description->name, 1);
+    if (is_null($entryData['capacity'])) {
+      $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $description->longdescription, 1);
+    }
+
     /*
      * Compare-feature-based info
      */
 
-    // Init these to false
+    // Init these to false/null
     $entryData['energyStar'] = false;
     $entryData['topMount'] = false;
     $entryData['bottomMount'] = false;
@@ -42,10 +49,12 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
       // These just have to exist
       $entryData['energyStar'] = $compareFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
 
-      // Capacity
-      $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Total Capacity"]);
-      if ($capacityAttr) {
-        $entryData['capacity'] = (float) preg_replace('/^(\d+(?:\.\d+)?).*$/', '$1', $capacityAttr->value);
+      // If capacity wasn't found in name/description, try for CF
+      if (is_null($entryData['capacity'])) {
+        $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Total Capacity Cu. Ft."]);
+        if ($capacityAttr) {
+          $entryData['capacity'] = (float) preg_replace('/^(\d+(?:\.\d+)?).*$/', '$1', $capacityAttr->value);
+        }
       }
 
       // top/bottom mount, french door
