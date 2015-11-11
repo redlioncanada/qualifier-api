@@ -14,6 +14,10 @@ class Ranges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
 
+    // Override appliance string and set type
+    $entryData['appliance'] = "Cooking";
+    $entryData['type'] = "Ranges";
+
     /*
      * Name/description-based info - use default locale (English)
      */
@@ -113,7 +117,7 @@ class Ranges extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getCategory() {
-    return 'Ranges';
+    return 'Cooking-Ranges';
   }
 
 }

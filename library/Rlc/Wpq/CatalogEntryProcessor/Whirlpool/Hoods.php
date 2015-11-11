@@ -15,6 +15,10 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
     $util = ServiceLocator::util();
 
+    // Override appliance string and set type
+    $entryData['appliance'] = "Cooking";
+    $entryData['type'] = "Hoods";
+
     /*
      * Compare-feature-based info
      */
@@ -95,7 +99,7 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getCategory() {
-    return 'Hoods';
+    return 'Cooking-Hoods';
   }
 
 }
