@@ -49,5 +49,18 @@ class JsonFileManager {
     $json = $this->jsonBuilder->build($brand, $locale);
     return $json;
   }
+  
+  
+  /**
+   * Client code calls this after processing all locales for a brand, to let
+   * JsonBuilder know it can free memory allocated to the feedModelCache for
+   * that brand.
+   * 
+   * @param string $brand
+   * @return void
+   */
+  public function doneWith($brand) {
+    $this->jsonBuilder->doneWith($brand);
+  }
 
 }

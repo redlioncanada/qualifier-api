@@ -94,7 +94,10 @@ class JsonBuilder {
   public function build($brand, $locale) {
     if (!isset($this->feedModelCache[$brand])) {
       $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups[$brand]);
+      debug("before buildFeedModel for $brand / $locale", memory_get_usage_mb());
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $catalogGroupsFilter);
+      debug("after buildFeedModel for $brand / $locale", memory_get_usage_mb());
+      debug_hr();
     }
     $entries = $this->feedModelCache[$brand];
 
@@ -126,4 +129,18 @@ class JsonBuilder {
     return $json;
   }
 
+  /**
+   * Client code calls this after processing all locales for a brand, to let
+   * JsonBuilder know it can free memory allocated to the feedModelCache for
+   * that brand.
+   * 
+   * @param string $brand
+   * @return void
+   */
+  public function doneWith($brand) {
+    debug("before doneWidth($brand)", memory_get_usage_mb());
+//    unset($this->feedModelCache[$brand]);
+    debug("after doneWidth($brand)", memory_get_usage_mb());
+  }
+  
 }
