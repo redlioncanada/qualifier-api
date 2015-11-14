@@ -11,7 +11,6 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
-    $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
     $util = ServiceLocator::util();
 
