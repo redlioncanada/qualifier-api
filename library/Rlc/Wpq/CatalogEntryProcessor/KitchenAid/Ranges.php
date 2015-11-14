@@ -67,6 +67,8 @@ class Ranges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['gas'] = false;
     $entryData['electric'] = false;
     $entryData['15KBTU'] = false;
+    $entryData['frontControl'] = false;
+    $entryData['rearControl'] = false;
 
     if ($compareFeatureGroup) {
       $numElementsFeature = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier("Number of Cooking Element-Burners");
@@ -116,6 +118,12 @@ class Ranges extends Wpq\CatalogEntryProcessor\StandardAbstract {
             }
           }
         }
+      }
+      
+      $rangeTypeAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Range Type"]);
+      if ($rangeTypeAttr) {
+        $entryData['frontControl'] = false !== stripos($rangeTypeAttr->value, 'slide-in');
+        $entryData['rearControl'] = false !== stripos($rangeTypeAttr->value, 'freestanding');
       }
     }
 
