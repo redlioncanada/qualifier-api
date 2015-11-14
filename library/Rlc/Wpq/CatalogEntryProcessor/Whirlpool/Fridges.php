@@ -7,6 +7,22 @@ use Rlc\Wpq,
 
 class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
+  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
+      array $entries, $locale) {
+    $allCatalogGroups = $entry->getAllCatalogGroups();
+    $allCatalogGroupIds = array_map(function ($grp) {
+      return (string) $grp->identifier;
+    }, $allCatalogGroups);
+    
+    $excludeGroupIds = [
+      // Filter out the non-refrigerators
+      'SC_Kitchen_Refrigeration_Refrigerators_Ice_Makers',
+      'SC_Kitchen_Refrigeration_Refrigerators_Wine__Beverage_Center',
+    ];
+    
+    return 0 === count(array_intersect($allCatalogGroupIds, $excludeGroupIds));
+  }
+  
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription(); // property retrieval will use default locale
@@ -14,7 +30,7 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
     $util = ServiceLocator::util();
-
+    
     /*
      * Name/description-based info
      */
