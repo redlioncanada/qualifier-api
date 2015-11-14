@@ -149,10 +149,37 @@
       "AccuSense\u00ae Soil Sensor": "accuSense",
       "AnyWare\u2122 Plus Silverware Basket": "anyWarePlusBasket"
     },
-    "Fridges": {},
+    "Fridges": {
+      "ENERGY STAR\u00ae Qualified": "energyStar",
+      "counter depth styling": "counterDepth",
+      "FreshFlow\u2122 Produce Preserver": "freshFlowProducePreserver",
+      "FreshStor\u2122 Refrigerated Drawer": "freshStor",
+      "Accu-Chill\u2122 Temperature Management System": "accuChill",
+      "AccuFresh\u2122 dual cooling system": "accuFresh",
+      "Triple Crisper system": "tripleCrisper"
+    },
     "Hoods": {},
-    "Ranges": {},
-    "Wall Ovens": {},
-    "Washers": {}
+    "Ranges": {
+      "AccuBake\u00ae Temperature Management System": "accuBake",
+      "Rapid Preheat": "rapidPreHeat",
+      "Max Capacity Recessed Rack": "maxCapacity",
+      "Frozen Bake\u2122 Technology": "frozenBake",
+      "Warming Drawer": "warmingDrawer",
+      "AquaLift\u00ae Self-Clean technology": "aquaLift",
+      "/true convection/i": "trueConvection"
+    },
+    "Wall Ovens": {
+      "Cu. Ft. Capacity": "capacity",
+      "Total Capacity": "capacity",
+      "AccuBake\u00ae Temperature Management System": "accuBake",
+      "/thermometer/i": "digitalThermometer",
+      "/True Convection/i": "trueConvection"
+    },
+    "Washers": {
+      "Adaptive Wash Technology": "adaptiveWash",
+      "ColorLast\u2122 Option": "colorLast",
+      "Smooth Wave Stainless Steel Wash Basket": "smoothWave",
+      "Load & Go\u2122 System": "loadAndGo"
+    }
   }
 }
