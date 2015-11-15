@@ -30,8 +30,6 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
    * @return FeedEntity\CatalogEntry[]
    */
   public function buildFeedModel($brand, array $filterForGroups = []) {
-    debug("beginning buildFeedModel for $brand", memory_get_usage_mb());
-    
     // Fetch data for associations
     $entryData = $this->xmlReader->readFile($brand, 'CatalogEntry');
     $entryGroupRelnData = $this->xmlReader->readFile($brand, 'B2C_CatalogGroupCatalogEntryRelationship');
@@ -114,7 +112,6 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
     }
 
     $this->assignDescriptiveAttributes($entries, $topLevelEntries, $brand);
-    debug("right after assignDescriptiveAttributes - " . count($entries) . " entries", memory_get_usage_mb());
 
     // Do SalesStatus=30 filter here, as an optimisation
     foreach ($topLevelEntries as $sku => $entry) {
@@ -180,8 +177,6 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
     $this->assignEntryDescriptions($entries, $brand);
     $this->assignDefiningAttributeValues($entries, $brand);
 
-    debug("about to exit buildFeedModel for $brand", memory_get_usage_mb());
-    
     return $entries;
   }
   
@@ -286,6 +281,8 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
         // the given catalog entry, whether it already existed or was just
         // created.
         $descriptiveAttributeGroup->loadRecord($descriptiveAttributeRecord);
+        
+        debug("loaded a DA", memory_get_usage_mb());
       }
     }
   }

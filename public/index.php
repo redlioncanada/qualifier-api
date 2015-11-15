@@ -1,12 +1,13 @@
 <?php
 
-define('STDOUT', fopen('php://stdout', 'w'));
+$time = time();
+
+define('STDOUT', fopen('log.'.$time.'.txt', 'w'));
 
 if (function_exists('memprof_enable')) {
   memprof_enable();
 
   register_shutdown_function(function() {
-    $time = time();
     memprof_dump_callgrind(fopen(__DIR__ . "/../memprof.$time.out", "w"));
   });
 }
@@ -15,16 +16,16 @@ function debug($one, $two = null) {
   if (isset($two)) {
     $label = (string) $one;
     $value = $two;
-    $output = $label . ': ' . var_export($value, true);
+    $output = $label . ': ' . (is_string($value) ? $value : var_export($value, true));
   } else {
     $value = $one;
-    $output = var_export($value, true);
+    $output = (is_string($value) ? $value : var_export($value, true));
   }
   fwrite(STDOUT, $output . "\n");
 }
 
 function memory_get_usage_mb() {
-  return round(memory_get_usage() / (1024 * 1024) * 100) / 100;
+  return number_format(memory_get_usage() / (1024 * 1024), 2);
 }
 
 function debug_hr() {

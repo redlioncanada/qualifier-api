@@ -30,6 +30,7 @@ class Wpq_FeedProcessorController extends Zend_Controller_Action {
         }
       }
       $jsonFileManager->doneWith($brand);
+      debug_hr();
     }
   }
 

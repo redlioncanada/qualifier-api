@@ -86,7 +86,7 @@ class JsonBuilder {
   }
 
   /**
-   * Generate the JSON to store and serve for a a given brand and locale.
+   * Generate the JSON to store and serve for a given brand and locale.
    * 
    * @param string $brand
    * @return string JSON
@@ -94,11 +94,12 @@ class JsonBuilder {
   public function build($brand, $locale) {
     if (!isset($this->feedModelCache[$brand])) {
       $catalogGroupsFilter = array_merge(array_keys($this->catalogGroupsConfig[$brand]), $this->unprocessedGroups[$brand]);
-      debug("before buildFeedModel for $brand / $locale", memory_get_usage_mb());
+      debug("before buildFeedModel for $brand", memory_get_usage_mb());
       $this->feedModelCache[$brand] = $this->feedModelBuilder->buildFeedModel($brand, $catalogGroupsFilter);
-      debug("after buildFeedModel for $brand / $locale", memory_get_usage_mb());
-      debug_hr();
     }
+    
+    debug("start processing $brand / $locale", memory_get_usage_mb());
+    
     $entries = $this->feedModelCache[$brand];
 
     $outputData = [];
@@ -126,6 +127,9 @@ class JsonBuilder {
     }
 
     $json = json_encode(['products' => $outputData], (ServiceLocator::config()->prettyJsonFiles ? JSON_PRETTY_PRINT : 0));
+    
+    debug("about to exit processing $brand / $locale", memory_get_usage_mb());
+    
     return $json;
   }
 
@@ -139,7 +143,7 @@ class JsonBuilder {
    */
   public function doneWith($brand) {
     debug("before doneWidth($brand)", memory_get_usage_mb());
-//    unset($this->feedModelCache[$brand]);
+    unset($this->feedModelCache[$brand]);
     debug("after doneWidth($brand)", memory_get_usage_mb());
   }
   
