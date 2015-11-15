@@ -111,7 +111,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
       }
     }
 
-    $this->assignDescriptiveAttributes($entries, $brand);
+    $this->assignDescriptiveAttributes($entries, $topLevelEntries, $brand);
 
     // Do SalesStatus=30 filter here, as an optimisation
     foreach ($topLevelEntries as $sku => $entry) {
@@ -239,11 +239,12 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
   }
 
   /**
-   * @param FeedEntity\CatalogEntry[] $entries
+   * @param FeedEntity\CatalogEntry[] &$entries
+   * @param FeedEntity\CatalogEntry[] &$topLevelEntries
    * @param string $brand
    * @return void
    */
-  private function assignDescriptiveAttributes(array &$entries, $brand) {
+  private function assignDescriptiveAttributes(array &$entries, array &$topLevelEntries, $brand) {
     // Assign descriptive attributes.
     // Note, these only exist for top-level entries, so we optimize by using
     // $topLevelEntries for lookup, since it contains references to the same
@@ -252,6 +253,22 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
     foreach ($descriptiveAttributeData->record as $descriptiveAttributeRecord) {
       $daPartNumber = (string) $descriptiveAttributeRecord->partnumber;
       if (isset($entries[$daPartNumber])) {
+        // Optimization: if this is a SalesStatus attr and not '30', eliminate
+        // this product from the whole dataset. So we don't waste allocating
+        // memory to products only to filter them out in the loop following the
+        // assignDescriptiveAttributes() call.
+        // Note: this is only a negative filter -- i.e., products with NO
+        // SalesStatus attribute will have to wait until that following loop
+        // to be filtered out. Because here we're looping per attribute, we can't
+        // tell if the product has no SalesStatus. (Although, there seem to be
+        // no examples of products in qualified categories that don't have a SalesStatus
+        // attribute.)
+        if ('SalesStatus' == $descriptiveAttributeRecord->description &&
+            '30' != $descriptiveAttributeRecord->value) {
+          unset($entries[$daPartNumber], $topLevelEntries[$daPartNumber]);
+          continue;
+        }
+        
         // Check if already created and added, and do so if not
         $descriptiveAttributeGroupName = (string) $descriptiveAttributeRecord->groupname;
         $descriptiveAttributeGroup = $entries[$daPartNumber]
