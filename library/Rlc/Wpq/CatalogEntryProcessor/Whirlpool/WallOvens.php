@@ -13,8 +13,11 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
-    
     $util = ServiceLocator::util();
+
+    // Override appliance string and set type
+    $entryData['appliance'] = "Cooking";
+    $entryData['type'] = "Ovens";
 
     /*
      * Name/description-based info - use default locale (English)
@@ -36,9 +39,9 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['capacity'] = null;
 
     // First try name/description
-    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $description->name, 1);
+    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $description->name, 1);
     if (is_null($entryData['capacity'])) {
-      $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $description->longdescription, 1);
+      $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $description->longdescription, 1);
     }
 
     // Then try CF
@@ -124,7 +127,7 @@ class WallOvens extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getCategory() {
-    return 'Wall Ovens';
+    return 'Cooking-Ovens';
   }
 
 }

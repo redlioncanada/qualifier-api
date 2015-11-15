@@ -18,7 +18,7 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Washer features
      */
 
-    $entryData['capacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+))\s+cu\. ft\..*$@is', '$1', $washerDescriptionDefaultLocale->name);
+    $entryData['capacity'] = (float) preg_replace('@^.*(\d+(?:\.\d+)?)\s+cu\. ft\..*$@is', '$1', $washerDescriptionDefaultLocale->name);
 
     // Init some values to ensure they exist
     $entryData['vibrationControl'] = false;

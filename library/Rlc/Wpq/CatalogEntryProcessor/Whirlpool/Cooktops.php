@@ -13,6 +13,10 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
 
+    // Override appliance string and set type
+    $entryData['appliance'] = "Cooking";
+    $entryData['type'] = "Cooktops";
+
     /*
      * Name/description-based info - use default locale (English)
      */
@@ -55,7 +59,7 @@ class Cooktops extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getCategory() {
-    return 'Cooktops';
+    return 'Cooking-Cooktops';
   }
 
 }

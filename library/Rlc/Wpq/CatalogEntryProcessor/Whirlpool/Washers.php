@@ -36,7 +36,7 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['smoothWave'] = false;
 
     // Name/description based fields
-    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+))\s+cu\. ft\.@i', $washerDescription->name, 1);
+    $entryData['capacity'] = $util->getPregMatch('@(\d+(?:\.\d+)?)\s+cu\. ft\.@i', $washerDescription->name, 1);
     $entryData['quickWash'] = false !== stripos($washerDescription->name, "Quick Wash"); // will try CF as backup
     $entryData['quietWash'] = false !== stripos($washerDescription->longdescription, "Quiet Wash"); // will try CF as backup
     $entryData['frontLoad'] = (

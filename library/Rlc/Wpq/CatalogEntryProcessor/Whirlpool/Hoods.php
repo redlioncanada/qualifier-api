@@ -7,21 +7,16 @@ use Rlc\Wpq,
 
 class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
 
-  protected function filterEntries(Wpq\FeedEntity\CatalogEntry $entry,
-      array $entries, $locale) {
-    return !in_array($entry->partnumber, [
-          'UXB0600DYS-NAR', 'UXB1200DYS-NAR', 'UXI1200DYS-NAR', 'UXB1200DYS-NAR',
-          'UXB0600DYS-NAR'
-    ]);
-  }
-
   protected function attachFeatureData(array &$entryData,
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
-    $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
     $util = ServiceLocator::util();
+
+    // Override appliance string and set type
+    $entryData['appliance'] = "Cooking";
+    $entryData['type'] = "Hoods";
 
     /*
      * Compare-feature-based info
@@ -31,6 +26,8 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['islandMount'] = false;
     $entryData['wallMount'] = false;
     $entryData['underCabinet'] = false;
+    $entryData['customHoodLiner'] = false;
+    $entryData['inLineBlower'] = false;
     $entryData['cfm'] = null;
     $entryData['exterior'] = false;
     $entryData['nonVented'] = false;
@@ -49,6 +46,14 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
           if (!$entryData['wallMount']) {
             $entryData['underCabinet'] = in_array($hoodTypeAttr->value, ["Under Cabinet",
               "Under-the-Cabinet"]);
+
+            if (!$entryData['underCabinet']) {
+              $entryData['customHoodLiner'] = "Custom Hood Liners" == $hoodTypeAttr->value;
+
+              if (!$entryData['customHoodLiner']) {
+                $entryData['inLineBlower'] = "In-Line Blower" == $hoodTypeAttr->value;
+              }
+            }
           }
         }
       }
@@ -93,7 +98,7 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getCategory() {
-    return 'Hoods';
+    return 'Cooking-Hoods';
   }
 
 }
