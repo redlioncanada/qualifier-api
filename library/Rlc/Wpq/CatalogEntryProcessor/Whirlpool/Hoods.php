@@ -11,9 +11,12 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
       Wpq\FeedEntity\CatalogEntry $entry, $locale) {
     $description = $entry->getDescription();
     $compareFeatureGroup = $entry->getDescriptiveAttributeGroup('CompareFeature');
-    $salesFeatureGroup = $entry->getDescriptiveAttributeGroup('SalesFeature');
     $imageUrlPrefix = ServiceLocator::config()->imageUrlPrefix;
     $util = ServiceLocator::util();
+
+    // Override appliance string and set type
+    $entryData['appliance'] = "Cooking";
+    $entryData['type'] = "Hoods";
 
     /*
      * Compare-feature-based info
@@ -95,7 +98,7 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
   }
 
   protected function getCategory() {
-    return 'Hoods';
+    return 'Cooking-Hoods';
   }
 
 }

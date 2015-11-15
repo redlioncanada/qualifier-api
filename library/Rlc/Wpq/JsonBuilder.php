@@ -86,7 +86,7 @@ class JsonBuilder {
   }
 
   /**
-   * Generate the JSON to store and serve for a a given brand and locale.
+   * Generate the JSON to store and serve for a given brand and locale.
    * 
    * @param string $brand
    * @return string JSON
@@ -126,4 +126,16 @@ class JsonBuilder {
     return $json;
   }
 
+  /**
+   * Client code calls this after processing all locales for a brand, to let
+   * JsonBuilder know it can free memory allocated to the feedModelCache for
+   * that brand.
+   * 
+   * @param string $brand
+   * @return void
+   */
+  public function doneWith($brand) {
+    unset($this->feedModelCache[$brand]);
+  }
+  
 }

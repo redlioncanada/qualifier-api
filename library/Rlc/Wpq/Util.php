@@ -49,7 +49,8 @@ class Util {
             break;
           }
         } else {
-          if ($valueidentifier == $localizedSalesFeature->valueidentifier) {
+          // Compare case-insensitively
+          if (strtolower($valueidentifier) == strtolower($localizedSalesFeature->valueidentifier)) {
             $result = $featureKey;
             break;
           }
