@@ -136,50 +136,78 @@
     }
   },
   "whirlpool": {
-    "Cooktops": {
+    "Cooking-Cooktops": {
       "Dishwasher-Safe Knobs": "dishwasherSafeKnobs",
+      "Boutons lavables au lave-vaisselle": "dishwasherSafeKnobs",
       "Glass Touch Controls": "glassTouch",
+      "Commandes à effleurement sous verre": "glassTouch",
       "/AccuSimmer/i": "accuSimmer"
     },
     "Dishwashers": {
       "TotalCoverage Spray Arm": "totalCoverageArm",
+      "Bras gicleur TotalCoverage™": "totalCoverageArm",
       "Sensor Cycle": "sensorCycle",
+      "Programme de lavage par détection": "sensorCycle",
       "EZ-2-Lift\u2122 Adjustable Upper Rack": "ez2Lift",
+      "Panier supérieur réglable EZ-2-LIFT™": "ez2Lift",
       "Silverware Spray": "silverwareSpray",
+      "Gicleur pour ustensiles": "silverwareSpray",
       "AccuSense\u00ae Soil Sensor": "accuSense",
-      "AnyWare\u2122 Plus Silverware Basket": "anyWarePlusBasket"
+      "Détecteur de saleté AccuSense®": "accuSense",
+      "AnyWare\u2122 Plus Silverware Basket": "anyWarePlusBasket",
+      "Panier à ustensiles AnyWare™ Plus": "anyWarePlusBasket"
     },
     "Fridges": {
       "ENERGY STAR\u00ae Qualified": "energyStar",
+      "Homologué ENERGY STAR®": "energyStar",
       "counter depth styling": "counterDepth",
+      "Style à profondeur de comptoir": "counterDepth",
       "FreshFlow\u2122 Produce Preserver": "freshFlowProducePreserver",
+      "Conservateur de fruits et légumes FreshFlow™": "freshFlowProducePreserver",
       "FreshStor\u2122 Refrigerated Drawer": "freshStor",
+      "Tiroir réfrigéré FreshStor™": "freshStor",
       "Accu-Chill\u2122 Temperature Management System": "accuChill",
+      "Système de gestion de la température Accu-Chill™": "accuChill",
       "AccuFresh\u2122 dual cooling system": "accuFresh",
-      "Triple Crisper system": "tripleCrisper"
+      "Double système de refroidissement AccuFresh™": "accuFresh",
+      "Triple Crisper system": "tripleCrisper",
+      "Système de bacs à légumes triples EasyView™": "tripleCrisper"
     },
-    "Hoods": {},
-    "Ranges": {
+    "Cooking-Hoods": {},
+    "Cooking-Ranges": {
       "AccuBake\u00ae Temperature Management System": "accuBake",
+      "Système de gestion de la température Accubake®": "accuBake",
       "Rapid Preheat": "rapidPreHeat",
+      "Préchauffage rapide": "rapidPreHeat",
       "Max Capacity Recessed Rack": "maxCapacity",
+      "Grille encastrée à capacité maximale": "maxCapacity",
       "Frozen Bake\u2122 Technology": "frozenBake",
+      "Technologie Frozen Bake™": "frozenBake",
       "Warming Drawer": "warmingDrawer",
+      "Tiroir-réchaud": "warmingDrawer",
       "AquaLift\u00ae Self-Clean technology": "aquaLift",
-      "/true convection/i": "trueConvection"
+      "Technologie d'autonettoyage AquaLift™": "aquaLift",
+      "/true convection/i": "trueConvection",
+      "/convection véritable/i": "trueConvection"
     },
-    "Wall Ovens": {
-      "Cu. Ft. Capacity": "capacity",
-      "Total Capacity": "capacity",
+    "Cooking-Ovens": {
+      "/capacity/i": "capacity",
+      "/capacit\u00e9/i": "capacity",
       "AccuBake\u00ae Temperature Management System": "accuBake",
+      "Système de gestion de la température Accubake®": "accuBake",
       "/thermometer/i": "digitalThermometer",
-      "/True Convection/i": "trueConvection"
+      "/True Convection/i": "trueConvection",
+      "/convection véritable/i": "trueConvection"
     },
     "Washers": {
       "Adaptive Wash Technology": "adaptiveWash",
+      "Technologie de lavage adaptatif avec fonction Active Bloom™": "adaptiveWash",
       "ColorLast\u2122 Option": "colorLast",
+      "Option colorlast™": "colorLast",
       "Smooth Wave Stainless Steel Wash Basket": "smoothWave",
-      "Load & Go\u2122 System": "loadAndGo"
+      "Panier de lavage en acier inoxydable Smooth Wave": "smoothWave",
+      "Load & Go\u2122 System": "loadAndGo",
+      "Système Load & Go™": "loadAndGo"
     }
   }
 }
