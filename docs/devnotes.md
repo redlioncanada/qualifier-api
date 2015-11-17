@@ -1,5 +1,8 @@
 # TODO
 
+* maybe pull microwaves with hoods into hoods category for WP, but wait for go-ahead
+    - see https://trello.com/c/S2QpSUyk/11-microwavehoodcombination
+    - and https://mail.google.com/mail/u/0/#inbox/15112ae69be782f2
 * error logging
 * don't keep trying to process if a file is missing
 * for staging:
