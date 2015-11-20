@@ -77,6 +77,15 @@ class Hoods extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Other
      */
 
+    // microwaveHoodCombination actually means the product is in a whole separate category,
+    // and won't have most of the same info as regular Hoods (except CFM fan rating),
+    // but we shoehorn it into this category in Qualifier anyway.
+    $allCatalogGroups = $entry->getAllCatalogGroups();
+    $allCatalogGroupIds = array_map(function ($grp) {
+      return (string) $grp->identifier;
+    }, $allCatalogGroups);
+    $entryData['microwaveHoodCombination'] = in_array('SC_Kitchen_Cooking_Microwaves_Over_The_Range', $allCatalogGroupIds);
+    
     if (is_null($entryData['cfm'])) {
       // If no CompareFeature, try in description
       $entryData['cfm'] = $util->getPregMatch('/(\d+)[\s-]CFM/i', $description->longdescription, 1);
