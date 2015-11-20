@@ -58,6 +58,8 @@ class JsonBuilder {
       'SC_Kitchen_Cooking_Wall_Ovens' => 'Whirlpool\\WallOvens',
       'SC_Kitchen_Cooking_Cooktops' => 'Whirlpool\\Cooktops',
       'SC_Kitchen_Cooking_Hoods' => 'Whirlpool\\Hoods',
+      // Also pipe this category through the WP Hoods processor
+      'SC_Kitchen_Cooking_Microwaves_Over_The_Range' => 'Whirlpool\\Hoods',
     ],
   ];
 

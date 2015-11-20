@@ -123,11 +123,11 @@ X = implemented + tested
 - X exterior (bool)
 - X nonVented (bool)
 - X convertible (bool)
-- ?* microWaveHoodCombination (bool)
-    + these are a separate category -- listed under SC_Kitchen_Cooking_Microwaves_Over_The_Range category
+- X microwaveHoodCombination (bool)
+    + include SC_Kitchen_Cooking_Microwaves_Over_The_Range and ignore the fact that
+      they don't have most of the same info.
     + see http://www.whirlpool.com/kitchen-1/cooking-2/over-the-range-3/102110018/ and check "over the range" in the left-hand filters
-    + include these in the Qualifier's "Hoods" category?
-    + https://trello.com/c/S2QpSUyk/11-microwavehoodcombination
+    + Trello: https://trello.com/c/S2QpSUyk/11-microwavehoodcombination
 
 # Whirlpool Wall Ovens
 
