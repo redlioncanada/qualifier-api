@@ -35,7 +35,6 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
 
     $childEntries = $entry->getChildEntries();
     $colourRecords = [];
-    $highestPrice = 0;
     foreach ($childEntries as $childEntry) {
       $childEntryData = $this->util->buildChildEntryData($childEntry, $locale);
       if (isset($colourRecords[$childEntryData['colourCode']])) {
@@ -49,22 +48,8 @@ abstract class StandardAbstract implements Wpq\CatalogEntryProcessorInterface {
           continue;
         }
       }
-      //assign a default price & colour property on the root object, defaults to "SS", else the highest priced colour
-      if ((gettype($highestPrice) == 'array' && sizeof($highestPrice) > 0 && key($highestPrice) != 'SS') || $highestPrice == 0) {
-        foreach($childEntryData['prices'] as $price) {
-          if ($highestPrice == 0 || $price > $highestPrice[key($highestPrice)] || $childEntryData['colourCode'] == 'SS') {
-            $highestPrice = array(
-              $childEntryData['colourCode']  => $price
-            );
-          }
-        }
-      }
       $colourRecords[$childEntryData['colourCode']] = $childEntryData;
     }
-
-    $newOutputData['price'] = $highestPrice[key($highestPrice)];
-    $newOutputData['colour'] = key($highestPrice);
-
     // Make $colourRecords back into a sequential array
     $newOutputData['colours'] = array_values($colourRecords);
 
