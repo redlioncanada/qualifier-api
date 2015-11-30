@@ -84,11 +84,9 @@ class Util {
   /**
    * Gets associative array of parentpartnumber => URL
    * 
-   * @todo include all feed files now that I have them
-   * 
    * @param string $brand
    * @param string $locale
-   * @return void
+   * @return array or null if file not found
    */
   public function getProductUrls($brand, $locale) {
     // For capitalization in filename
