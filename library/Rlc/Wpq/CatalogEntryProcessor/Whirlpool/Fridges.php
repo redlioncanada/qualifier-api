@@ -35,8 +35,8 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
      * Name/description-based info
      */
 
-    $entryData['4or5door'] = (false !== stripos($description->name, '4-door')) ||
-        (false !== stripos($description->name, "Double Drawer"));
+    $entryData['5door'] = (false !== stripos($description->name, "Double Drawer"));
+    $entryData['4door'] = (false !== stripos($description->name, '4-door'));
     // If this one's false, will check again in salesfeatures
     $entryData['counterDepth'] = (bool) preg_match('@\bcounter[- ]depth\b@i', $description->name);
 
