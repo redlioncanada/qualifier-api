@@ -28,7 +28,8 @@
       "Adjustable-Temperature Refrigerated Drawer": "adjustableTempDrawer",
       "Tiroir r\u00e9frig\u00e9r\u00e9 \u00e0 temp\u00e9rature r\u00e9glable": "adjustableTempDrawer",
       "/capacity$/i": "capacity",
-      "/^capacit\u00e9/i": "capacity"
+      "/^capacit\u00e9/i": "capacity",
+      "External Ice and Water": "indoorDispenser"
     },
     "Washers": {
       "Rapid Wash Cycle": "rapidWash",
@@ -79,7 +80,17 @@
       "Preserva\u00ae Food Care System": "preservaCare",
       "Système de conservation des aliments Preserva®": "preservaCare",
       "Max Cool": "maxCool",
-      "Fonction de refroidissement Max Cool": "maxCool"
+      "Fonction de refroidissement Max Cool": "maxCool",
+      "Measured Water Fill": "filtered",
+      "Remplissage d'eau  mesur\u00e9": "filtered",
+      "Through-the-Door Ice and Water Dispenser": "exteriorDispenser",
+      "Distributeur de gla\u00e7ons et d'eau int\u00e9gr\u00e9 dans la porte": "exteriorDispenser",
+      "Exterior Ice and Water Dispenser": "exteriorDispenser",
+      "Distributeur de gla\u00e7ons et d'eau externe": "exteriorDispenser",
+      "Automatic Ice Maker": "indoorDispenser",
+      "Machine \u00e0 gla\u00e7ons automatique": "indoorDispenser",
+      "Interior Water Dispenser": "indoorDispenser"
+
     },
     "Cooktops": {
       "CookShield Finish": "cookShield",
@@ -171,7 +182,19 @@
       "AccuFresh\u2122 dual cooling system": "accuFresh",
       "Double système de refroidissement AccuFresh™": "accuFresh",
       "Triple Crisper system": "tripleCrisper",
-      "Système de bacs à légumes triples EasyView™": "tripleCrisper"
+      "Système de bacs à légumes triples EasyView™": "tripleCrisper",
+      "Interior Water Dispenser": "filtered",
+      "Distributeur d'eau int\u00e9rieur": "filtered",
+      "Measured Fill": "filtered",
+      "Remplissage mesur\u00e9": "filtered",
+      "Exterior Ice and Water with EveryDrop\u2122 Water Filter": "exteriorDispenser",
+      "Dual Icemakers": "exteriorDispenser",
+      "Exterior filtered water dispenser with Tap Touch controls": "exteriorDispenser",
+      "Distributeur d'eau filtr\u00e9e ext\u00e9rieur avec commandes \u00e0 effleurement": "exteriorDispenser",
+      "In-Door-Ice\u00ae dispensing system": "indoorDispenser",
+      "Machine \u00e0 gla\u00e7ons In-Door-Ice\u00ae": "indoorDispenser",
+      "Interior Water Dispenser": "indoorDispenser",
+      "Distributeur d'eau int\u00e9rieur": "indoorDispenser"
     },
     "Cooking-Hoods": {},
     "Cooking-Ranges": {
