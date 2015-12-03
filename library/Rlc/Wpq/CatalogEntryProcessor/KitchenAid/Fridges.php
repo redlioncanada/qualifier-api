@@ -31,7 +31,7 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['topMount'] = false;
     $entryData['bottomMount'] = false;
     $entryData['frenchDoor'] = false;
-    $sideBySide = false; // Not part of response, but part of logic
+    $entryData['sideBySide'] = false;
     $entryData['indoorDispenser'] = false;
     $entryData['filtered'] = false;
     $entryData['exteriorDispenser'] = false;
