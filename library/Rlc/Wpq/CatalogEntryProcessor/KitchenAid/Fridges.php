@@ -55,10 +55,10 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
         } elseif ("French Door" == $fridgeTypeAttr->value) {
           $entryData['frenchDoor'] = true;
         } elseif ("Side-by-Side" == $fridgeTypeAttr->value) {
-          $sideBySide = true;
+          $entryData['sideBySide'] = true;
         }
       }
-      $entryData['bottomMount'] = !($entryData['topMount'] || $entryData['frenchDoor'] || $sideBySide);
+      $entryData['bottomMount'] = !($entryData['topMount'] || $entryData['frenchDoor'] || $entryData['sideBySide']);
 
       // filtered
       $filteredAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Filtered Water"]);
