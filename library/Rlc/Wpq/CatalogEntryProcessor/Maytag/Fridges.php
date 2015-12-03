@@ -62,12 +62,7 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
       }
 
       //energy star
-      $energyStarAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Energy Star\u00ae Qualified"]);
-      if ($energyStarAttr) {
-        $entryData['energyStar'] = true;
-      } else {
-        $entryData['energyStar'] = false;
-      }
+      $entryData['energyStar'] = $compareFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
     }
 
     if ($salesFeatureGroup) {
