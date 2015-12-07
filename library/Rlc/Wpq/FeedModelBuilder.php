@@ -7,8 +7,6 @@ use Lrr\ServiceLocator;
 /**
  * Extracts all info from XML files and constructs a web of associated value
  * objects to make life easy for JsonBuilder.
- * 
- * @todo cache results in member var
  */
 class FeedModelBuilder implements FeedModelBuilderInterface {
 
@@ -47,7 +45,7 @@ class FeedModelBuilder implements FeedModelBuilderInterface {
 
     // Start by creating two arrays, one just stores all catalog entries by
     // partnumber, and the other stores only top-level entries by partnumber.
-    // Ultimately we'll return the first (all entries), but have the top-level
+    // Ultimately we'll return the first (all entries), but having the top-level
     // only array is useful for processing.
     $entries = $topLevelEntries = [];
     foreach ($entryData->record as $entryRecord) {
