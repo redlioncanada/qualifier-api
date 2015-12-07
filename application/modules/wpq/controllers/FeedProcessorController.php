@@ -28,9 +28,12 @@ class Wpq_FeedProcessorController extends Zend_Controller_Action {
     foreach ($brands as $brand) {
       foreach ($locales as $locale) {
         $jsonFileManager->rebuildJson($brand, $locale);
+        echo "Wrote new JSON file: " . $jsonFileManager->getJsonFilename($brand, $locale);
         if ('development' == APPLICATION_ENV) {
-          echo $jsonFileManager->getJsonFilename($brand, $locale) . "<br>";
+          // For dev, assume output is going to browser instead of log file
+          echo "<br>";
         }
+        echo "\n";
       }
       
       // Free memory for cached XML feed data for this brand
