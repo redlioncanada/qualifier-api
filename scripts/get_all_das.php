@@ -1,5 +1,7 @@
 <?php
 
+// Utility script for development - inspect feed data
+
 $x = simplexml_load_file(__DIR__ . '/../data/source-xml/MTG_CA_DescriptiveAttribute.xml');
 
 foreach ($x->record as $r) {

@@ -110,8 +110,6 @@ class Washers extends Wpq\CatalogEntryProcessor\StandardAbstract {
         $dryerProcessor->process($xSellAssoc, $entries, $locale, $newOutputData['dryers']);
       }
     }
-
-//    $newOutputData['numDryers'] = count($newOutputData['dryers']); // REMOVE AFTER DEV
   }
 
   protected function getBrand() {

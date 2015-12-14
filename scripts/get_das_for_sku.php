@@ -1,5 +1,7 @@
 <?php
 
+// Utility script for development - inspect feed data
+
 /**
  * Get descriptive attributes for SKU
  */

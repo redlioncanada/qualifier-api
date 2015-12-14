@@ -1,5 +1,7 @@
 <?php
 
+// Utility script for development - inspect feed data
+
 /**
  *
  * For analysing the *_CA_MerchandisingAssociation.xml files.
