@@ -61,8 +61,11 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
         $entryData['tempControlPantry'] = ('No' != $tempControlDrawersAttr->value);
       }
 
-      //energy star
-      $entryData['energyStar'] = $compareFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
+      // energyStar
+      $energyStarAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
+      if ($energyStarAttr) {
+        $entryData['energyStar'] = ('No' != $energyStarAttr->value);
+      }
     }
 
     if ($salesFeatureGroup) {

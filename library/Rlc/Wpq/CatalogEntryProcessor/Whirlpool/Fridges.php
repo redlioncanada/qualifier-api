@@ -62,9 +62,12 @@ class Fridges extends Wpq\CatalogEntryProcessor\StandardAbstract {
     $entryData['factoryInstalledIce'] = false;
 
     if ($compareFeatureGroup) {
-      // These just have to exist
-      $entryData['energyStar'] = $compareFeatureGroup->descriptiveAttributeExistsByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
-
+      // energyStar
+      $energyStarAttr = $compareFeatureGroup->getDescriptiveAttributeByValueIdentifier(json_decode('"Energy Star\u00ae Qualified"'));
+      if ($energyStarAttr) {
+        $entryData['energyStar'] = ('No' != $energyStarAttr->value);
+      }
+      
       // If capacity wasn't found in name/description, try for CF
       if (is_null($entryData['capacity'])) {
         $capacityAttr = $compareFeatureGroup->getDescriptiveAttributeWhere(["valueidentifier" => "Total Capacity Cu. Ft."]);
