@@ -1,4 +1,4 @@
-<?php
+// <?php
 
 /**
  * Downloads new XML and runs feed processor job. Using PHP wrapper for bash
@@ -41,7 +41,7 @@ $json_dir = realpath(__DIR__ . '/../data/json-responses');
 // Download, extract & overwrite XML files for all 3 brands
 foreach (['MTGCA', 'KADCA', 'WHRCA'] as $brand_prefix) {
   echo "Downloading and extracting $brand_prefix feed\n";
-//  cmd_wrapper(__DIR__ . '/update-xml.sh ' . escapeshellarg($brand_prefix) . ' ' . escapeshellarg($xml_dir));
+  cmd_wrapper(__DIR__ . '/update-xml.sh ' . escapeshellarg($brand_prefix) . ' ' . escapeshellarg($xml_dir));
   echo "\n";
 }
 
